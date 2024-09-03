@@ -1,4 +1,4 @@
-package com.metaverse.metaverse.login;
+package com.metaverse.login;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

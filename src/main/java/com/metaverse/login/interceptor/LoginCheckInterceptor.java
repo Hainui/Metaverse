@@ -1,9 +1,9 @@
-package com.metaverse.metaverse.login.interceptor;
+package com.metaverse.login.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 
-import com.metaverse.metaverse.login.Dao.Result;
-import com.metaverse.metaverse.login.Utils.JwtUtils;
+import com.metaverse.login.Dao.Result;
+import com.metaverse.login.Utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

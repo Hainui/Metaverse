@@ -1,4 +1,4 @@
-package com.metaverse.metaverse.login.Utils;
+package com.metaverse.login.Utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

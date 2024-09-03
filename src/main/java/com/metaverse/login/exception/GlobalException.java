@@ -1,7 +1,7 @@
-package com.metaverse.metaverse.login.exception;
+package com.metaverse.login.exception;
 
 
-import com.metaverse.metaverse.login.Dao.Result;
+import com.metaverse.login.Dao.Result;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
