@@ -2,7 +2,7 @@ package com.metaverse.login.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 
-import com.metaverse.login.Dao.Result;
+import com.metaverse.login.common.Result;
 import com.metaverse.login.Utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

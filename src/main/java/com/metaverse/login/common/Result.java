@@ -1,4 +1,4 @@
-package com.metaverse.login.Dao;
+package com.metaverse.login.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
