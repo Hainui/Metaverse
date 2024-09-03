@@ -10,9 +10,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.metaverse</groupId>
-	<artifactId>metaverse_Login</artifactId>
+	<artifactId>Metaverse</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>metaverse_Login</name>
+	<name>Metaverse</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
