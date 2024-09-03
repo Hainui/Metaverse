@@ -1,4 +1,4 @@
-package entity;
+package com.metaverse.login.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
