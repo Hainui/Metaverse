@@ -17,7 +17,6 @@ public class Result<T> {
 
     // 增删改 成功响应
     public static <T> Result<T> success() {
-        ////////  dddddddddddddddddddd
         return new Result<>(1, "success", null);
     }
 
