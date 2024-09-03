@@ -7,4 +7,6 @@ public interface MetaverseUserRepository {
     boolean existByName(String name, Long regionId);
 
     boolean save(MetaverseUserDO userDO);
+
+    boolean findUserByEmailAndRegionId(String email, Long regionId);
 }

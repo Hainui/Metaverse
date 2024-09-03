@@ -1,5 +1,6 @@
 package com.metaverse.user.service;
 
+import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,6 @@ public class UserService {
 
 
     public boolean registration(MetaverseUserRegistrationReq metaverseUserRegistrationReq) {
-
-
-        return "";
+        return MetaverseUser.registration(metaverseUserRegistrationReq.getName(), metaverseUserRegistrationReq.getEmail(), metaverseUserRegistrationReq.getPassword(), metaverseUserRegistrationReq.getRegionId(), MetaverseUser.Gender.fromValue(metaverseUserRegistrationReq.getGender()));
     }
 }

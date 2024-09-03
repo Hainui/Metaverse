@@ -31,4 +31,9 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
             throw new IllegalArgumentException("存在重复的数据！");
         }
     }
+
+    @Override
+    public boolean findUserByEmailAndRegionId(String email, Long regionId) {
+        return false;
+    }
 }

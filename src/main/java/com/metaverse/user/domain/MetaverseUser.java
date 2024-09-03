@@ -65,7 +65,7 @@ public class MetaverseUser {
 
 
     @Getter
-    enum Gender {
+    public enum Gender {
         // 定义枚举常量 FEMALE 和 MALE
         FEMALE(0, "女"),
         MALE(1, "男");
