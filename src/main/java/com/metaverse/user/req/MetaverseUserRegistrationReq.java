@@ -20,8 +20,11 @@ public class MetaverseUserRegistrationReq {
     @ApiModelProperty(value = "姓名", required = true)
     @NotBlank(message = "姓名不能为空")
     private String name;
-
     @ApiModelProperty(value = "性别，0-女，1-男", required = true)
+    @NotNull(message = "性别不能为空")
     private Integer Gender;
+    @ApiModelProperty(value = "邮箱验证码", required = true)
+    @NotBlank(message = "验证码不能为空")
+    private String verifyCode;
 
 }

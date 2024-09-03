@@ -2,7 +2,7 @@ package com.metaverse.user.domain;
 
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.Utils.BeanManager;
-import com.metaverse.common.Utils.SnowflakeIdWorker;
+import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import lombok.AllArgsConstructor;
@@ -47,8 +47,11 @@ public class MetaverseUser {
 
 
     public static boolean registration(String name, String email, String password, Long regionId, Gender gender) {
-        SnowflakeIdWorker idGen = BeanManager.getBean(SnowflakeIdWorker.class);
+        UserIdGen idGen = BeanManager.getBean(UserIdGen.class);
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        if (!repository.existByRegionId(regionId)) {
+            throw new IllegalArgumentException("非法的区服！");
+        }
         if (repository.existByName(name, regionId)) {
             throw new IllegalArgumentException("该用户名已经存在！");
         }
@@ -66,9 +69,8 @@ public class MetaverseUser {
 
     public static boolean login(String email, String password, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        return repository.login(email, password,regionId);
+        return repository.login(email, password, regionId);
     }
-
 
 
     @Getter

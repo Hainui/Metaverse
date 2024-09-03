@@ -23,3 +23,20 @@ mybatis:
 snowflake:
   datacenterId: 1
   workerId: 1
+
+spring:
+  mail:
+    # QQ 邮箱服务器地址
+    host: smtp.qq.com
+    # 你的 QQ 邮箱账号
+    username: 315626261@qq.com
+    # QQ 邮箱授权码
+    password: xxfyawvjzqpfbhdj
+    properties:
+      mail:
+        # 邮件编码格式
+        default-encoding: UTF-8
+      smtp:
+        ssl:
+          # 启用 SSL 加密
+          enable: true

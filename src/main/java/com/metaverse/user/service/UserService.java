@@ -15,10 +15,10 @@ public class UserService {
 
     public String login(MetaverseUserLoginReq metaverseUserLoginReq) {
         boolean isLoginSuccess = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
-        if(!isLoginSuccess){
+        if (!isLoginSuccess) {
             throw new IllegalArgumentException("登陆失败!");
         }
-        // 给令牌
+        // todo 给令牌
 
 //        if (metaverseUserDO1 != null) {
 //            Map<String, Object> claims = new HashMap<>();
