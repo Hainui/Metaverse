@@ -19,7 +19,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
         return userService.lambdaQuery()
                 .eq(MetaverseUserDO::getUsername, name)
                 .eq(MetaverseUserDO::getRegionId, regionId)
-                .last("LIMT 1")
+                .last("LIMIT 1")
                 .count() > 0;
     }
 
