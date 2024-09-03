@@ -72,17 +72,27 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+
+		<!-- MyBatis Plus 核心库 -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-core</artifactId>
+			<version>3.5.3</version> <!-- 请检查并使用最新版本 -->
+		</dependency>
+
+		<!-- MyBatis Plus Spring Boot Starter -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+			<version>3.5.3</version> <!-- 请检查并使用最新版本 -->
+		</dependency>
+
 		<!-- MyBatis Plus 代码生成器 -->
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-generator</artifactId>
-			<version>3.5.2</version> <!-- 请检查并使用最新版本 -->
-		</dependency>
-
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-core</artifactId>
-			<version>3.5.2</version>
+			<version>3.5.3</version> <!-- 请检查并使用最新版本 -->
 		</dependency>
 
 
