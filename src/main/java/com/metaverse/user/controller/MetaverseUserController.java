@@ -26,7 +26,11 @@ public class MetaverseUserController {
 
 
     @PostMapping("/login")
-    public Result<?> Login(@RequestBody MetaverseUserLoginReq metaverseUserLoginReq) {
+    public Result<?> login(@RequestBody MetaverseUserLoginReq metaverseUserLoginReq) {
+
+
+
+
         return Result.success(userService.login(metaverseUserLoginReq));
     }
 
