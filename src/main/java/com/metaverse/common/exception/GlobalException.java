@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalException {
 
     @ExceptionHandler(Exception.class)//指定捕获的异常类型
-    public Result ex (Exception ex){
+    public Result<?> ex (Exception ex){
         ex.printStackTrace();
-        return Result.error("操作失败,请联系管理员");
+        return Result.error(ex.getMessage());
     }
 }
