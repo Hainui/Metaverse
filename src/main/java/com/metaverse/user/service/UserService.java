@@ -1,11 +1,15 @@
 package com.metaverse.user.service;
 
+import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,16 +23,11 @@ public class UserService {
             throw new IllegalArgumentException("登陆失败!");
         }
         // todo 给令牌
-
-//        if (metaverseUserDO1 != null) {
-//            Map<String, Object> claims = new HashMap<>();
-//            claims.put("id", metaverseUserDO.getId());
-//            claims.put("username", metaverseUserDO.getUsername());
-//            String jwt = JwtUtils.generateJwt(claims);//生成一个包含用户信息的Jwt令牌
-//            return Result.success(jwt);
-//        }
-//        return Result.error("用户名或密码错误");
-        return "";
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("username",metaverseUserLoginReq.getEmail());
+        claims.put("required",metaverseUserLoginReq.getRegionId());
+        String jwt = JwtUtils.generateJwt(claims);//生成一个包含用户信息的Jwt令牌
+        return jwt;
     }
 
 
