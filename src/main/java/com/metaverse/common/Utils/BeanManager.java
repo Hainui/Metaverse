@@ -1,38 +1,46 @@
 package com.metaverse.common.Utils;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
-import java.util.Map;
+@Component
+public class BeanManager implements ApplicationContextAware {
 
-public class BeanManager {
 
-    private static final ApplicationContext context;
+    private static ApplicationContext applicationContext;
 
-    static {
-        // 初始化ApplicationContext
-        context = new ClassPathXmlApplicationContext("applicationContext.xml");
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        BeanManager.applicationContext = applicationContext;
     }
 
     /**
-     * 获取指定类型的单个bean实例。
+     * 根据Class类型获取Bean
      *
-     * @param clazz bean的类型
-     * @param <T>   泛型类型
-     * @return 返回指定类型的bean实例
+     * @param clazz Bean的类型
+     * @param <T>   Bean的泛型类型
+     * @return 返回指定类型的Bean
      */
     public static <T> T getBean(Class<T> clazz) {
-        return context.getBean(clazz);
+        if (applicationContext == null) {
+            throw new IllegalStateException("ApplicationContext has not been initialized.");
+        }
+        return applicationContext.getBean(clazz);
     }
 
     /**
-     * 获取所有指定类型的bean实例。
+     * 根据Bean的名称获取Bean
      *
-     * @param clazz bean的类型
-     * @param <T>   泛型类型
-     * @return 返回所有指定类型的bean实例的映射
+     * @param name Bean的名称
+     * @param <T>  Bean的泛型类型
+     * @return 返回指定名称的Bean
      */
-    public static <T> Map<String, T> getBeansOfType(Class<T> clazz) {
-        return context.getBeansOfType(clazz);
+    public static <T> T getBean(String name, Class<T> clazz) {
+        if (applicationContext == null) {
+            throw new IllegalStateException("ApplicationContext has not been initialized.");
+        }
+        return applicationContext.getBean(name, clazz);
     }
 }

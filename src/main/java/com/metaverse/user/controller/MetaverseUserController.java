@@ -28,7 +28,7 @@ public class MetaverseUserController {
     private final UserService userService;
 
 
-    @PostMapping("/login")
+    @PostMapping("/modifyUserName")
     @ApiOperation(value = "用户登录", tags = "1.0.0")
     public Result<String> login(@RequestBody @Valid MetaverseUserLoginReq metaverseUserLoginReq) {
         return Result.success(userService.login(metaverseUserLoginReq));
@@ -54,9 +54,8 @@ public class MetaverseUserController {
 
     @PutMapping("/login")
     @ApiOperation(value = "修改用户名", tags = "1.0.0")
-    public Result<String> change(@RequestBody @Valid MetaverseUserLoginReq metaverseUserLoginReq) {
-
-        return Result.success(userService.login(metaverseUserLoginReq));
+    public Result<Boolean> modifyUserName(@RequestBody @Valid String name) {
+        return Result.success(userService.modifyUserName(name));
     }
 
 }

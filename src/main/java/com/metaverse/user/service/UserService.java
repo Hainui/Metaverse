@@ -7,6 +7,7 @@ import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class UserService {
 
 
+    @Transactional
     public String login(MetaverseUserLoginReq metaverseUserLoginReq) {
         Long userId = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
         // todo 给令牌
@@ -27,8 +29,13 @@ public class UserService {
         return JwtUtils.generateJwt(claims);
     }
 
-
+    @Transactional
     public boolean registration(MetaverseUserRegistrationReq metaverseUserRegistrationReq) {
         return MetaverseUser.registration(metaverseUserRegistrationReq.getName(), metaverseUserRegistrationReq.getEmail(), metaverseUserRegistrationReq.getPassword(), metaverseUserRegistrationReq.getRegionId(), MetaverseUser.Gender.fromValue(metaverseUserRegistrationReq.getGender()));
+    }
+
+    @Transactional
+    public Boolean modifyUserName(String name) {
+        return null;
     }
 }
