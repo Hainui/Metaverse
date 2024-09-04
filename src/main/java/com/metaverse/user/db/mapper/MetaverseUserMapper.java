@@ -2,7 +2,6 @@ package com.metaverse.user.db.mapper;
 
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -10,10 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-03
+ * @since 2024-09-04
  */
-
-@Mapper
 public interface MetaverseUserMapper extends BaseMapper<MetaverseUserDO> {
 
 }

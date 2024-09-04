@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-03
+ * @since 2024-09-04
  */
 public interface IMetaverseUserService extends IService<MetaverseUserDO> {
 

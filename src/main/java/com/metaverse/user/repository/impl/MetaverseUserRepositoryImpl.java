@@ -1,8 +1,8 @@
 package com.metaverse.user.repository.impl;
 
 import com.metaverse.common.Utils.BCryptUtil;
-import com.metaverse.region.db.entity.RegionDO;
-import com.metaverse.region.db.service.IRegionService;
+import com.metaverse.region.db.entity.MetaverseRegionDO;
+import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
@@ -22,7 +22,7 @@ import java.util.Optional;
 public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
     private final IMetaverseUserService userService;
-    private final IRegionService iRegionService;
+    private final IMetaverseRegionService regionService;
 
     @Override//查询是否用户名是否存在
     public boolean existByName(String name, Long regionId) {
@@ -49,7 +49,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .list();
         Optional<MetaverseUserDO> userOptional = list.stream().filter(userDO -> StringUtils.equals(email, userDO.getEmail())).findAny();
         if (!userOptional.isPresent()) {
-            RegionDO regionDO = iRegionService.lambdaQuery().eq(RegionDO::getId, regionId).select(RegionDO::getName).one();
+            MetaverseRegionDO regionDO = regionService.lambdaQuery().eq(MetaverseRegionDO::getId, regionId).select(MetaverseRegionDO::getName).one();
             String regionName = regionDO.getName();
             throw new IllegalArgumentException(regionName + "没有此用户信息，请先在" + regionName + "注册");
         } else {
@@ -64,7 +64,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
     @Override
     public boolean existByRegionId(Long regionId) {
-        return iRegionService.lambdaQuery().eq(RegionDO::getId, regionId).exists();
+        return regionService.lambdaQuery().eq(MetaverseRegionDO::getId, regionId).exists();
     }
 
     @Override
@@ -96,8 +96,13 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
 
     @Override
-    public boolean modifyUserName(Long userId, String name) {
-        return userService.lambdaUpdate().eq(MetaverseUserDO::getId, userId).set(MetaverseUserDO::getUsername, name).update();
+    public boolean modifyUserName(Long userId, String name, Long updateBy, Long version) {
+        return userService.lambdaUpdate()
+                .eq(MetaverseUserDO::getId, userId)
+                .set(MetaverseUserDO::getUsername, name)
+                .set(MetaverseUserDO::getUpdateBy, updateBy)
+                .set(MetaverseUserDO::getVersion, version)
+                .update();
     }
 }
 

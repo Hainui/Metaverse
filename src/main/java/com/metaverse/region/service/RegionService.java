@@ -1,7 +1,7 @@
 package com.metaverse.region.service;
 
-import com.metaverse.region.db.entity.RegionDO;
-import com.metaverse.region.db.service.IRegionService;
+import com.metaverse.region.db.entity.MetaverseRegionDO;
+import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.resp.RegionListResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,14 +15,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RegionService {
 
-    private final IRegionService iRegionService;
+    private final IMetaverseRegionService regionService;
 
     public List<RegionListResp> getAllRegion() {
-        List<RegionDO> list = iRegionService.lambdaQuery().list();
+        List<MetaverseRegionDO> list = regionService.lambdaQuery().list();
         return list.stream().map(this::convertToRegionListResp).collect(Collectors.toList());
     }
 
-    public RegionListResp convertToRegionListResp(RegionDO regionDO) {
+    public RegionListResp convertToRegionListResp(MetaverseRegionDO regionDO) {
         if (regionDO == null) {
             return null;
         }

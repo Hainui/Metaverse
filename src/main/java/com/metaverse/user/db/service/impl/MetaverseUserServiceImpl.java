@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-03
+ * @since 2024-09-04
  */
 @Service
 public class MetaverseUserServiceImpl extends ServiceImpl<MetaverseUserMapper, MetaverseUserDO> implements IMetaverseUserService {

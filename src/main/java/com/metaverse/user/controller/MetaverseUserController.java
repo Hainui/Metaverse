@@ -1,5 +1,6 @@
 package com.metaverse.user.controller;
 
+import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.Utils.VerificationCodeUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.MetaverseUserLoginReq;
@@ -56,7 +57,7 @@ public class MetaverseUserController {
     @PutMapping("/modifyUserName")
     @ApiOperation(value = "修改用户名", tags = "1.0.0")
     public Result<Boolean> modifyUserName(@RequestBody @Valid ModifyUserNameReq req) {
-        return Result.success(userService.modifyUserName(req));
+        return Result.success(userService.modifyUserName(req, JwtUtils.getCurrentUserId()));
     }
 
 }

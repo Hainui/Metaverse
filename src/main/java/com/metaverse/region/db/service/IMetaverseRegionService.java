@@ -1,7 +1,7 @@
 package com.metaverse.region.db.service;
 
+import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.metaverse.region.db.entity.RegionDO;
 
 /**
  * <p>
@@ -9,8 +9,8 @@ import com.metaverse.region.db.entity.RegionDO;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-03
+ * @since 2024-09-04
  */
-public interface IRegionService extends IService<RegionDO> {
+public interface IMetaverseRegionService extends IService<MetaverseRegionDO> {
 
 }

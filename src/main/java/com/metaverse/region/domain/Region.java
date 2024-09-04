@@ -1,6 +1,7 @@
 package com.metaverse.region.domain;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class Region {
@@ -24,4 +25,14 @@ public class Region {
      * 区服创建人id
      */
     private Long createBy;
+
+    private Long createdBy;
+
+    private Date createdAt;
+
+    private Long updatedBy;
+
+    private Date updatedAt;
+
+    private Long version;
 }

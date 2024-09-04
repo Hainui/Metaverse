@@ -24,14 +24,14 @@ public class CodeGenerator {
                             .outputDir("src/main/java"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.metaverse.user") // 设置父包名
+                    builder.parent("com.metaverse.region") // 设置父包名
                             .moduleName("db") // 设置父包模块名
                             .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper")); // 设置 XML 生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.entityBuilder().enableLombok() // 开启 Lombok
                             .controllerBuilder().enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
-                    builder.addInclude("metaverse_user") // 设置表前缀
+                    builder.addInclude("metaverse_region") // 设置表前缀
                             .entityBuilder()
                             .enableLombok() // 开启 Lombok
                             .enableRemoveIsPrefix() // 开启驼峰转下划线字段名

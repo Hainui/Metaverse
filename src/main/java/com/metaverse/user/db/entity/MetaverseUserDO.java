@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-03
+ * @since 2024-09-04
  */
 @Getter
 @Setter
@@ -51,6 +51,12 @@ public class MetaverseUserDO implements Serializable {
     @ApiModelProperty("更新时间")
     private LocalDateTime updatedAt;
 
+    @ApiModelProperty("修改人 ID")
+    private Long updateBy;
+
     @ApiModelProperty("与区域表关联的区域 ID")
     private Long regionId;
+
+    @ApiModelProperty("版本号")
+    private Long version;
 }

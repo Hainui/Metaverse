@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 @Data
@@ -50,6 +51,16 @@ public class MetaverseUser {
      */
     private Gender gender;
 
+    private Long createdBy;
+
+    private Date createdAt;
+
+    private Long updatedBy;
+
+    private Date updatedAt;
+
+    private Long version;
+
     public static MetaverseUser load(Long userId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         MetaverseUser user = repository.findByIdWithLock(userId);
@@ -76,7 +87,9 @@ public class MetaverseUser {
                 .setPassword(BCryptUtil.hashPassword(password))
                 .setRegionId(regionId).setUsername(name)
                 .setUsername(name)
-                .setBirthTime(LocalDateTime.now());
+                .setBirthTime(LocalDateTime.now())
+                .setUpdateBy(-1L)
+                .setVersion(0L);
         return repository.save(entity);
     }
 
@@ -86,7 +99,7 @@ public class MetaverseUser {
         return repository.login(email, password, regionId);
     }
 
-    public Boolean modifyUserName(ModifyUserNameReq req) {
+    public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId) {
         if (StringUtils.equals(name, req.getName())) {
             throw new IllegalArgumentException("修改前名字不能和原来名字相同");
         }
@@ -94,8 +107,8 @@ public class MetaverseUser {
         if (repository.existByName(req.getName(), req.getRegionId())) {
             throw new IllegalArgumentException("名字已经存在");
         }
-        return repository.modifyUserName(req.getUserId(), req.getName());
-
+        Long newVersion = version + 1;
+        return repository.modifyUserName(req.getUserId(), req.getName(), currentUserId, newVersion);
     }
 
 

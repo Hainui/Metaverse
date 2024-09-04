@@ -1,14 +1,12 @@
 package com.metaverse.region.db.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -16,14 +14,13 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-03
+ * @since 2024-09-04
  */
 @Getter
 @Setter
-@TableName("region")
-@ApiModel(value = "RegionDO对象", description = "区服表")
-@Accessors(chain = true)
-public class RegionDO implements Serializable {
+@TableName("metaverse_region")
+@ApiModel(value = "MetaverseRegionDO对象", description = "区服表")
+public class MetaverseRegionDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,8 +45,9 @@ public class RegionDO implements Serializable {
     @ApiModelProperty("最近一次修改时间")
     private LocalDateTime updateAt;
 
+    @ApiModelProperty("区服修改人 ID")
+    private Long updateBy;
+
     @ApiModelProperty("版本号")
     private Long version;
-
-
 }

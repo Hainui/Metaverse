@@ -3,15 +3,18 @@ package com.metaverse.common.Utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
-
+import java.util.Objects;
 
 public class JwtUtils {
 
-    private static String signKey = "xiaoze";//登陆密钥
-    private static Long expire = 86400000L;//令牌有效时长(24小时)
+    private static final String signKey = "xiaoze";//登陆密钥
+    private static final Long expire = 86400000L;//令牌有效时长(24小时)
 
     //    生成Jwt令牌
     public static String generateJwt(Map<String, Object> claims) {
@@ -30,18 +33,26 @@ public class JwtUtils {
                 .getBody();
     }
 
-    public static Long getCurrentUserId(String jwt) {
-        Claims claims = parseJWT(jwt);
+    public static Long getCurrentUserId() {
+        String authorization = getAuthorization();
+        Claims claims = parseJWT(authorization);
         return claims.get("userId", Long.class);
     }
 
-    public static String getCurrentUserEmail(String jwt) {
-        Claims claims = parseJWT(jwt);
+    public static String getCurrentUserEmail() {
+        String authorization = getAuthorization();
+        Claims claims = parseJWT(authorization);
         return claims.get("Email", String.class);
     }
 
-    public static Long getCurrentUserRegionId(String jwt) {
-        Claims claims = parseJWT(jwt);
+    public static Long getCurrentUserRegionId() {
+        String authorization = getAuthorization();
+        Claims claims = parseJWT(authorization);
         return claims.get("regionId", Long.class);
+    }
+
+    private static String getAuthorization() {
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        return request.getHeader("Authorization");
     }
 }

@@ -15,5 +15,5 @@ public interface MetaverseUserRepository {
 
     MetaverseUser findByIdWithLock(Long userId);
 
-    boolean modifyUserName(Long userId, String name);
+    boolean modifyUserName(Long userId, String name, Long updateBy, Long version);
 }
