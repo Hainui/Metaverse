@@ -30,4 +30,16 @@ public class JwtUtils {
                 .parseClaimsJws(jwt)
                 .getBody();
     }
+
+    public static Long getCurrentUserId() {
+
+    }
+
+    public static Long getCurrentUserEmail() {
+
+    }
+
+    public static Long getCurrentUserRegionId() {
+
+    }
 }
