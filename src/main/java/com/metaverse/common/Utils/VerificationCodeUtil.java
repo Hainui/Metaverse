@@ -31,8 +31,8 @@ public class VerificationCodeUtil {
     private static final String SMTP_HOST = "smtp.qq.com";
     private static final int SMTP_PORT = 587; // 也可以使用465
     private static final String EMAIL_USER = "1273393857@qq.com";
-    private static final String EMAIL_PASSWORD = "azmhyeycwdzcfjgb"; // 应该替换成你的授权码
 
+    private static final String EMAIL_PASSWORD = "azmhyeycwdzcfjgb"; // 应该替换成你的授权码
     /**
      * 生成验证码。
      *

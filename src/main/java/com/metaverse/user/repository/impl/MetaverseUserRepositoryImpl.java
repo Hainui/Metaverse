@@ -22,7 +22,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
     private final IMetaverseUserService userService;
     private final IRegionService iRegionService;
 
-    @Override
+    @Override//查询是否用户名是否存在
     public boolean existByName(String name, Long regionId) {
         return userService.lambdaQuery()
                 .eq(MetaverseUserDO::getUsername, name)

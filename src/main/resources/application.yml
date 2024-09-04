@@ -7,7 +7,7 @@ spring:
     #1.驱动类名称
     driver-class-name: com.mysql.cj.jdbc.Driver
     #2.数据库连接的url
-    url: jdbc:mysql://localhost:3306/demo1
+    url: jdbc:mysql://localhost:3306/metaverse
     #3.数据库的用户名
     username: root
     #4.数据库的密码

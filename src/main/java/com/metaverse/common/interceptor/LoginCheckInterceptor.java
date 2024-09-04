@@ -23,8 +23,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         String url = req.getRequestURL().toString();
         log.info("请求的url: {}",url);
 
-        //2.判断请求url中是否包含login，如果包含，说明是登录操作，放行。
-        if(url.contains("login")){
+        //2.判断请求url中是否包含login，如果包含，说明是注册或登录操作，放行。
+        if(url.contains("login")||url.contains("registration")){
             log.info("登录操作, 放行...");
             return true;
         }

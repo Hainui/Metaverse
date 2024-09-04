@@ -45,7 +45,7 @@ public class MetaverseUserController {
     }
 
 
-    @GetMapping("/sendVerificationCode")
+    @GetMapping("/registration/sendVerificationCode")
     @ApiOperation(value = "发送验证码", tags = "1.0.0")
     public Result<Void> sendVerificationCode(@RequestParam(value = "email", required = false) @NotBlank(message = "邮箱不能为空") String email) {
         VerificationCodeUtil.sendVerificationCode(email);
