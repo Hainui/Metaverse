@@ -91,7 +91,7 @@ public class MetaverseUser {
             throw new IllegalArgumentException("修改前名字不能和原来名字相同");
         }
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        if (repository.existByName(name, req.getRegionId())) {
+        if (repository.existByName(req.getName(), req.getRegionId())) {
             throw new IllegalArgumentException("名字已经存在");
         }
         return repository.modifyUserName(req.getUserId(), req.getName());
