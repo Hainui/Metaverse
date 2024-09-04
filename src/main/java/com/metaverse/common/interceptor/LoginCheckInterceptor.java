@@ -28,8 +28,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        //3.获取请求头中的令牌（token）。
-        String jwt = req.getHeader("Authorization");
+        //3.获取请求头中的令牌（token）。Authorization
+        String jwt = req.getHeader("token");
 
         //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）。
         if (!StringUtils.hasText(jwt)) {
@@ -46,9 +46,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             JwtUtils.parseJWT(jwt);
         } catch (Exception e) {//jwt解析失败
             e.printStackTrace();
+            log.error("解析令牌失败，错误信息：{}", e.getMessage());
             log.info("解析令牌失败, 返回未登录错误信息");
             Result<Object> error = Result.error("NOT_LOGIN");
-            //手动转换 对象--json --------> 阿里巴巴fastJSON
             String notLogin = JSONObject.toJSONString(error);
             resp.getWriter().write(notLogin);
             return false;
