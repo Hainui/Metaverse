@@ -1,4 +1,4 @@
-package com.metaverse.region.Controller;
+package com.metaverse.region.controller;
 
 import com.metaverse.common.model.Result;
 import com.metaverse.region.resp.RegionListResp;
