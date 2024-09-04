@@ -1,9 +1,7 @@
 package com.metaverse.common.Utils;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SnowflakeIdWorker {
 
     @Value("${snowflake.datacenterId}")

@@ -4,6 +4,7 @@ import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
+import com.metaverse.user.req.ModifyUserNameReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean modifyUserName(String name) {
+    public Boolean modifyUserName(ModifyUserNameReq name) {
         return null;
     }
 }

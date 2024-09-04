@@ -45,6 +45,12 @@ public class MetaverseUser {
      */
     private Gender gender;
 
+    public static MetaverseUser load(Long userId) {
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        MetaverseUser user = repository.findByIdWithLock(userId);
+
+    }
+
 
     public static boolean registration(String name, String email, String password, Long regionId, Gender gender) {
         UserIdGen idGen = BeanManager.getBean(UserIdGen.class);

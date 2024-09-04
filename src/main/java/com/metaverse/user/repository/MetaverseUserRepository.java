@@ -1,6 +1,7 @@
 package com.metaverse.user.repository;
 
 import com.metaverse.user.db.entity.MetaverseUserDO;
+import com.metaverse.user.domain.MetaverseUser;
 
 public interface MetaverseUserRepository {
 
@@ -11,4 +12,6 @@ public interface MetaverseUserRepository {
     Long login(String email, String password, Long regionId);
 
     boolean existByRegionId(Long regionId);
+
+    MetaverseUser findByIdWithLock(Long userId);
 }

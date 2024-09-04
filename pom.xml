@@ -35,11 +35,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.mybatis.spring.boot</groupId>-->
-<!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
-<!--            <version>2.2.2</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.mybatis.spring.boot</groupId>-->
+        <!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
+        <!--            <version>2.2.2</version>-->
+        <!--        </dependency>-->
         <!--        AOP      -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -106,6 +106,40 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.5.3</version> <!-- 请检查并使用最新版本 -->
+        </dependency>
+
+        <!-- 添加MapStruct核心库 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.3.Final</version>
+            <!-- 仅当编译时需要MapStruct时才添加该依赖，否则可以将其范围设为provided -->
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 添加MapStruct处理器 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.5.3.Final</version>
+            <!-- 对于编译时生成映射器所需的处理器，使用annotationProcessor范围 -->
+            <scope>annotationProcessor</scope>
+        </dependency>
+
+        <!-- 如果使用Java 8及以上版本，需要添加mapstruct-jdk8依赖 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>1.5.3.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 如果使用流特性，需要添加mapstruct-stream依赖 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-stream</artifactId>
+            <version>1.4.2.Final</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

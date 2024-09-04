@@ -5,6 +5,7 @@ import com.metaverse.region.db.entity.RegionDO;
 import com.metaverse.region.db.service.IRegionService;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
+import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +63,37 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
     @Override
     public boolean existByRegionId(Long regionId) {
-        return userService.lambdaQuery().eq(MetaverseUserDO::getRegionId, regionId).exists();
+        return iRegionService.lambdaQuery().eq(RegionDO::getId, regionId).exists();
+    }
+
+    @Override
+    public MetaverseUser findByIdWithLock(Long userId) {
+        MetaverseUserDO entity = userService.lambdaQuery()
+                .eq(MetaverseUserDO::getId, userId)
+                .last("FOR UPDATE")
+                .one();
+        return
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
