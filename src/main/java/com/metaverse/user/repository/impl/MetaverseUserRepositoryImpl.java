@@ -3,6 +3,7 @@ package com.metaverse.user.repository.impl;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.region.db.entity.RegionDO;
 import com.metaverse.region.db.service.IRegionService;
+import com.metaverse.user.convert.MetaverseUserConvert;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
@@ -72,7 +73,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .eq(MetaverseUserDO::getId, userId)
                 .last("FOR UPDATE")
                 .one();
-        return
+        return MetaverseUserConvert.INSTANCE.convertToMetaverseUser(entity);
     }
 }
 

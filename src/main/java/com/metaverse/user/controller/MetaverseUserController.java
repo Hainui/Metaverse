@@ -29,7 +29,7 @@ public class MetaverseUserController {
     private final UserService userService;
 
 
-    @PostMapping("/modifyUserName")
+    @PostMapping("/login")
     @ApiOperation(value = "用户登录", tags = "1.0.0")
     public Result<String> login(@RequestBody @Valid MetaverseUserLoginReq req) {
         return Result.success(userService.login(req));

@@ -134,14 +134,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- 如果使用流特性，需要添加mapstruct-stream依赖 -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-stream</artifactId>
-            <version>1.4.2.Final</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -207,6 +199,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
     <build>
         <plugins>
             <plugin>

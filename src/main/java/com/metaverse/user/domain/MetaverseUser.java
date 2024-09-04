@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -48,7 +49,10 @@ public class MetaverseUser {
     public static MetaverseUser load(Long userId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         MetaverseUser user = repository.findByIdWithLock(userId);
-
+        if (Objects.isNull(user)) {
+            throw new IllegalArgumentException("未找到该用户信息");
+        }
+        return user;
     }
 
 
