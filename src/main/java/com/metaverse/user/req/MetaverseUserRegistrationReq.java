@@ -15,7 +15,7 @@ public class MetaverseUserRegistrationReq {
     @NotBlank(message = "登录密码不能为空")
     private String password;
     @ApiModelProperty(value = "区服id", required = true)
-    @NotNull(message = "分区id未填")
+    @NotNull(message = "区服id未填")
     private Long regionId;
     @ApiModelProperty(value = "姓名", required = true)
     @NotBlank(message = "姓名不能为空")

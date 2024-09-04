@@ -1,29 +1,26 @@
 package com.metaverse.region.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.metaverse.region.convert.RegionCovert;
 import com.metaverse.region.db.entity.RegionDO;
-import com.metaverse.region.db.mapper.RegionMapper;
+import com.metaverse.region.db.service.IRegionService;
+import com.metaverse.region.resp.RegionListResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RegionService {
 
+    private final IRegionService iRegionService;
 
-
-    private final RegionMapper regionMapper;
-
-    @Transactional
-    public List<String> getAllRegionNames() {
-        QueryWrapper<RegionDO> queryWrapper = new QueryWrapper<>();
-        List<RegionDO> regions = regionMapper.selectList(queryWrapper);
-        return regions.stream().map(RegionDO::getName).toList();
+    public List<RegionListResp> getAllRegion() {
+        List<RegionDO> list = iRegionService.lambdaQuery().list();
+        return list.stream().map(RegionCovert.INSTANCE::convertToRegionResp).collect(Collectors.toList());
     }
 
     public Long create() {
@@ -35,3 +32,5 @@ public class RegionService {
         return Boolean.TRUE;
     }
 }
+
+
