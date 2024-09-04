@@ -8,6 +8,7 @@ import com.metaverse.user.repository.MetaverseUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 public class MetaverseUser {
     /**
