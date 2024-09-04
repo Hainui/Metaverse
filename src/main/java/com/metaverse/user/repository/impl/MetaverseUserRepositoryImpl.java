@@ -41,7 +41,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
     }
 
     @Override
-    public boolean login(String email, String plainTextPassword, Long regionId) {
+    public Long login(String email, String plainTextPassword, Long regionId) {
         List<MetaverseUserDO> list = userService.lambdaQuery()
                 .eq(MetaverseUserDO::getRegionId, regionId)
                 .list();
@@ -52,7 +52,11 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
             throw new IllegalArgumentException(regionName + "没有此用户信息，请先在" + regionName + "注册");
         } else {
             String storedHashedPassword = userOptional.get().getPassword();
-            return BCryptUtil.checkPassword(plainTextPassword, storedHashedPassword);
+            if (BCryptUtil.checkPassword(plainTextPassword, storedHashedPassword)) {
+                return userOptional.get().getId();
+            } else {
+                throw new IllegalArgumentException("密码不正确");
+            }
         }
     }
 

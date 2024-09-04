@@ -1,7 +1,6 @@
 package com.metaverse.common.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
-
 import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.model.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +20,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 //        return HandlerInterceptor.super.preHandle(request, response, handler);
         //1.获取请求url。
         String url = req.getRequestURL().toString();
-        log.info("请求的url: {}",url);
+        log.info("请求的url: {}", url);
 
         //2.判断请求url中是否包含login，如果包含，说明是注册或登录操作，放行。
-        if(url.contains("login")||url.contains("registration")){
+        if (url.contains("login") || url.contains("registration")) {
             log.info("登录操作, 放行...");
             return true;
         }
@@ -33,9 +32,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         String jwt = req.getHeader("token");
 
         //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）。
-        if(!StringUtils.hasLength(jwt)){
+        if (!StringUtils.hasLength(jwt)) {
             log.info("请求头token为空,返回未登录的信息");
-            Result error = Result.error("NOT_LOGIN");
+            Result<Object> error = Result.error("NOT_LOGIN");
             //本来要在controller里面转换json,现在手动转换 对象--json --------> 使用这个方法:阿里巴巴fastJSON
             String notLogin = JSONObject.toJSONString(error);
             resp.getWriter().write(notLogin);
@@ -48,7 +47,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         } catch (Exception e) {//jwt解析失败
             e.printStackTrace();
             log.info("解析令牌失败, 返回未登录错误信息");
-            Result error = Result.error("NOT_LOGIN");
+            Result<Object> error = Result.error("NOT_LOGIN");
             //手动转换 对象--json --------> 阿里巴巴fastJSON
             String notLogin = JSONObject.toJSONString(error);
             resp.getWriter().write(notLogin);

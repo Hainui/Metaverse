@@ -18,16 +18,13 @@ public class UserService {
 
 
     public String login(MetaverseUserLoginReq metaverseUserLoginReq) {
-        boolean isLoginSuccess = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
-        if (!isLoginSuccess) {
-            throw new IllegalArgumentException("登陆失败!");
-        }
+        Long userId = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
         // todo 给令牌
-        Map<String,Object> claims = new HashMap<>();
-        claims.put("username",metaverseUserLoginReq.getEmail());
-        claims.put("required",metaverseUserLoginReq.getRegionId());
-        String jwt = JwtUtils.generateJwt(claims);//生成一个包含用户信息的Jwt令牌
-        return jwt;
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", metaverseUserLoginReq.getEmail());
+        claims.put("required", metaverseUserLoginReq.getRegionId());
+        claims.put("userId", userId);
+        return JwtUtils.generateJwt(claims);
     }
 
 

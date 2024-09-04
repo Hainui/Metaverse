@@ -67,7 +67,7 @@ public class MetaverseUser {
     }
 
 
-    public static boolean login(String email, String password, Long regionId) {
+    public static Long login(String email, String password, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         return repository.login(email, password, regionId);
     }
