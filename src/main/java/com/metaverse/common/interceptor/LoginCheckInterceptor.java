@@ -32,7 +32,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         String jwt = req.getHeader("token");
 
         //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）。
-        if (!StringUtils.hasLength(jwt)) {
+        if (!StringUtils.hasText(jwt)) {
             log.info("请求头token为空,返回未登录的信息");
             Result<Object> error = Result.error("NOT_LOGIN");
             //本来要在controller里面转换json,现在手动转换 对象--json --------> 使用这个方法:阿里巴巴fastJSON

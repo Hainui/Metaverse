@@ -52,4 +52,11 @@ public class MetaverseUserController {
         return Result.success();
     }
 
+    @PostMapping("/login")
+    @ApiOperation(value = "修改用户名", tags = "1.0.0")
+    public Result<String> change(@RequestBody @Valid MetaverseUserLoginReq metaverseUserLoginReq) {
+
+        return Result.success(userService.login(metaverseUserLoginReq));
+    }
+
 }
