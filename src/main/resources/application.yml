@@ -20,9 +20,8 @@ mybatis:
     #开启驼峰命名法
     map-underscore-to-camel-case: true
 
-#mybatis-plus
-mybatis-plus:
-  type-aliases-package: com.metaverse.user.db.mapper
+#mybatis-plus:
+#  type-aliases-package: com.metaverse.user.db.mapper
 
 
 snowflake:
