@@ -19,7 +19,7 @@ public class VerificationCodeUtil {
 
     // 缓存验证码
     private static final LoadingCache<String, String> cache = CacheBuilder.newBuilder()
-            .expireAfterWrite(1, TimeUnit.MINUTES) // 设置过期时间为1分钟
+            .expireAfterWrite(10, TimeUnit.MINUTES) // 设置过期时间为1分钟
             .build(new CacheLoader<String, String>() {
                 @Override
                 public String load(String email) throws Exception {
@@ -33,6 +33,7 @@ public class VerificationCodeUtil {
     private static final String EMAIL_USER = "1273393857@qq.com";
 
     private static final String EMAIL_PASSWORD = "azmhyeycwdzcfjgb"; // 应该替换成你的授权码
+
     /**
      * 生成验证码。
      *
