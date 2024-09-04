@@ -53,7 +53,7 @@ public class MetaverseUserController {
         return Result.success();
     }
 
-    @PutMapping("/login")
+    @PutMapping("/modifyUserName")
     @ApiOperation(value = "修改用户名", tags = "1.0.0")
     public Result<Boolean> modifyUserName(@RequestBody @Valid ModifyUserNameReq req) {
         return Result.success(userService.modifyUserName(req));
