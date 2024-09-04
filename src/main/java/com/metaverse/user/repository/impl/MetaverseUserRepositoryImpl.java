@@ -75,6 +75,11 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .one();
         return MetaverseUserConvert.INSTANCE.convertToMetaverseUser(entity);
     }
+
+    @Override
+    public boolean modifyUserName(Long userId, String name) {
+        return userService.lambdaUpdate().eq(MetaverseUserDO::getId, userId).set(MetaverseUserDO::getUsername, name).update();
+    }
 }
 
 

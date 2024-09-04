@@ -19,10 +19,9 @@ import java.util.Map;
 public class UserService {
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String login(MetaverseUserLoginReq metaverseUserLoginReq) {
         Long userId = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
-        // todo 给令牌
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", metaverseUserLoginReq.getEmail());
         claims.put("regionId", metaverseUserLoginReq.getRegionId());
@@ -30,13 +29,14 @@ public class UserService {
         return JwtUtils.generateJwt(claims);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean registration(MetaverseUserRegistrationReq metaverseUserRegistrationReq) {
         return MetaverseUser.registration(metaverseUserRegistrationReq.getName(), metaverseUserRegistrationReq.getEmail(), metaverseUserRegistrationReq.getPassword(), metaverseUserRegistrationReq.getRegionId(), MetaverseUser.Gender.fromValue(metaverseUserRegistrationReq.getGender()));
     }
 
-    @Transactional
-    public Boolean modifyUserName(ModifyUserNameReq name) {
-        return null;
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean modifyUserName(ModifyUserNameReq req) {
+        MetaverseUser metaverseUser = MetaverseUser.load(req.getUserId());
+        return metaverseUser.modifyUserName(req);
     }
 }

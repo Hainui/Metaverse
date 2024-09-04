@@ -14,4 +14,6 @@ public interface MetaverseUserRepository {
     boolean existByRegionId(Long regionId);
 
     MetaverseUser findByIdWithLock(Long userId);
+
+    boolean modifyUserName(Long userId, String name);
 }

@@ -5,11 +5,13 @@ import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.repository.MetaverseUserRepository;
+import com.metaverse.user.req.ModifyUserNameReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -82,6 +84,18 @@ public class MetaverseUser {
     public static Long login(String email, String password, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         return repository.login(email, password, regionId);
+    }
+
+    public Boolean modifyUserName(ModifyUserNameReq req) {
+        if (StringUtils.equals(name, req.getName())) {
+            throw new IllegalArgumentException("修改前名字不能和原来名字相同");
+        }
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        if (repository.existByName(name, req.getRegionId())) {
+            throw new IllegalArgumentException("名字已经存在");
+        }
+        return repository.modifyUserName(req.getUserId(), req.getName());
+
     }
 
 
