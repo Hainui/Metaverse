@@ -34,25 +34,25 @@ public class JwtUtils {
     }
 
     public static Long getCurrentUserId() {
-        String authorization = getAuthorization();
+        String authorization = getToken();
         Claims claims = parseJWT(authorization);
         return claims.get("userId", Long.class);
     }
 
     public static String getCurrentUserEmail() {
-        String authorization = getAuthorization();
+        String authorization = getToken();
         Claims claims = parseJWT(authorization);
         return claims.get("Email", String.class);
     }
 
     public static Long getCurrentUserRegionId() {
-        String authorization = getAuthorization();
+        String authorization = getToken();
         Claims claims = parseJWT(authorization);
         return claims.get("regionId", Long.class);
     }
 
-    private static String getAuthorization() {
+    private static String getToken() {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        return request.getHeader("Authorization");
+        return request.getHeader("token");
     }
 }

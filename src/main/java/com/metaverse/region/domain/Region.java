@@ -1,9 +1,18 @@
 package com.metaverse.region.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class Region {
     /**
      * 区服id
@@ -24,8 +33,6 @@ public class Region {
     /**
      * 区服创建人id
      */
-    private Long createBy;
-
     private Long createdBy;
 
     private Date createdAt;
