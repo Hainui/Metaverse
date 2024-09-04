@@ -11,7 +11,7 @@ import java.util.Map;
 public class JwtUtils {
 
     private static String signKey = "xiaoze";//登陆密钥
-    private static Long expire = 43200000L;//令牌有效时长(12小时)
+    private static Long expire = 86400000L;//令牌有效时长(24小时)
 
     //    生成Jwt令牌
     public static String generateJwt(Map<String, Object> claims) {
@@ -30,15 +30,18 @@ public class JwtUtils {
                 .getBody();
     }
 
-    public static Long getCurrentUserId() {
-
+    public static Long getCurrentUserId(String jwt) {
+        Claims claims = parseJWT(jwt);
+        return claims.get("userId", Long.class);
     }
 
-    public static Long getCurrentUserEmail() {
-
+    public static String getCurrentUserEmail(String jwt) {
+        Claims claims = parseJWT(jwt);
+        return claims.get("Email", String.class);
     }
 
-    public static Long getCurrentUserRegionId() {
-
+    public static Long getCurrentUserRegionId(String jwt) {
+        Claims claims = parseJWT(jwt);
+        return claims.get("regionId", Long.class);
     }
 }
