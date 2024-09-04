@@ -34,20 +34,20 @@ public class JwtUtils {
     }
 
     public static Long getCurrentUserId() {
-        String authorization = getToken();
-        Claims claims = parseJWT(authorization);
+        String token = getToken();
+        Claims claims = parseJWT(token);
         return claims.get("userId", Long.class);
     }
 
     public static String getCurrentUserEmail() {
-        String authorization = getToken();
-        Claims claims = parseJWT(authorization);
+        String token = getToken();
+        Claims claims = parseJWT(token);
         return claims.get("Email", String.class);
     }
 
     public static Long getCurrentUserRegionId() {
-        String authorization = getToken();
-        Claims claims = parseJWT(authorization);
+        String token = getToken();
+        Claims claims = parseJWT(token);
         return claims.get("regionId", Long.class);
     }
 
