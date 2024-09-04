@@ -21,8 +21,8 @@ public class UserService {
         Long userId = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
         // todo 给令牌
         Map<String, Object> claims = new HashMap<>();
-        claims.put("username", metaverseUserLoginReq.getEmail());
-        claims.put("required", metaverseUserLoginReq.getRegionId());
+        claims.put("email", metaverseUserLoginReq.getEmail());
+        claims.put("regionId", metaverseUserLoginReq.getRegionId());
         claims.put("userId", userId);
         return JwtUtils.generateJwt(claims);
     }
