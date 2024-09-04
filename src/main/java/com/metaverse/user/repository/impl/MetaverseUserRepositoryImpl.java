@@ -3,7 +3,6 @@ package com.metaverse.user.repository.impl;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.region.db.entity.RegionDO;
 import com.metaverse.region.db.service.IRegionService;
-import com.metaverse.user.convert.MetaverseUserConvert;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
@@ -14,6 +13,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -73,8 +73,27 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .eq(MetaverseUserDO::getId, userId)
                 .last("FOR UPDATE")
                 .one();
-        return MetaverseUserConvert.INSTANCE.convertToMetaverseUser(entity);
+        return convertFromDO(entity);
     }
+
+
+    public static MetaverseUser convertFromDO(MetaverseUserDO metaverseUserDO) {
+        if (Objects.isNull(metaverseUserDO)) {
+            return null;
+        }
+
+        MetaverseUser metaverseUser = new MetaverseUser();
+        metaverseUser.setId(metaverseUserDO.getId());
+        metaverseUser.setEmail(metaverseUserDO.getEmail());
+        metaverseUser.setName(metaverseUserDO.getUsername()); // 注意：这里使用 username 替换 name
+        metaverseUser.setPassword(metaverseUserDO.getPassword());
+        metaverseUser.setRegionId(metaverseUserDO.getRegionId());
+        metaverseUser.setBirthTime(metaverseUserDO.getBirthTime());
+        metaverseUser.setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()));
+
+        return metaverseUser;
+    }
+
 
     @Override
     public boolean modifyUserName(Long userId, String name) {

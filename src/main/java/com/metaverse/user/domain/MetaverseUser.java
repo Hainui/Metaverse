@@ -127,6 +127,9 @@ public class MetaverseUser {
             throw new IllegalArgumentException("Invalid gender value: " + value);
         }
 
+        public static Gender convertGender(boolean gender) {
+            return gender ? MALE : FEMALE;
+        }
 
         public Boolean getBooleanValue() {
             if (value == 0) {

@@ -1,6 +1,5 @@
 package com.metaverse.region.service;
 
-import com.metaverse.region.convert.RegionCovert;
 import com.metaverse.region.db.entity.RegionDO;
 import com.metaverse.region.db.service.IRegionService;
 import com.metaverse.region.resp.RegionListResp;
@@ -20,7 +19,21 @@ public class RegionService {
 
     public List<RegionListResp> getAllRegion() {
         List<RegionDO> list = iRegionService.lambdaQuery().list();
-        return list.stream().map(RegionCovert.INSTANCE::convertToRegionResp).collect(Collectors.toList());
+        return list.stream().map(this::convertToRegionListResp).collect(Collectors.toList());
+    }
+
+    public RegionListResp convertToRegionListResp(RegionDO regionDO) {
+        if (regionDO == null) {
+            return null;
+        }
+        RegionListResp resp = new RegionListResp();
+        if (regionDO.getId() != null) {
+            resp.setId(regionDO.getId());
+        }
+        if (regionDO.getName() != null) {
+            resp.setName(regionDO.getName());
+        }
+        return resp;
     }
 
     public Long create() {
