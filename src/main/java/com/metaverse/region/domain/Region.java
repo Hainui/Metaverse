@@ -1,5 +1,15 @@
 package com.metaverse.region.domain;
 
+import com.alibaba.fastjson.JSON;
+import com.metaverse.common.Utils.BCryptUtil;
+import com.metaverse.common.Utils.BeanManager;
+import com.metaverse.region.RegionIdGen;
+import com.metaverse.region.db.entity.MetaverseRegionDO;
+import com.metaverse.region.repository.MetaverseRegionRepository;
+import com.metaverse.user.UserIdGen;
+import com.metaverse.user.db.entity.MetaverseUserDO;
+import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.repository.MetaverseUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,4 +52,20 @@ public class Region {
     private Date updatedAt;
 
     private Long version;
+
+    public static Long create(String name,List<String> serverLocation,Long currentUserId){
+        RegionIdGen idGen = BeanManager.getBean(RegionIdGen.class);
+        MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
+        MetaverseRegionDO metaverseRegionDO = new MetaverseRegionDO()
+                .setId(idGen.nextId())
+                .setName(name)
+                .setServerLocation(JSON.toJSONString(serverLocation))
+                .setCreateBy(currentUserId)
+                .setCreateAt(LocalDateTime.now());
+        repository.save(metaverseRegionDO);
+        return metaverseRegionDO.getId();
+
+
+
+    }
 }

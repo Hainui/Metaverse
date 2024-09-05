@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -20,6 +21,7 @@ import lombok.Setter;
 @Setter
 @TableName("metaverse_region")
 @ApiModel(value = "MetaverseRegionDO对象", description = "区服表")
+@Accessors(chain = true)
 public class MetaverseRegionDO implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -1,13 +1,14 @@
 package com.metaverse.region.controller;
 
+import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.model.Result;
+import com.metaverse.region.req.RegionCreateReq;
 import com.metaverse.region.resp.RegionListResp;
 import com.metaverse.region.service.RegionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -27,5 +28,13 @@ public class RegionController {
     @GetMapping("/getAllRegion")
     public Result<List<RegionListResp>> getAllRegion() {
         return Result.success(regionService.getAllRegion());
+    }
+
+
+    @PostMapping("/create")
+    public Result<Long> create(@RequestBody @Valid RegionCreateReq req){
+        return Result.success(regionService.create(req, JwtUtils.getCurrentUserId()));
+
+
     }
 }

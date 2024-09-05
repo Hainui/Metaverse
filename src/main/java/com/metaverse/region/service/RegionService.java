@@ -1,12 +1,17 @@
 package com.metaverse.region.service;
 
+import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
+import com.metaverse.region.domain.Region;
+import com.metaverse.region.req.RegionCreateReq;
 import com.metaverse.region.resp.RegionListResp;
+import com.metaverse.user.db.entity.MetaverseUserDO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,14 +41,16 @@ public class RegionService {
         return resp;
     }
 
-    public Long create() {
-        return 111L;
+    public Long create(RegionCreateReq req,Long currentUserId) {
+        return Region.create(req.getName(),req.getServerLocation(),currentUserId);
     }
 
 
     public boolean change() {
         return Boolean.TRUE;
     }
+
+
 }
 
 
