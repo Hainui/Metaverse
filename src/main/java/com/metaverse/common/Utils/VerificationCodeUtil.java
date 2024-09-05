@@ -109,7 +109,6 @@ public class VerificationCodeUtil {
             }
             return Boolean.TRUE;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }

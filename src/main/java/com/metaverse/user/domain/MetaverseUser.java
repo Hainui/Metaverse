@@ -14,7 +14,6 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 @Data
@@ -51,13 +50,9 @@ public class MetaverseUser {
      */
     private Gender gender;
 
-    private Long createdBy;
-
-    private Date createdAt;
-
     private Long updatedBy;
 
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     private Long version;
 

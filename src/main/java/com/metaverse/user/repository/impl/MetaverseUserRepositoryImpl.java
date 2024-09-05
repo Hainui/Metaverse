@@ -82,16 +82,16 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
             return null;
         }
 
-        MetaverseUser metaverseUser = new MetaverseUser();
-        metaverseUser.setId(metaverseUserDO.getId());
-        metaverseUser.setEmail(metaverseUserDO.getEmail());
-        metaverseUser.setName(metaverseUserDO.getUsername()); // 注意：这里使用 username 替换 name
-        metaverseUser.setPassword(metaverseUserDO.getPassword());
-        metaverseUser.setRegionId(metaverseUserDO.getRegionId());
-        metaverseUser.setBirthTime(metaverseUserDO.getBirthTime());
-        metaverseUser.setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()));
-
-        return metaverseUser;
+        return new MetaverseUser().
+                setId(metaverseUserDO.getId())
+                .setEmail(metaverseUserDO.getEmail())
+                .setName(metaverseUserDO.getUsername())
+                .setPassword(metaverseUserDO.getPassword())
+                .setRegionId(metaverseUserDO.getRegionId())
+                .setBirthTime(metaverseUserDO.getBirthTime())
+                .setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()))
+                .setUpdatedBy(metaverseUserDO.getUpdateBy())
+                .setUpdatedAt(metaverseUserDO.getUpdatedAt());
     }
 
 
