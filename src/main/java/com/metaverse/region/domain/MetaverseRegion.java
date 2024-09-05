@@ -20,7 +20,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)//用于链式方法
-public class Region {
+public class MetaverseRegion {
     /**
      * 区服id
      */
@@ -75,9 +75,9 @@ public class Region {
         return repository.updateRegionName(req.getId(), req.getName(), currentUserId, newVersion);
     }
 
-    public static Region load(Long Id) {
+    public static MetaverseRegion load(Long Id) {
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
-        Region region = repository.findByIdWithLock(Id);
+        MetaverseRegion region = repository.findByIdWithLock(Id);
         if (Objects.isNull(region)) {
             throw new IllegalArgumentException("未找到该用户信息");
         }

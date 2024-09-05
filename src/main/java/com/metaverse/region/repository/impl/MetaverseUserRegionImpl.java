@@ -3,7 +3,7 @@ package com.metaverse.region.repository.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
-import com.metaverse.region.domain.Region;
+import com.metaverse.region.domain.MetaverseRegion;
 import com.metaverse.region.repository.MetaverseRegionRepository;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
     }
 
     @Override
-    public Region findByIdWithLock(Long id) {
+    public MetaverseRegion findByIdWithLock(Long id) {
         MetaverseRegionDO entity = regionService.lambdaQuery()
                 .eq(MetaverseRegionDO::getId, id)
                 .last("FOR UPDATE")
@@ -52,11 +52,11 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
         return convertFromDO(entity);
     }
 
-    public static Region convertFromDO(MetaverseRegionDO metaverseRegionDO) {//把DO层的数据库属性转换成领域层的属性
+    public static MetaverseRegion convertFromDO(MetaverseRegionDO metaverseRegionDO) {//把DO层的数据库属性转换成领域层的属性
         if (Objects.isNull(metaverseRegionDO)) {
             return null;
         }
-        Region region = new Region();
+        MetaverseRegion region = new MetaverseRegion();
         region.setId(metaverseRegionDO.getId());
         region.setName(metaverseRegionDO.getName());
         String serverLocationJson = metaverseRegionDO.getServerLocation();

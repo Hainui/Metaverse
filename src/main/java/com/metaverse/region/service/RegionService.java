@@ -2,7 +2,7 @@ package com.metaverse.region.service;
 
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
-import com.metaverse.region.domain.Region;
+import com.metaverse.region.domain.MetaverseRegion;
 import com.metaverse.region.req.ModifyRegionReq;
 import com.metaverse.region.req.RegionCreateReq;
 import com.metaverse.region.resp.RegionListResp;
@@ -41,7 +41,7 @@ public class RegionService {
 
     public Long create(RegionCreateReq req, Long currentUserId) {
         // todo 权限校验
-        return Region.create(req.getName(), req.getServerLocation(), currentUserId);
+        return MetaverseRegion.create(req.getName(), req.getServerLocation(), currentUserId);
     }
 
     /**
@@ -49,7 +49,7 @@ public class RegionService {
      */
     public Boolean modifyRegionName(ModifyRegionReq req, Long currentUserId) {
         // todo 权限校验
-        Region region = Region.load(req.getId());
+        MetaverseRegion region = MetaverseRegion.load(req.getId());
         return region.modifyRegionName(req, currentUserId);
     }
 
