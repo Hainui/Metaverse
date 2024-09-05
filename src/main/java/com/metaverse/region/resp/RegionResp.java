@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegionListResp {
+public class RegionResp {
 
     @ApiModelProperty(value = "区服id", required = true)
     private Long id;

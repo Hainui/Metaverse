@@ -4,7 +4,7 @@ import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.model.Result;
 import com.metaverse.region.req.ModifyRegionReq;
 import com.metaverse.region.req.RegionCreateReq;
-import com.metaverse.region.resp.RegionListResp;
+import com.metaverse.region.resp.RegionResp;
 import com.metaverse.region.service.RegionService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,7 +31,7 @@ public class RegionController {
 
     @GetMapping("/getAllRegion")
     @ApiOperation(value = "获取所有开放的区服", tags = "1.0.0")
-    public Result<List<RegionListResp>> getAllRegion() {
+    public Result<List<RegionResp>> getAllRegion() {
         return Result.success(regionService.getAllRegion());
     }
 
