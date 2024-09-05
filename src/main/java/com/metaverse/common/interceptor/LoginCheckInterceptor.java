@@ -29,7 +29,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        //3.获取请求头中的令牌（token）。Authorization
+        //3.获取请求头中的令牌（token） - token
         String jwt = req.getHeader("token");
 
         //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）。
@@ -45,8 +45,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         //5.解析token，如果解析失败，返回错误结果（未登录）。
         try {
             JwtUtils.parseJWT(jwt);
-        } catch (Exception e) {//jwt解析失败
-            e.printStackTrace();
+        } catch (Exception e) {
             log.error("解析令牌失败，错误信息：{}", e.getMessage());
             log.info("解析令牌失败, 返回未登录错误信息");
             Result<Object> error = Result.error(Collections.singletonList("NOT_LOGIN"));

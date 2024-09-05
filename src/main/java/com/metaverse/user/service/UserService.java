@@ -1,6 +1,7 @@
 package com.metaverse.user.service;
 
 import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.constant.UserConstant;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
@@ -23,9 +24,9 @@ public class UserService {
     public String login(MetaverseUserLoginReq metaverseUserLoginReq) {
         Long userId = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
         Map<String, Object> claims = new HashMap<>();
-        claims.put("email", metaverseUserLoginReq.getEmail());
-        claims.put("regionId", metaverseUserLoginReq.getRegionId());
-        claims.put("userId", userId);
+        claims.put(UserConstant.EMAIL, metaverseUserLoginReq.getEmail());
+        claims.put(UserConstant.REGION_ID, metaverseUserLoginReq.getRegionId());
+        claims.put(UserConstant.USER_ID, userId);
         return JwtUtils.generateJwt(claims);
     }
 
