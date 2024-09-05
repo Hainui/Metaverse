@@ -56,7 +56,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     /**
      * 权限
      */
-    MetaverseUserPermission permission;
+    private MetaverseUserPermission permission;
 
     private Long updatedBy;
 
