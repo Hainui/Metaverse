@@ -5,7 +5,7 @@ import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.region.RegionIdGen;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.repository.MetaverseRegionRepository;
-import com.metaverse.region.req.RegionUpdateReq;
+import com.metaverse.region.req.ModifyRegionReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,7 +51,7 @@ public class Region {
 
     private Long version;
 
-    public static Long create(String name,List<String> serverLocation,Long currentUserId){//创建方法
+    public static Long create(String name, List<String> serverLocation, Long currentUserId) {//创建方法
         RegionIdGen idGen = BeanManager.getBean(RegionIdGen.class);
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
         MetaverseRegionDO metaverseRegionDO = new MetaverseRegionDO()
@@ -66,16 +66,16 @@ public class Region {
     }
 
 
-    public Boolean updateRegionName(RegionUpdateReq req, Long currentUserId) {
+    public Boolean modifyRegionName(ModifyRegionReq req, Long currentUserId) {
         if (StringUtils.equals(name, req.getName())) {
             throw new IllegalArgumentException("修改前名字不能和原来名字相同");
         }
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
-        if (repository.existByName(req.getName(), req.getId())) {
+        if (repository.existByName(req.getName())) {
             throw new IllegalArgumentException("名字已经存在");
         }
-        return repository.updateRegionName(req.getId(),req.getName(),currentUserId);
-
+        Long newVersion = version + 1;
+        return repository.updateRegionName(req.getId(), req.getName(), currentUserId, newVersion);
     }
 
     public static Region load(Long Id) {

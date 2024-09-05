@@ -8,9 +8,9 @@ public interface MetaverseRegionRepository {
 
     boolean save(MetaverseRegionDO metaverseRegionDO);
 
-    boolean existByName(String name, Long id);
+    boolean existByName(String name);
 
-    Boolean updateRegionName(Long id, String name, Long currentUserId);
+    Boolean updateRegionName(Long id, String name, Long currentUserId, Long version);
 
 
     Region findByIdWithLock(Long id);

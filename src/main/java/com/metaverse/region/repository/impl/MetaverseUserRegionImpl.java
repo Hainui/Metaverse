@@ -6,13 +6,9 @@ import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.domain.Region;
 import com.metaverse.region.repository.MetaverseRegionRepository;
 import com.metaverse.user.db.service.IMetaverseUserService;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,60 +26,49 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
     }
 
     @Override
-    public boolean existByName(String name, Long id) {
+    public boolean existByName(String name) {
         return regionService.lambdaQuery()
-                        .eq(MetaverseRegionDO::getId, id)
-                        .eq(MetaverseRegionDO::getName, name)
-                        .last("LIMIT 1")
-                        .count() > 0;
+                .eq(MetaverseRegionDO::getName, name)
+                .last("LIMIT 1")
+                .count() > 0;
     }
 
     @Override
-    public Boolean updateRegionName(Long id, String name, Long currentUserId) {
-
-        boolean success = regionService.lambdaUpdate()
+    public Boolean updateRegionName(Long id, String name, Long currentUserId, Long version) {
+        return regionService.lambdaUpdate()
                 .eq(MetaverseRegionDO::getId, id)
                 .set(MetaverseRegionDO::getName, name)
+                .set(MetaverseRegionDO::getVersion, version)
+                .set(MetaverseRegionDO::getUpdateBy, currentUserId)
                 .update();
-        return success;
     }
 
     @Override
     public Region findByIdWithLock(Long id) {
         MetaverseRegionDO entity = regionService.lambdaQuery()
                 .eq(MetaverseRegionDO::getId, id)
-                .last("FOR UPDATE")//加锁
+                .last("FOR UPDATE")
                 .one();
         return convertFromDO(entity);
     }
 
-    public static Region convertFromDO(MetaverseRegionDO metaverseRegionDO){//把DO层的数据库属性转换成领域层的属性
-         if(Objects.isNull(metaverseRegionDO)){
-             return null;
-         }
+    public static Region convertFromDO(MetaverseRegionDO metaverseRegionDO) {//把DO层的数据库属性转换成领域层的属性
+        if (Objects.isNull(metaverseRegionDO)) {
+            return null;
+        }
         Region region = new Region();
-         region.setId(metaverseRegionDO.getId());
-         region.setName(metaverseRegionDO.getName());
-        // 使用fastjson将JSON字符串解析为List<String>
-         String serverLocationJson = metaverseRegionDO.getServerLocation();
-         List<String> serverLocations = JSONArray.parseArray(serverLocationJson, String.class);
-         region.setServerLocation(serverLocations);
-         region.setCreateAt(metaverseRegionDO.getCreateAt());
-         region.setCreatedBy(metaverseRegionDO.getCreateBy());
-         region.setUpdatedAt(metaverseRegionDO.getUpdateAt());
-         region.setUpdatedBy(metaverseRegionDO.getUpdateBy());
-         region.setVersion(metaverseRegionDO.getVersion());
-         return region;
+        region.setId(metaverseRegionDO.getId());
+        region.setName(metaverseRegionDO.getName());
+        String serverLocationJson = metaverseRegionDO.getServerLocation();
+        List<String> serverLocations = JSONArray.parseArray(serverLocationJson, String.class);
+        region.setServerLocation(serverLocations);
+        region.setCreateAt(metaverseRegionDO.getCreateAt());
+        region.setCreatedBy(metaverseRegionDO.getCreateBy());
+        region.setUpdatedAt(metaverseRegionDO.getUpdateAt());
+        region.setUpdatedBy(metaverseRegionDO.getUpdateBy());
+        region.setVersion(metaverseRegionDO.getVersion());
+        return region;
     }
-
-
-    /**
-     * 区服请求地址列表
-     */
-    private List<String> serverLocation;
-    /**
-     * 区服创建人id
-     */
 }
 
 

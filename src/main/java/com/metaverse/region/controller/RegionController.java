@@ -2,8 +2,8 @@ package com.metaverse.region.controller;
 
 import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.model.Result;
+import com.metaverse.region.req.ModifyRegionReq;
 import com.metaverse.region.req.RegionCreateReq;
-import com.metaverse.region.req.RegionUpdateReq;
 import com.metaverse.region.resp.RegionListResp;
 import com.metaverse.region.service.RegionService;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * <p>
- * 区服表 前端控制器
+ * 区服 前端控制器
  * </p>
  *
  * @author Hainui
@@ -44,7 +44,7 @@ public class RegionController {
 
     @PostMapping("/modifyRegionName")
     @ApiOperation(value = "修改区服名", tags = "1.0.0")
-    public Result<Boolean> modifyRegionName(@ApiParam(name = "修改区域名称请求参数", required = true) @RequestBody @Valid RegionUpdateReq req) {
+    public Result<Boolean> modifyRegionName(@ApiParam(name = "修改区域名称请求参数", required = true) @RequestBody @Valid ModifyRegionReq req) {
         return Result.success(regionService.modifyRegionName(req, JwtUtils.getCurrentUserId()));
     }
 

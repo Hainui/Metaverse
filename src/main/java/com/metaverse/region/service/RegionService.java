@@ -1,24 +1,15 @@
 package com.metaverse.region.service;
 
-import com.metaverse.common.Utils.BCryptUtil;
-import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.domain.Region;
+import com.metaverse.region.req.ModifyRegionReq;
 import com.metaverse.region.req.RegionCreateReq;
-import com.metaverse.region.req.RegionUpdateReq;
 import com.metaverse.region.resp.RegionListResp;
-import com.metaverse.user.db.entity.MetaverseUserDO;
-import com.metaverse.user.domain.MetaverseUser;
-import com.metaverse.user.repository.MetaverseUserRepository;
-import com.metaverse.user.req.ModifyUserNameReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,24 +39,19 @@ public class RegionService {
         return resp;
     }
 
-    public Long create(RegionCreateReq req,Long currentUserId) {
-        return Region.create(req.getName(),req.getServerLocation(),currentUserId);
+    public Long create(RegionCreateReq req, Long currentUserId) {
+        // todo 权限校验
+        return Region.create(req.getName(), req.getServerLocation(), currentUserId);
     }
 
-
-    public boolean change() {
-        return Boolean.TRUE;
+    /**
+     * 修改区服名称
+     */
+    public Boolean modifyRegionName(ModifyRegionReq req, Long currentUserId) {
+        // todo 权限校验
+        Region region = Region.load(req.getId());
+        return region.modifyRegionName(req, currentUserId);
     }
-
-    //修改区服名称
-    public Boolean modifyRegionName(RegionUpdateReq req, Long currentUserId) {
-        Region region = Region.load(req.getId());//判断id
-        return region.updateRegionName(req,currentUserId);
-    }
-
-
-
-
 
 
 }
