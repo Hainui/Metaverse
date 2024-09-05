@@ -53,6 +53,10 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      * 性别
      */
     private Gender gender;
+    /**
+     * 权限
+     */
+    MetaverseUserPermission permission;
 
     private Long updatedBy;
 
