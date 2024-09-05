@@ -11,9 +11,9 @@ public interface UserConstant {
     String TOKEN = "token";
 
     /**
-     * 解析盐
+     * 解析盐 - UNIVERSE_METAVERSE
      */
-    String SIGN_KEY = "xiaoze";//UNIVERSE_METAVERSE
+    String SIGN_KEY = "xiaoze";
 
     /**
      * 令牌过期时间
