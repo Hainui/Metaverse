@@ -113,11 +113,8 @@ public class MetaverseUser {
         FEMALE(0, "女"),
         MALE(1, "男");
 
-        // 获取性别的整数值
-        // 成员变量用于存储性别的整数值和描述
-        private int value;
-        // 获取性别的描述
-        private String description;
+        private final int value;
+        private final String description;
 
         // 构造方法，传入性别的整数值和描述
         Gender(int value, String description) {
