@@ -38,7 +38,7 @@ public class RegionController {
 
     @PostMapping("/create")
     @ApiOperation(value = "新建区服", tags = "1.0.0")
-    public Result<Long> create(@ApiParam(name = "创建区服请求参数", required = true) @RequestBody @Valid RegionCreateReq req) {
+    public Result<Long> create(@ApiParam(name = "新建区服请求参数", required = true) @RequestBody @Valid RegionCreateReq req) {
         return Result.success(regionService.create(req, JwtUtils.getCurrentUserId()));
     }
 
