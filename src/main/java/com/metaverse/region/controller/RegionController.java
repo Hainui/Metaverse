@@ -6,7 +6,6 @@ import com.metaverse.region.req.RegionCreateReq;
 import com.metaverse.region.req.RegionUpdateReq;
 import com.metaverse.region.resp.RegionListResp;
 import com.metaverse.region.service.RegionService;
-import com.metaverse.user.req.ModifyUserNameReq;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class RegionController {
     private final RegionService regionService;
 
 
-
     @GetMapping("/getAllRegion")
     @ApiOperation(value = "查询区域链表", tags = "1.0.0")
     public Result<List<RegionListResp>> getAllRegion() {
@@ -40,14 +38,14 @@ public class RegionController {
 
     @PostMapping("/create")
     @ApiOperation(value = "创建区服", tags = "1.0.0")
-    public Result<Long> create(@ApiParam(name = "创建区服请求参数", required = true)@RequestBody @Valid RegionCreateReq req){
+    public Result<Long> create(@ApiParam(name = "创建区服请求参数", required = true) @RequestBody @Valid RegionCreateReq req) {
         return Result.success(regionService.create(req, JwtUtils.getCurrentUserId()));
     }
 
-    @PutMapping("/updateRegionName")
+    @PutMapping("/modifyRegionName")
     @ApiOperation(value = "修改区服", tags = "1.0.0")
-    public Result<Boolean> updateRegionName(@ApiParam(name = "修改区域名称请求参数", required = true)@RequestBody @Valid RegionUpdateReq req) {
-        return Result.success(regionService.updateRegionName(req, JwtUtils.getCurrentUserId()));
+    public Result<Boolean> modifyRegionName(@ApiParam(name = "修改区域名称请求参数", required = true) @RequestBody @Valid RegionUpdateReq req) {
+        return Result.success(regionService.modifyRegionName(req, JwtUtils.getCurrentUserId()));
     }
 
 }
