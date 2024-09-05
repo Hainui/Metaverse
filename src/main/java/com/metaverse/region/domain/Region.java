@@ -47,7 +47,7 @@ public class Region {
 
     private Long updatedBy;
 
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     private Long version;
 
@@ -80,10 +80,10 @@ public class Region {
 
     public static Region load(Long Id) {
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
-        Region user = repository.findByIdWithLock(Id);
-        if (Objects.isNull(user)) {
+        Region region = repository.findByIdWithLock(Id);
+        if (Objects.isNull(region)) {
             throw new IllegalArgumentException("未找到该用户信息");
         }
-        return user;
+        return region;
     }
 }

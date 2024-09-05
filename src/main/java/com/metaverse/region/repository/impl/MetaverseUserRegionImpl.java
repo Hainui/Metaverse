@@ -1,14 +1,19 @@
 package com.metaverse.region.repository.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.domain.Region;
 import com.metaverse.region.repository.MetaverseRegionRepository;
 import com.metaverse.user.db.service.IMetaverseUserService;
+import com.sun.org.apache.regexp.internal.RE;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -59,10 +64,26 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
         Region region = new Region();
          region.setId(metaverseRegionDO.getId());
          region.setName(metaverseRegionDO.getName());
-         region.setServerLocation(Collections.singletonList(metaverseRegionDO.getServerLocation()));
+        // 使用fastjson将JSON字符串解析为List<String>
+         String serverLocationJson = metaverseRegionDO.getServerLocation();
+         List<String> serverLocations = JSONArray.parseArray(serverLocationJson, String.class);
+         region.setServerLocation(serverLocations);
+         region.setCreateAt(metaverseRegionDO.getCreateAt());
+         region.setCreatedBy(metaverseRegionDO.getCreateBy());
+         region.setUpdatedAt(metaverseRegionDO.getUpdateAt());
+         region.setUpdatedBy(metaverseRegionDO.getUpdateBy());
+         region.setVersion(metaverseRegionDO.getVersion());
          return region;
     }
 
+
+    /**
+     * 区服请求地址列表
+     */
+    private List<String> serverLocation;
+    /**
+     * 区服创建人id
+     */
 }
 
 
