@@ -8,6 +8,7 @@ import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
 import com.metaverse.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ public class MetaverseUserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "用户登录", tags = "1.0.0")
-    public Result<String> login(@RequestBody @Valid MetaverseUserLoginReq req) {
+    public Result<String> login(@ApiParam(name = "用户登录请求参数", required = true) @RequestBody @Valid MetaverseUserLoginReq req) {
         return Result.success(userService.login(req));
     }
 
