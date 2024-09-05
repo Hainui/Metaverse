@@ -16,7 +16,7 @@ public interface UserConstant {
     String SIGN_KEY = "xiaoze";
 
     /**
-     * 令牌过期时间
+     * 令牌过期时间 24小时
      */
     Long EXPIRE = 86400000L;
 
