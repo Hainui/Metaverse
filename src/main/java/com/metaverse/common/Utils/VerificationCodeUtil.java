@@ -58,8 +58,7 @@ public class VerificationCodeUtil {
         try {
             verificationCode = cache.get(email);
         } catch (ExecutionException e) {
-            e.printStackTrace();
-            return;
+            throw new IllegalArgumentException("系统异常，验证码发送失败，报错信息：" + e.getMessage());
         }
 
         Properties props = new Properties();
