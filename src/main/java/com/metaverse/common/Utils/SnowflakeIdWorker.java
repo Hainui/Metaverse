@@ -17,9 +17,9 @@ public class SnowflakeIdWorker {
     // 数据中心ID所占的位数
     private final long datacenterIdBits = 5L;
     // 支持的最大机器ID，结果是31 (这个移位运算就是2^5-1)
-    private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
+    private final long maxWorkerId = ~(-1L << workerIdBits);
     // 支持的最大数据中心ID，结果是31
-    private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+    private final long maxDatacenterId = ~(-1L << datacenterIdBits);
     // 序列号所占的位数
     private final long sequenceBits = 12L;
 
@@ -30,7 +30,7 @@ public class SnowflakeIdWorker {
     // 时间戳向左移22位(5+5+12)
     private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
     // 生成掩码，用于获取序列
-    private final long sequenceMask = -1L ^ (-1L << sequenceBits);
+    private final long sequenceMask = ~(-1L << sequenceBits);
 
     // 上次生成ID的时间戳
     private long lastTimestamp = -1L;
@@ -42,8 +42,6 @@ public class SnowflakeIdWorker {
         if (datacenterId > maxDatacenterId || datacenterId < 0) {
             throw new IllegalArgumentException(String.format("datacenter Id can't be greater than %d or less than 0", maxDatacenterId));
         }
-        this.workerId = workerId;
-        this.datacenterId = datacenterId;
     }
 
     public synchronized long nextId() {
