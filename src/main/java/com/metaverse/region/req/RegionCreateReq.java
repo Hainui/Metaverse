@@ -15,6 +15,5 @@ public class RegionCreateReq {
     private String name;
 
     @ApiModelProperty("区服请求地址列表，JSON类型")
-    @NotBlank(message = "区服请求地址列表未填")
     private List<String> serverLocation;
 }
