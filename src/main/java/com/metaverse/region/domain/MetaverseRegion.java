@@ -22,6 +22,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @Accessors(chain = true)//用于链式方法
 public class MetaverseRegion implements IAggregateRoot<MetaverseRegion> {
+
+    protected static final Long MODEL_VERSION = 1L;
+
     /**
      * 区服id
      */
@@ -83,5 +86,15 @@ public class MetaverseRegion implements IAggregateRoot<MetaverseRegion> {
             throw new IllegalArgumentException("未找到该用户信息");
         }
         return region;
+    }
+
+    @Override
+    public Long pkVal() {
+        return id;
+    }
+
+    @Override
+    public Long modelVersion() {
+        return MODEL_VERSION;
     }
 }

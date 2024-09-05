@@ -6,4 +6,7 @@ package com.metaverse.common.model;
  * @param <T> 对应的贫血模型
  */
 public interface IAggregateRoot<T> {
+    Long pkVal();
+
+    Long modelVersion();
 }
