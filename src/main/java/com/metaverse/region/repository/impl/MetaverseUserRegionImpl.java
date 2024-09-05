@@ -1,6 +1,7 @@
 package com.metaverse.region.repository.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.domain.MetaverseRegion;
@@ -29,7 +30,7 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
     public boolean existByName(String name) {
         return regionService.lambdaQuery()
                 .eq(MetaverseRegionDO::getName, name)
-                .last("LIMIT 1")
+                .last(RepositoryConstant.LIMIT_ONE)
                 .count() > 0;
     }
 
@@ -47,7 +48,7 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
     public MetaverseRegion findByIdWithLock(Long id) {
         MetaverseRegionDO entity = regionService.lambdaQuery()
                 .eq(MetaverseRegionDO::getId, id)
-                .last("FOR UPDATE")
+                .last(RepositoryConstant.FOR_UPDATE)
                 .one();
         return convertFromDO(entity);
     }

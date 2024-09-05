@@ -1,6 +1,7 @@
 package com.metaverse.user.repository.impl;
 
 import com.metaverse.common.Utils.BCryptUtil;
+import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.user.db.entity.MetaverseUserDO;
@@ -29,7 +30,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
         return userService.lambdaQuery()
                 .eq(MetaverseUserDO::getUsername, name)
                 .eq(MetaverseUserDO::getRegionId, regionId)
-                .last("LIMIT 1")
+                .last(RepositoryConstant.LIMIT_ONE)
                 .count() > 0;
     }
 
@@ -71,7 +72,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
     public MetaverseUser findByIdWithLock(Long userId) {
         MetaverseUserDO entity = userService.lambdaQuery()
                 .eq(MetaverseUserDO::getId, userId)
-                .last("FOR UPDATE")
+                .last(RepositoryConstant.FOR_UPDATE)
                 .one();
         return convertFromDO(entity);
     }
