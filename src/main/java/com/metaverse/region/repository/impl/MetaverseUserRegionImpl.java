@@ -2,11 +2,14 @@ package com.metaverse.region.repository.impl;
 
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
+import com.metaverse.region.domain.Region;
 import com.metaverse.region.repository.MetaverseRegionRepository;
-import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collections;
+import java.util.Objects;
 
 
 @RequiredArgsConstructor
@@ -41,9 +44,25 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
     }
 
     @Override
-    public boolean findByIdWithLock(Long id) {
-        return regionService.lambdaQuery().eq(MetaverseRegionDO::getId, id).exists();
+    public Region findByIdWithLock(Long id) {
+        MetaverseRegionDO entity = regionService.lambdaQuery()
+                .eq(MetaverseRegionDO::getId, id)
+                .last("FOR UPDATE")//加锁
+                .one();
+        return convertFromDO(entity);
     }
+
+    public static Region convertFromDO(MetaverseRegionDO metaverseRegionDO){//把DO层的数据库属性转换成领域层的属性
+         if(Objects.isNull(metaverseRegionDO)){
+             return null;
+         }
+        Region region = new Region();
+         region.setId(metaverseRegionDO.getId());
+         region.setName(metaverseRegionDO.getName());
+         region.setServerLocation(Collections.singletonList(metaverseRegionDO.getServerLocation()));
+         return region;
+    }
+
 }
 
 

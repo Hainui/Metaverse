@@ -59,8 +59,8 @@ public class RegionService {
 
     //修改区服名称
     public Boolean updateRegionName(RegionUpdateReq req, Long currentUserId) {
-        Boolean region = Region.load(req.getId());//判断id
-        return Region.updateRegionName(req,currentUserId);
+        Region region = Region.load(req.getId());//判断id
+        return region.updateRegionName(req,currentUserId);
     }
 
 

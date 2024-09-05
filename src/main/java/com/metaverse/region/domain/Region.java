@@ -29,7 +29,7 @@ public class Region {
     /**
      * 区服名称
      */
-    private static String name;
+    private String name;
     /**
      * 区服请求地址列表
      */
@@ -66,7 +66,7 @@ public class Region {
     }
 
 
-    public static Boolean updateRegionName(RegionUpdateReq req, Long currentUserId) {
+    public Boolean updateRegionName(RegionUpdateReq req, Long currentUserId) {
         if (StringUtils.equals(name, req.getName())) {
             throw new IllegalArgumentException("修改前名字不能和原来名字相同");
         }
@@ -78,9 +78,9 @@ public class Region {
 
     }
 
-    public static Boolean load(Long Id) {
+    public static Region load(Long Id) {
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
-        Boolean user = repository.findByIdWithLock(Id);
+        Region user = repository.findByIdWithLock(Id);
         if (Objects.isNull(user)) {
             throw new IllegalArgumentException("未找到该用户信息");
         }

@@ -1,6 +1,7 @@
 package com.metaverse.region.repository;
 
 import com.metaverse.region.db.entity.MetaverseRegionDO;
+import com.metaverse.region.domain.Region;
 
 public interface MetaverseRegionRepository {
 
@@ -12,5 +13,5 @@ public interface MetaverseRegionRepository {
     Boolean updateRegionName(Long id, String name, Long currentUserId);
 
 
-    boolean findByIdWithLock(Long id);
+    Region findByIdWithLock(Long id);
 }
