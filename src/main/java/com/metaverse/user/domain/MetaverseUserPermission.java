@@ -16,11 +16,6 @@ import java.util.List;
 public class MetaverseUserPermission implements IValueObject {
 
     protected static final Long MODEL_VERSION = 1L;
-
-    /**
-     * 用户id
-     */
-    private Long userId;
     /**
      * 创建时间
      */
