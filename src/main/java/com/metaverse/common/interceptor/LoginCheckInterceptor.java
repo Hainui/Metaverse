@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 
 @Component
 @Slf4j
@@ -34,7 +35,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）。
         if (!StringUtils.hasText(jwt)) {
             log.info("请求头token为空,返回未登录的信息");
-            Result<Object> error = Result.error("NOT_LOGIN");
+            Result<Object> error = Result.error(Collections.singletonList("NOT_LOGIN"));
             //本来要在controller里面转换json,现在手动转换 对象--json --------> 使用这个方法:阿里巴巴fastJSON
             String notLogin = JSONObject.toJSONString(error);
             resp.getWriter().write(notLogin);
@@ -48,7 +49,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             e.printStackTrace();
             log.error("解析令牌失败，错误信息：{}", e.getMessage());
             log.info("解析令牌失败, 返回未登录错误信息");
-            Result<Object> error = Result.error("NOT_LOGIN");
+            Result<Object> error = Result.error(Collections.singletonList("NOT_LOGIN"));
             String notLogin = JSONObject.toJSONString(error);
             resp.getWriter().write(notLogin);
             return false;
