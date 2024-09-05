@@ -39,7 +39,7 @@ public class MetaverseUserController {
 
     @PostMapping("/registration")
     @ApiOperation(value = "用户注册", tags = "1.0.0")
-    public Result<Boolean> registration(@ApiParam(name = "用户注册请求参数", required = true)@RequestBody @Valid MetaverseUserRegistrationReq req) {
+    public Result<Boolean> registration(@ApiParam(name = "用户注册请求参数", required = true) @RequestBody @Valid MetaverseUserRegistrationReq req) {
         boolean isValid = VerificationCodeUtil.verifyCode(req.getEmail(), req.getVerifyCode());
         if (!isValid) {
             throw new IllegalArgumentException("验证失败");
@@ -55,9 +55,9 @@ public class MetaverseUserController {
         return Result.success();
     }
 
-    @PutMapping("/modifyUserName")
+    @PostMapping("/modifyUserName")
     @ApiOperation(value = "修改用户名", tags = "1.0.0")
-    public Result<Boolean> modifyUserName(@ApiParam(name = "用户修改请求参数", required = true)@RequestBody @Valid ModifyUserNameReq req) {
+    public Result<Boolean> modifyUserName(@ApiParam(name = "用户修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
         return Result.success(userService.modifyUserName(req, JwtUtils.getCurrentUserId()));
     }
 
