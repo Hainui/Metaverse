@@ -2,6 +2,7 @@ package com.metaverse.region.domain;
 
 import com.alibaba.fastjson.JSON;
 import com.metaverse.common.Utils.BeanManager;
+import com.metaverse.common.model.IAggregateRoot;
 import com.metaverse.region.RegionIdGen;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.repository.MetaverseRegionRepository;
@@ -20,7 +21,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)//用于链式方法
-public class MetaverseRegion {
+public class MetaverseRegion implements IAggregateRoot<MetaverseRegion> {
     /**
      * 区服id
      */

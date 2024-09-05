@@ -2,6 +2,7 @@ package com.metaverse.user.domain;
 
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.Utils.BeanManager;
+import com.metaverse.common.model.IAggregateRoot;
 import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.repository.MetaverseUserRepository;
@@ -20,7 +21,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class MetaverseUser {
+public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     /**
      * 身份证编号,唯一标识id
      */
