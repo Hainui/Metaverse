@@ -38,6 +38,12 @@ public class MetaverseUserPermission implements IValueObject {
      */
     private List<String> permissions;
 
+    private Long updatedBy;
+
+    private LocalDateTime updatedAt;
+
+    private Long version;
+
     @Override
     public Long modelVersion() {
         return MODEL_VERSION;
