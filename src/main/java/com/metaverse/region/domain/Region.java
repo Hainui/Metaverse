@@ -13,7 +13,6 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,8 +41,6 @@ public class Region {
      * 区服创建人id
      */
     private Long createdBy;
-
-    private Date createdAt;
 
     private Long updatedBy;
 
