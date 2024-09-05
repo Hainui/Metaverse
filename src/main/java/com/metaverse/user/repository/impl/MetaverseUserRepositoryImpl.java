@@ -91,7 +91,8 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .setBirthTime(metaverseUserDO.getBirthTime())
                 .setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()))
                 .setUpdatedBy(metaverseUserDO.getUpdateBy())
-                .setUpdatedAt(metaverseUserDO.getUpdatedAt());
+                .setUpdatedAt(metaverseUserDO.getUpdatedAt())
+                .setVersion(metaverseUserDO.getVersion());
     }
 
 
