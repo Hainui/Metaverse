@@ -23,7 +23,7 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Result.error(Collections.singletonList(ex.getMessage())));
     }
 
-    // 特别处理验证失败的异常
+    // 特别处理验证失败的异常 validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Result<List<String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();
