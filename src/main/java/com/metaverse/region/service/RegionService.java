@@ -49,7 +49,7 @@ public class RegionService {
      */
     public Boolean modifyRegionName(ModifyRegionReq req, Long currentUserId) {
         // todo 权限校验
-        MetaverseRegion region = MetaverseRegion.load(req.getId());
+        MetaverseRegion region = MetaverseRegion.loadAndAssertNotExist(req.getId());
         return region.modifyRegionName(req, currentUserId);
     }
 

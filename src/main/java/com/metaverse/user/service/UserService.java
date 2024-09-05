@@ -37,7 +37,7 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId) {
-        MetaverseUser metaverseUser = MetaverseUser.load(req.getUserId());
+        MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId());
         return metaverseUser.modifyUserName(req, currentUserId);
     }
 }

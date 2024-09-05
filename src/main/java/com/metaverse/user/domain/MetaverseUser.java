@@ -56,7 +56,7 @@ public class MetaverseUser {
 
     private Long version;
 
-    public static MetaverseUser load(Long userId) {
+    public static MetaverseUser loadAndAssertNotExist(Long userId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         MetaverseUser user = repository.findByIdWithLock(userId);
         if (Objects.isNull(user)) {

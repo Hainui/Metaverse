@@ -75,7 +75,7 @@ public class MetaverseRegion {
         return repository.updateRegionName(req.getId(), req.getName(), currentUserId, newVersion);
     }
 
-    public static MetaverseRegion load(Long Id) {
+    public static MetaverseRegion loadAndAssertNotExist(Long Id) {
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
         MetaverseRegion region = repository.findByIdWithLock(Id);
         if (Objects.isNull(region)) {
