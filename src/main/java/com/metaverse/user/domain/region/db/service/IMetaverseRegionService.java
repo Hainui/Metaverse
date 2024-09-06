@@ -1,7 +1,7 @@
-package com.metaverse.region.db.service;
+package com.metaverse.user.domain.region.db.service;
 
-import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
 
 /**
  * <p>

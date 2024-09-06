@@ -9,13 +9,11 @@ public interface MetaverseUserRepository {
 
     boolean save(MetaverseUserDO userDO);
 
-    Long login(String email, String password, Long regionId);
+    MetaverseUser login(String email, String password, Long regionId);
 
     boolean existByRegionId(Long regionId);
 
     MetaverseUser findByIdWithLock(Long userId);
 
     boolean modifyUserName(Long userId, String name, Long updateBy, Long version);
-
-    MetaverseUser findUserByKeyword(String keyword);
 }

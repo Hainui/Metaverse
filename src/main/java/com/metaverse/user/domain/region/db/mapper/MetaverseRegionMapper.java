@@ -1,7 +1,7 @@
-package com.metaverse.region.db.mapper;
+package com.metaverse.user.domain.region.db.mapper;
 
-import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
 
 /**
  * <p>

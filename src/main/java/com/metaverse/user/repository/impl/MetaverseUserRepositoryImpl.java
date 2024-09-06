@@ -1,12 +1,14 @@
 package com.metaverse.user.repository.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.constant.RepositoryConstant;
-import com.metaverse.region.db.entity.MetaverseRegionDO;
-import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
+import com.metaverse.user.domain.region.db.service.IMetaverseRegionService;
+import com.metaverse.user.domain.region.domain.MetaverseRegion;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +46,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
     }
 
     @Override
-    public Long login(String email, String plainTextPassword, Long regionId) {
+    public MetaverseUser login(String email, String plainTextPassword, Long regionId) {
         List<MetaverseUserDO> list = userService.lambdaQuery()
                 .eq(MetaverseUserDO::getRegionId, regionId)
                 .list();
@@ -56,7 +58,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
         } else {
             String storedHashedPassword = userOptional.get().getPassword();
             if (BCryptUtil.checkPassword(plainTextPassword, storedHashedPassword)) {
-                return userOptional.get().getId();
+                return userDOConvertToUser(userOptional.get());
             } else {
                 throw new IllegalArgumentException("密码不正确");
             }
@@ -70,30 +72,45 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
     @Override
     public MetaverseUser findByIdWithLock(Long userId) {
-        MetaverseUserDO entity = userService.lambdaQuery()
+        MetaverseUserDO userDO = userService.lambdaQuery()
                 .eq(MetaverseUserDO::getId, userId)
                 .last(RepositoryConstant.FOR_UPDATE)
                 .one();
-        return convertFromDO(entity);
+        return userDOConvertToUser(userDO);
     }
 
 
-    public static MetaverseUser convertFromDO(MetaverseUserDO metaverseUserDO) {
+    public MetaverseUser userDOConvertToUser(MetaverseUserDO metaverseUserDO) {
         if (Objects.isNull(metaverseUserDO)) {
             return null;
         }
-
+        MetaverseRegionDO regionDO = regionService.lambdaQuery().eq(MetaverseRegionDO::getId, metaverseUserDO.getRegionId()).one();
         return new MetaverseUser().
                 setId(metaverseUserDO.getId())
                 .setEmail(metaverseUserDO.getEmail())
                 .setName(metaverseUserDO.getUsername())
                 .setPassword(metaverseUserDO.getPassword())
-                .setRegionId(metaverseUserDO.getRegionId())
+                .setRegion(regionDOConvertToRegion(regionDO))
                 .setBirthTime(metaverseUserDO.getBirthTime())
                 .setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()))
                 .setUpdatedBy(metaverseUserDO.getUpdateBy())
                 .setUpdatedAt(metaverseUserDO.getUpdatedAt())
                 .setVersion(metaverseUserDO.getVersion());
+    }
+
+    private MetaverseRegion regionDOConvertToRegion(MetaverseRegionDO regionDO) {
+        if (regionDO == null) {
+            return null;
+        }
+        return new MetaverseRegion()
+                .setId(regionDO.getId())
+                .setName(regionDO.getName())
+                .setServerLocation(JSON.parseArray(regionDO.getServerLocation(), String.class))
+                .setCreateAt(regionDO.getCreateAt())
+                .setCreatedBy(regionDO.getCreateBy())
+                .setUpdatedBy(regionDO.getUpdateBy())
+                .setUpdatedAt(regionDO.getUpdateAt())
+                .setVersion(regionDO.getVersion());
     }
 
 
@@ -105,16 +122,6 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .set(MetaverseUserDO::getUpdateBy, updateBy)
                 .set(MetaverseUserDO::getVersion, version)
                 .update();
-    }
-
-    @Override
-    public MetaverseUser findUserByKeyword(String keyword) {
-        MetaverseUserDO entity = userService.lambdaQuery()
-                .like(MetaverseUserDO::getUsername, keyword)
-                .or().like(MetaverseUserDO::getEmail, keyword)
-                .last(RepositoryConstant.LIMIT_ONE)
-                .one();
-        return convertFromDO(entity);
     }
 
 }

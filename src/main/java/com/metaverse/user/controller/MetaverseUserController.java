@@ -6,6 +6,7 @@ import com.metaverse.common.model.Result;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
+import com.metaverse.user.resp.SearchUserByNameResp;
 import com.metaverse.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -38,10 +39,10 @@ public class MetaverseUserController {
     }
 
 
-    @PostMapping("searchUser")
-    @ApiOperation(value = "用户搜索", tags = "1.0.0")
-    public Result<ModifyUserNameReq> searchUser(@ApiParam(name = "用户搜索参数", required = true) @RequestBody @Valid String keyword) {
-        return Result.success(userService.searchUser(keyword));
+    @GetMapping("/searchUser")
+    @ApiOperation(value = "根据用户名精确查找用户", tags = "1.0.0")
+    public Result<SearchUserByNameResp> searchUser(@ApiParam(name = "用户搜索参数", required = true) @RequestParam(value = "userName") @NotBlank(message = "用户名不能为空") String userName) {
+        return Result.success(userService.searchUserByName(userName, JwtUtils.getCurrentUserRegionId()));
     }
 
 
@@ -58,7 +59,7 @@ public class MetaverseUserController {
 
     @GetMapping("/registrationSendVerificationCode")
     @ApiOperation(value = "发送验证码", tags = "1.0.0")
-    public Result<Void> sendVerificationCode(@RequestParam(value = "email", required = false) @NotBlank(message = "邮箱不能为空") String email) {
+    public Result<Void> sendVerificationCode(@ApiParam(name = "请求发送验证码的邮箱", required = true) @RequestParam(value = "email", required = false) @NotBlank(message = "邮箱不能为空") String email) {
         VerificationCodeUtil.sendVerificationCode(email);
         return Result.success();
     }

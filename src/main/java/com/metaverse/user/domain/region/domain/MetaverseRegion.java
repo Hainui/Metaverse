@@ -1,12 +1,12 @@
-package com.metaverse.region.domain;
+package com.metaverse.user.domain.region.domain;
 
 import com.alibaba.fastjson.JSON;
 import com.metaverse.common.Utils.BeanManager;
-import com.metaverse.common.model.IAggregateRoot;
-import com.metaverse.region.RegionIdGen;
-import com.metaverse.region.db.entity.MetaverseRegionDO;
-import com.metaverse.region.repository.MetaverseRegionRepository;
-import com.metaverse.region.req.ModifyRegionReq;
+import com.metaverse.common.model.IEntity;
+import com.metaverse.user.domain.region.RegionIdGen;
+import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
+import com.metaverse.user.domain.region.repository.MetaverseRegionRepository;
+import com.metaverse.user.domain.region.req.ModifyRegionReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)//用于链式方法
-public class MetaverseRegion implements IAggregateRoot<MetaverseRegion> {
+public class MetaverseRegion implements IEntity {
 
     protected static final Long MODEL_VERSION = 1L;
 

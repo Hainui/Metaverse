@@ -1,9 +1,9 @@
-package com.metaverse.region.db.service.impl;
+package com.metaverse.user.domain.region.db.service.impl;
 
-import com.metaverse.region.db.entity.MetaverseRegionDO;
-import com.metaverse.region.db.mapper.MetaverseRegionMapper;
-import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
+import com.metaverse.user.domain.region.db.mapper.MetaverseRegionMapper;
+import com.metaverse.user.domain.region.db.service.IMetaverseRegionService;
 import org.springframework.stereotype.Service;
 
 /**

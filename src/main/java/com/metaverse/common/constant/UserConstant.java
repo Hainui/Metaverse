@@ -8,6 +8,8 @@ public interface UserConstant {
 
     String USER_ID = "userId";
 
+    String USER_NAME = "userName";
+
     String TOKEN = "token";
 
     /**

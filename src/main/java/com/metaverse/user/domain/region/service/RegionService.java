@@ -1,11 +1,11 @@
-package com.metaverse.region.service;
+package com.metaverse.user.domain.region.service;
 
-import com.metaverse.region.db.entity.MetaverseRegionDO;
-import com.metaverse.region.db.service.IMetaverseRegionService;
-import com.metaverse.region.domain.MetaverseRegion;
-import com.metaverse.region.req.ModifyRegionReq;
-import com.metaverse.region.req.RegionCreateReq;
-import com.metaverse.region.resp.RegionResp;
+import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
+import com.metaverse.user.domain.region.db.service.IMetaverseRegionService;
+import com.metaverse.user.domain.region.domain.MetaverseRegion;
+import com.metaverse.user.domain.region.req.ModifyRegionReq;
+import com.metaverse.user.domain.region.req.RegionCreateReq;
+import com.metaverse.user.domain.region.resp.RegionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

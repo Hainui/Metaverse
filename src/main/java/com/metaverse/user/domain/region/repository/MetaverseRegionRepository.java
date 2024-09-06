@@ -1,7 +1,7 @@
-package com.metaverse.region.repository;
+package com.metaverse.user.domain.region.repository;
 
-import com.metaverse.region.db.entity.MetaverseRegionDO;
-import com.metaverse.region.domain.MetaverseRegion;
+import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
+import com.metaverse.user.domain.region.domain.MetaverseRegion;
 
 public interface MetaverseRegionRepository {
 

@@ -1,4 +1,4 @@
-package com.metaverse.region;
+package com.metaverse.user.domain.region;
 
 import com.metaverse.common.Utils.SnowflakeIdWorker;
 import org.springframework.stereotype.Component;

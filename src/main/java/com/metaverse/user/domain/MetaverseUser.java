@@ -5,6 +5,7 @@ import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IAggregateRoot;
 import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
+import com.metaverse.user.domain.region.domain.MetaverseRegion;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import com.metaverse.user.req.ModifyUserNameReq;
 import lombok.AllArgsConstructor;
@@ -42,9 +43,9 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      */
     private String password;
     /**
-     * 区服id
+     * 所在区服
      */
-    private Long regionId;
+    private MetaverseRegion region;
     /**
      * 出生时间
      */
@@ -97,28 +98,10 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     }
 
 
-    public static Long login(String email, String password, Long regionId) {
+    public static MetaverseUser login(String email, String password, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         return repository.login(email, password, regionId);
     }
-
-
-    public static ModifyUserNameReq searchUser(String keyword) {
-        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        MetaverseUser user = repository.findUserByKeyword(keyword);
-        if (user != null) {
-            return buildModifyUserNameReq(user);
-        }
-        return null;
-    }
-
-    private static ModifyUserNameReq buildModifyUserNameReq(MetaverseUser user) {
-        // 根据用户信息构建 ModifyUserNameReq 对象的逻辑
-        ModifyUserNameReq req = new ModifyUserNameReq();
-        req.setName(user.getName());
-        return req;
-    }
-
 
     public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId) {
         if (StringUtils.equals(name, req.getName())) {
