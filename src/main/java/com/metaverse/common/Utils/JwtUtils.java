@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import redis.clients.jedis.Jedis;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -52,5 +53,24 @@ public class JwtUtils {
     private static String getToken() {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         return request.getHeader(UserConstant.TOKEN);
+    }
+
+
+    public class TokenBlackList {
+        private static final String TOKEN_BLACKLIST_KEY = "jwt_blacklist";
+
+        // 将令牌添加到黑名单
+        public void addToBlacklist(String token) {
+            try (Jedis jedis = new Jedis("localhost", 6379)) {
+                jedis.sadd(TOKEN_BLACKLIST_KEY, token);
+            }
+        }
+
+        // 检查令牌是否在黑名单中
+        public boolean isInBlacklist(String token) {
+            try (Jedis jedis = new Jedis("localhost", 6379)) {
+                return jedis.sismember(TOKEN_BLACKLIST_KEY, token);
+            }
+        }
     }
 }

@@ -109,12 +109,12 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
     @Override
     public MetaverseUser findUserByKeyword(String keyword) {
-        return userService.lambdaQuery()
+        MetaverseUserDO entity = userService.lambdaQuery()
                 .like(MetaverseUserDO::getUsername, keyword)
                 .or().like(MetaverseUserDO::getEmail, keyword)
                 .last(RepositoryConstant.LIMIT_ONE)
                 .one();
-            
+        return convertFromDO(entity);
     }
 
 }
