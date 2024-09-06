@@ -22,6 +22,9 @@ import java.util.Objects;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
+
+    protected static final Long MODEL_VERSION = 1L;
+
     /**
      * 身份证编号,唯一标识id
      */
@@ -50,6 +53,10 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      * 性别
      */
     private Gender gender;
+    /**
+     * 权限
+     */
+    private MetaverseUserPermission permission;
 
     private Long updatedBy;
 
@@ -123,6 +130,16 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         }
         Long newVersion = version + 1;
         return repository.modifyUserName(req.getUserId(), req.getName(), currentUserId, newVersion);
+    }
+
+    @Override
+    public Long pkVal() {
+        return id;
+    }
+
+    @Override
+    public Long modelVersion() {
+        return MODEL_VERSION;
     }
 
 
