@@ -37,6 +37,14 @@ public class MetaverseUserController {
         return Result.success(userService.login(req));
     }
 
+
+    @PostMapping("searchUser")
+    @ApiOperation(value = "用户搜索", tags = "1.0.0")
+    public Result<ModifyUserNameReq> searchUser(@ApiParam(name = "用户搜索参数", required = true) @RequestBody @Valid String keyword) {
+        return Result.success(userService.searchUser(keyword));
+    }
+
+
     @PostMapping("/registration")
     @ApiOperation(value = "用户注册", tags = "1.0.0")
     public Result<Boolean> registration(@ApiParam(name = "用户注册请求参数", required = true) @RequestBody @Valid MetaverseUserRegistrationReq req) {

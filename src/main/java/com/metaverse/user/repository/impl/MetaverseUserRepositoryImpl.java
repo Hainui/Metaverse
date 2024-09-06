@@ -106,6 +106,17 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .set(MetaverseUserDO::getVersion, version)
                 .update();
     }
+
+    @Override
+    public MetaverseUser findUserByKeyword(String keyword) {
+        return userService.lambdaQuery()
+                .like(MetaverseUserDO::getUsername, keyword)
+                .or().like(MetaverseUserDO::getEmail, keyword)
+                .last(RepositoryConstant.LIMIT_ONE)
+                .one();
+            
+    }
+
 }
 
 

@@ -95,6 +95,24 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         return repository.login(email, password, regionId);
     }
 
+
+    public static ModifyUserNameReq searchUser(String keyword) {
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        MetaverseUser user = repository.findUserByKeyword(keyword);
+        if (user != null) {
+            return buildModifyUserNameReq(user);
+        }
+        return null;
+    }
+
+    private static ModifyUserNameReq buildModifyUserNameReq(MetaverseUser user) {
+        // 根据用户信息构建 ModifyUserNameReq 对象的逻辑
+        ModifyUserNameReq req = new ModifyUserNameReq();
+        req.setName(user.getName());
+        return req;
+    }
+
+
     public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId) {
         if (StringUtils.equals(name, req.getName())) {
             throw new IllegalArgumentException("修改前名字不能和原来名字相同");

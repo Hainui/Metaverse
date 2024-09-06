@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,5 +40,10 @@ public class UserService {
     public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId) {
         MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId());
         return metaverseUser.modifyUserName(req, currentUserId);
+    }
+
+    public ModifyUserNameReq searchUser(@Valid String keyword) {
+        return MetaverseUser.searchUser(keyword);
+
     }
 }
