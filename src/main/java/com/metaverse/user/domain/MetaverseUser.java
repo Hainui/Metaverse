@@ -108,7 +108,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     }
 
     private static MetaverseUserInfo convertToUserInfo(MetaverseUser user) {
-        if (user == null) {
+        if (Objects.isNull(user)) {
             return null;
         }
         return new MetaverseUserInfo()
@@ -121,12 +121,18 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     }
 
     private static MetaverseUserPermissionInfo convertToUserPermissionInfo(MetaverseUserPermission permission) {
+        if (Objects.isNull(permission)) {
+            return null;
+        }
         return new MetaverseUserPermissionInfo()
                 .setPermissions(permission.getPermissions())
                 .setPermissionGroupName(permission.getPermissionGroupName());
     }
 
     private static MetaverseRegionInfo convertToRegionInfo(MetaverseRegion region) {
+        if (Objects.isNull(region)) {
+            return null;
+        }
         return new MetaverseRegionInfo()
                 .setServerLocation(region.getServerLocation())
                 .setName(region.getName())
