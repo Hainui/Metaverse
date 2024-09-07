@@ -6,6 +6,7 @@ import com.metaverse.common.constant.UserConstant;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.dto.MetaverseUserInfo;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
@@ -29,12 +30,12 @@ public class UserService {
 
     @Transactional(rollbackFor = Exception.class)
     public String login(MetaverseUserLoginReq metaverseUserLoginReq, String ipAddress) {
-        MetaverseUser user = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
+        MetaverseUserInfo userInfo = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
         Map<String, Object> claims = new HashMap<>();
-        claims.put(UserConstant.METAVERSE_USER, user);
+        claims.put(UserConstant.METAVERSE_USER, userInfo);
         claims.put(UserConstant.IP_ADDRESS, ipAddress);
         String token = JwtUtils.generateJwt(claims);
-        redisServer.storeToken(user.getId(), token);
+        redisServer.storeToken(userInfo.getId(), token);
         return token;
     }
 

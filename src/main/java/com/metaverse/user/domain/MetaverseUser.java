@@ -6,6 +6,9 @@ import com.metaverse.common.model.IAggregateRoot;
 import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.domain.region.domain.MetaverseRegion;
+import com.metaverse.user.domain.region.dto.MetaverseRegionInfo;
+import com.metaverse.user.dto.MetaverseUserInfo;
+import com.metaverse.user.dto.MetaverseUserPermissionInfo;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import com.metaverse.user.req.ModifyUserNameReq;
 import lombok.AllArgsConstructor;
@@ -99,9 +102,35 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     }
 
 
-    public static MetaverseUser login(String email, String password, Long regionId) {
+    public static MetaverseUserInfo login(String email, String password, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        return repository.login(email, password, regionId);
+        return convertToUserInfo(repository.login(email, password, regionId));
+    }
+
+    private static MetaverseUserInfo convertToUserInfo(MetaverseUser user) {
+        if (user == null) {
+            return null;
+        }
+        return new MetaverseUserInfo()
+                .setId(user.getId())
+                .setEmail(user.getEmail())
+                .setName(user.getName())
+                .setRegion(convertToRegionInfo(user.getRegion()))
+                .setPermission(convertToUserPermissionInfo(user.getPermission()))
+                .setGender(user.getGender().getBooleanValue());
+    }
+
+    private static MetaverseUserPermissionInfo convertToUserPermissionInfo(MetaverseUserPermission permission) {
+        return new MetaverseUserPermissionInfo()
+                .setPermissions(permission.getPermissions())
+                .setPermissionGroupName(permission.getPermissionGroupName());
+    }
+
+    private static MetaverseRegionInfo convertToRegionInfo(MetaverseRegion region) {
+        return new MetaverseRegionInfo()
+                .setServerLocation(region.getServerLocation())
+                .setName(region.getName())
+                .setId(region.getId());
     }
 
     public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId) {
@@ -157,11 +186,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         }
 
         public Boolean getBooleanValue() {
-            if (value == 0) {
-                return Boolean.FALSE;
-            } else {
-                return Boolean.TRUE;
-            }
+            return value == 0 ? Boolean.FALSE : Boolean.TRUE;
         }
 
 
