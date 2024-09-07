@@ -124,6 +124,32 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .update();
     }
 
+    @Override
+    public boolean existByPassword(String password, Long userId) {
+        return userService.lambdaQuery()
+                .eq(MetaverseUserDO::getId, userId)
+                .eq(MetaverseUserDO::getPassword, BCryptUtil.hashPassword(password))
+                .last(RepositoryConstant.LIMIT_ONE)
+                .count() > 0;
+    }
+
+    @Override
+    public boolean modifyPassword(String password, Long userId, Long updateBy) {
+        MetaverseUserDO metaverseUserDO = userService.lambdaQuery().eq(MetaverseUserDO::getId, userId).one();
+        String storedHashedPassword = metaverseUserDO.getPassword();
+        if (BCryptUtil.checkPassword(password, storedHashedPassword)) {
+            throw new IllegalArgumentException("密码重复");
+
+        } else {
+            return userService.lambdaUpdate()
+                    .eq(MetaverseUserDO::getId, userId)
+                    .set(MetaverseUserDO::getPassword, BCryptUtil.hashPassword(password))
+                    .set(MetaverseUserDO::getUpdateBy, updateBy)
+                    .update();
+        }
+
+    }
+
 }
 
 

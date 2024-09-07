@@ -8,6 +8,7 @@ import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.dto.MetaverseUserInfo;
 import com.metaverse.user.req.MetaverseUserLoginReq;
+import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
 import com.metaverse.user.resp.SearchUserByNameResp;
@@ -75,10 +76,10 @@ public class UserService {
                 .setBirthTime(userDO.getBirthTime());
     }
 
-//    @Transactional(rollbackFor = Exception.class)//修改密码
-//    public Boolean modifyPassword(MetaversePasswordReq req, Long currentUserId) {
-//        MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId());
-//        return metaverseUser.modifyPassword(req, currentUserId);
-//    }
+    @Transactional(rollbackFor = Exception.class)//修改密码
+    public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId) {
+        MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId());
+        return metaverseUser.modifyPassword(req, currentUserId);
+    }
 
 }

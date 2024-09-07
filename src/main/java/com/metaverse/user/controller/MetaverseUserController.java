@@ -5,6 +5,7 @@ import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.Utils.VerificationCodeUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.MetaverseUserLoginReq;
+import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
 import com.metaverse.user.resp.SearchUserByNameResp;
@@ -76,11 +77,11 @@ public class MetaverseUserController {
     }
 
 
-//    @PostMapping("/modifyPassword")
-//    @ApiOperation(value = "修改密码", tags = "1.0.0")
-//    public Result<Boolean> modifyPassword(@ApiParam(name = "用户修改密码请求参数", required = true) @RequestBody @Valid MetaversePasswordReq req) {
-//        return Result.success(userService.modifyPassword(req, JwtUtils.getCurrentUserId()));
-//    }
+    @PostMapping("/modifyPassword")
+    @ApiOperation(value = "修改密码", tags = "1.0.0")
+    public Result<Boolean> modifyPassword(@ApiParam(name = "用户修改密码请求参数", required = true) @RequestBody @Valid MetaverseUserModifyPasswordReq req) {
+        return Result.success(userService.modifyPassword(req, JwtUtils.getCurrentUserId()));
+    }
 
 
 }

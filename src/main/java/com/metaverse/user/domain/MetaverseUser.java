@@ -10,6 +10,7 @@ import com.metaverse.user.domain.region.dto.MetaverseRegionInfo;
 import com.metaverse.user.dto.MetaverseUserInfo;
 import com.metaverse.user.dto.MetaverseUserPermissionInfo;
 import com.metaverse.user.repository.MetaverseUserRepository;
+import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.ModifyUserNameReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -161,10 +162,10 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         return MODEL_VERSION;
     }
 
-//    public Boolean modifyPassword(MetaversePasswordReq req, Long currentUserId) {
-//        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-//        if(repository.existByPassword(req.getPassword(),req.getUserId()))
-//    }
+    public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId) {
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        return repository.modifyPassword(req.getPassword(), req.getUserId(), currentUserId);
+    }
 
 
     @Getter
