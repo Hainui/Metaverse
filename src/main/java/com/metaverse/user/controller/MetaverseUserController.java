@@ -42,8 +42,8 @@ public class MetaverseUserController {
 
     @GetMapping("/signOut")
     @ApiOperation(value = "用户退出登录", tags = "1.0.0")
-    public Result<String> signOut() {
-        return Result.success(userService.signOut(JwtUtils.getCurrentUserId());
+    public Result<Boolean> signOut() {
+        return Result.success(userService.signOut(JwtUtils.getCurrentUserId()));
     }
 
     @GetMapping("/searchUser")
