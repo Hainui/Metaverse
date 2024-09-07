@@ -32,8 +32,8 @@ public class RedisServer {
                 "local userIdStr = KEYS[1]; " +
                         "local token = ARGV[1]; " +
                         "local expiresAt = ARGV[2]; " +
-                        "redis.call('hset', " + HASH_KEY + ", userIdStr, token); " +
-                        "redis.call('hset', " + HASH_KEY + ", userIdStr .. '_expires_at', expiresAt); " +
+                        "redis.call('hset', user_token, userIdStr, token); " +
+                        "redis.call('hset', user_token, userIdStr .. '_expires_at', expiresAt); " +
                         "return true;"
         );
         LUA_SCRIPT.setResultType(Boolean.class);
