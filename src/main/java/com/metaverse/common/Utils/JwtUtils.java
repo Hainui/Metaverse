@@ -53,27 +53,27 @@ public class JwtUtils {
     }
 
     public static Long getCurrentUserId() {
-        MetaverseUserInfo user = parseJWT(getToken()).get(UserConstant.METAVERSE_USER, MetaverseUserInfo.class);
-        if (Objects.isNull(user)) {
+        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
-        return user.getId();
+        return userInfo.getId();
     }
 
     public static String getCurrentUserEmail() {
-        MetaverseUserInfo user = parseJWT(getToken()).get(UserConstant.METAVERSE_USER, MetaverseUserInfo.class);
-        if (Objects.isNull(user)) {
+        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
-        return user.getEmail();
+        return userInfo.getEmail();
     }
 
     public static MetaverseRegionInfo getCurrentUserRegion() {
-        MetaverseUserInfo user = parseJWT(getToken()).get(UserConstant.METAVERSE_USER, MetaverseUserInfo.class);
-        if (Objects.isNull(user)) {
+        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
-        return user.getRegion();
+        return userInfo.getRegion();
     }
 
     private static String getToken() {
