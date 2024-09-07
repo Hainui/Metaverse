@@ -7,6 +7,7 @@ public interface UserConstant {
 
     String TOKEN = "token";
 
+
     String SIGN_KEY = "UNIVERSE_METAVERSE";
 
     /**

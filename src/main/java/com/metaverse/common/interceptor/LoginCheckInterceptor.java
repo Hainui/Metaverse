@@ -5,7 +5,7 @@ import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.Utils.RedisServer;
 import com.metaverse.common.constant.UserConstant;
 import com.metaverse.common.model.Result;
-import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.dto.MetaverseUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -49,9 +49,13 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return false;
         }
 
+
         //5.解析token，如果解析失败，返回错误结果（未登录）。
         try {
-            Long userId = JwtUtils.parseJWT(jwt).get(UserConstant.METAVERSE_USER, MetaverseUser.class).getId();
+//            MetaverseUserInfo userInfo = (MetaverseUserInfo) JwtUtils.parseJWT(jwt).get(UserConstant.METAVERSE_USER);
+
+            MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(jwt, UserConstant.METAVERSE_USER);
+            Long userId = userInfo.getId();
             if (!redisServer.validateToken(userId, jwt)) {
                 log.error("token已经过期或被销毁");
                 return false;

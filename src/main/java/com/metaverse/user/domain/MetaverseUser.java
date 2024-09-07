@@ -161,6 +161,11 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         return MODEL_VERSION;
     }
 
+//    public Boolean modifyPassword(MetaversePasswordReq req, Long currentUserId) {
+//        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+//        if(repository.existByPassword(req.getPassword(),req.getUserId()))
+//    }
+
 
     @Getter
     public enum Gender implements Serializable {

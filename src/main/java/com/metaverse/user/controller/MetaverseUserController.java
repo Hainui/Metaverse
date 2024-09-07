@@ -74,4 +74,13 @@ public class MetaverseUserController {
     public Result<Boolean> modifyUserName(@ApiParam(name = "用户修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
         return Result.success(userService.modifyUserName(req, JwtUtils.getCurrentUserId()));
     }
+
+
+//    @PostMapping("/modifyPassword")
+//    @ApiOperation(value = "修改密码", tags = "1.0.0")
+//    public Result<Boolean> modifyPassword(@ApiParam(name = "用户修改密码请求参数", required = true) @RequestBody @Valid MetaversePasswordReq req) {
+//        return Result.success(userService.modifyPassword(req, JwtUtils.getCurrentUserId()));
+//    }
+
+
 }
