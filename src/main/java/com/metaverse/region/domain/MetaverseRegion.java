@@ -6,7 +6,6 @@ import com.metaverse.common.model.IEntity;
 import com.metaverse.region.RegionIdGen;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.repository.MetaverseRegionRepository;
-import com.metaverse.region.req.ModifyRegionReq;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -69,16 +68,16 @@ public class MetaverseRegion implements IEntity {
     }
 
 
-    public Boolean modifyRegionName(ModifyRegionReq req, Long currentUserId) {
-        if (StringUtils.equals(name, req.getName())) {
-            throw new IllegalArgumentException("修改前名字不能和原来名字相同");
+    public Boolean modifyRegionName(String newRegionName, Long currentUserId) {
+        if (StringUtils.equals(name, newRegionName)) {
+            throw new IllegalArgumentException("新区服名不能和旧区服名相同");
         }
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
-        if (repository.existByName(req.getName())) {
-            throw new IllegalArgumentException("名字已经存在");
+        if (repository.existByName(newRegionName)) {
+            throw new IllegalArgumentException("该区服名已存在");
         }
         Long newVersion = version + 1;
-        return repository.updateRegionName(req.getId(), req.getName(), currentUserId, newVersion);
+        return repository.updateRegionName(pkVal(), newRegionName, currentUserId, newVersion);
     }
 
     public static MetaverseRegion loadAndAssertNotExist(Long Id) {
@@ -98,5 +97,14 @@ public class MetaverseRegion implements IEntity {
     @Override
     public Long modelVersion() {
         return MODEL_VERSION;
+    }
+
+    public Boolean modifyRegionLocationList(List<String> newServerLocation, Long currentUserId) {
+        if (Objects.equals(newServerLocation, serverLocation)) {
+            throw new IllegalArgumentException("新区服地址和旧区服地址完全相同，无需修改");
+        }
+        MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
+        Long newVersion = version + 1;
+        return repository.modifyRegionLocationList(newServerLocation, pkVal(), currentUserId, newVersion);
     }
 }

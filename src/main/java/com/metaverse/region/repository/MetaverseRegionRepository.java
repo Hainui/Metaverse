@@ -3,6 +3,8 @@ package com.metaverse.region.repository;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.domain.MetaverseRegion;
 
+import java.util.List;
+
 public interface MetaverseRegionRepository {
 
 
@@ -14,4 +16,6 @@ public interface MetaverseRegionRepository {
 
 
     MetaverseRegion findByIdWithLock(Long id);
+
+    Boolean modifyRegionLocationList(List<String> newServerLocation, Long regionId, Long currentUserId, Long newVersion);
 }

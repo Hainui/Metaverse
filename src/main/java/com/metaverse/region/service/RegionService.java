@@ -1,16 +1,20 @@
 package com.metaverse.region.service;
 
+import com.metaverse.common.Utils.ServerLocationValidator;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.domain.MetaverseRegion;
-import com.metaverse.region.req.ModifyRegionReq;
+import com.metaverse.region.req.ModifyRegionNameReq;
+import com.metaverse.region.req.ModifyRegionServerLocationReq;
 import com.metaverse.region.req.RegionCreateReq;
 import com.metaverse.region.resp.RegionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,34 +30,37 @@ public class RegionService {
     }
 
     public RegionResp convertToRegionListResp(MetaverseRegionDO regionDO) {
-        if (regionDO == null) {
+        if (Objects.isNull(regionDO)) {
             return null;
         }
-        RegionResp resp = new RegionResp();
-        if (regionDO.getId() != null) {
-            resp.setId(regionDO.getId());
-        }
-        if (regionDO.getName() != null) {
-            resp.setName(regionDO.getName());
-        }
-        return resp;
+        return new RegionResp()
+                .setId(regionDO.getId())
+                .setName(regionDO.getName());
     }
 
+    @Transactional
     public Long create(RegionCreateReq req, Long currentUserId) {
-        // todo 权限校验
-        return MetaverseRegion.create(req.getName(), req.getServerLocation(), currentUserId);
+        List<String> serverLocation = req.getServerLocation();
+        ServerLocationValidator.validateServerLocations(serverLocation);
+        return MetaverseRegion.create(req.getName(), serverLocation, currentUserId);
     }
 
     /**
      * 修改区服名称
      */
-    public Boolean modifyRegionName(ModifyRegionReq req, Long currentUserId) {
-        // todo 权限校验
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean modifyRegionName(ModifyRegionNameReq req, Long currentUserId) {
         MetaverseRegion region = MetaverseRegion.loadAndAssertNotExist(req.getId());
-        return region.modifyRegionName(req, currentUserId);
+        return region.modifyRegionName(req.getName(), currentUserId);
     }
 
-
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean modifyRegionLocationList(ModifyRegionServerLocationReq req, Long currentUserId) {
+        List<String> serverLocation = req.getServerLocation();
+        ServerLocationValidator.validateServerLocations(serverLocation);
+        MetaverseRegion region = MetaverseRegion.loadAndAssertNotExist(req.getId());
+        return region.modifyRegionLocationList(req.getServerLocation(), currentUserId);
+    }
 }
 
 

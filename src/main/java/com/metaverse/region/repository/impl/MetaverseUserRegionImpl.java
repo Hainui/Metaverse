@@ -1,5 +1,6 @@
 package com.metaverse.region.repository.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
@@ -41,6 +42,16 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
                 .set(MetaverseRegionDO::getName, name)
                 .set(MetaverseRegionDO::getVersion, version)
                 .set(MetaverseRegionDO::getUpdateBy, currentUserId)
+                .update();
+    }
+
+    @Override
+    public Boolean modifyRegionLocationList(List<String> newServerLocation, Long regionId, Long currentUserId, Long newVersion) {
+        return regionService.lambdaUpdate()
+                .eq(MetaverseRegionDO::getId, regionId)
+                .set(MetaverseRegionDO::getServerLocation, JSON.toJSONString(newServerLocation))
+                .set(MetaverseRegionDO::getUpdateBy, currentUserId)
+                .set(MetaverseRegionDO::getVersion, newVersion)
                 .update();
     }
 
