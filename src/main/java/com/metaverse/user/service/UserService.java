@@ -77,7 +77,7 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId, Long currentRegionId) {
+    public Boolean metaverseUserModifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId, Long currentRegionId) {
         MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId(), currentRegionId);
         return metaverseUser.modifyPassword(req, currentUserId);
     }
