@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -127,7 +128,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
 
     @Getter
-    public enum Gender {
+    public enum Gender implements Serializable {
         // 定义枚举常量 FEMALE 和 MALE
         FEMALE(0, "女"),
         MALE(1, "男");
