@@ -2,9 +2,13 @@ package com.metaverse.common.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.Utils.RedisServer;
+import com.metaverse.common.constant.UserConstant;
 import com.metaverse.common.model.Result;
+import com.metaverse.user.domain.MetaverseUser;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,12 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 
-@Component
+@Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class LoginCheckInterceptor implements HandlerInterceptor {
+
+    private final RedisServer redisServer;
+
     @Override//目标方法运行前运行,返回true就是放行,返回false就是不放行
     public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) throws Exception {
-//        return HandlerInterceptor.super.preHandle(request, response, handler);
         //1.获取请求url。
         String url = req.getRequestURL().toString();
         log.info("请求的url: {}", url);
@@ -44,7 +51,11 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         //5.解析token，如果解析失败，返回错误结果（未登录）。
         try {
-            JwtUtils.parseJWT(jwt);
+            Long userId = JwtUtils.parseJWT(jwt).get(UserConstant.METAVERSE_USER, MetaverseUser.class).getId();
+            if (!redisServer.validateToken(userId, jwt)) {
+                log.error("token已经过期或被销毁");
+                return false;
+            }
         } catch (Exception e) {
             log.error("解析令牌失败，错误信息：{}", e.getMessage());
             log.info("解析令牌失败, 返回未登录错误信息");

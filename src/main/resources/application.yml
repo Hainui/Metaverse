@@ -12,6 +12,18 @@ spring:
     username: root
     #4.数据库的密码
     password: 557902
+  redis:
+    host: localhost      # Redis 服务器的地址，默认为 localhost
+    port: 6379           # Redis 服务器的端口号，默认为 6379
+    password:            # Redis 服务器的密码，如果未设置密码，则留空
+    database: 0          # 使用的数据库索引，默认为 0，Redis 支持 0 到 15 共 16 个数据库
+    timeout: 5000ms      # 连接超时时间，默认为 5000 毫秒
+    jedis:
+      pool:
+        max-active: 8    # 连接池最大连接数，默认为 8
+        max-wait: -1ms   # 连接池最大等待时间，默认为 -1 表示无限等待
+        max-idle: 8      # 连接池最大空闲连接数，默认为 8
+        min-idle: 0      # 连接池最小空闲连接数，默认为 0
 
 #将mybatis输出到控制台
 mybatis:

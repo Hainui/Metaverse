@@ -1,6 +1,8 @@
 package com.metaverse.common.Utils;
 
 import com.metaverse.common.constant.UserConstant;
+import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.domain.region.domain.MetaverseRegion;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,21 +34,27 @@ public class JwtUtils {
     }
 
     public static Long getCurrentUserId() {
-        String token = getToken();
-        Claims claims = parseJWT(token);
-        return claims.get(UserConstant.USER_ID, Long.class);
+        MetaverseUser user = parseJWT(getToken()).get(UserConstant.METAVERSE_USER, MetaverseUser.class);
+        if (Objects.isNull(user)) {
+            throw new IllegalArgumentException("登录信息异常");
+        }
+        return user.getId();
     }
 
     public static String getCurrentUserEmail() {
-        String token = getToken();
-        Claims claims = parseJWT(token);
-        return claims.get(UserConstant.EMAIL, String.class);
+        MetaverseUser user = parseJWT(getToken()).get(UserConstant.METAVERSE_USER, MetaverseUser.class);
+        if (Objects.isNull(user)) {
+            throw new IllegalArgumentException("登录信息异常");
+        }
+        return user.getEmail();
     }
 
-    public static Long getCurrentUserRegionId() {
-        String token = getToken();
-        Claims claims = parseJWT(token);
-        return claims.get(UserConstant.REGION_ID, Long.class);
+    public static MetaverseRegion getCurrentUserRegion() {
+        MetaverseUser user = parseJWT(getToken()).get(UserConstant.METAVERSE_USER, MetaverseUser.class);
+        if (Objects.isNull(user)) {
+            throw new IllegalArgumentException("登录信息异常");
+        }
+        return user.getRegion();
     }
 
     private static String getToken() {

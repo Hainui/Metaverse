@@ -1,6 +1,7 @@
 package com.metaverse.user.service;
 
 import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.Utils.RedisServer;
 import com.metaverse.common.constant.UserConstant;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
@@ -23,18 +24,23 @@ import java.util.Objects;
 @Service
 public class UserService {
 
-    IMetaverseUserService userService;
+    private final IMetaverseUserService userService;
+    private final RedisServer redisServer;
 
     @Transactional(rollbackFor = Exception.class)
-    public String login(MetaverseUserLoginReq metaverseUserLoginReq) {
+    public String login(MetaverseUserLoginReq metaverseUserLoginReq, String ipAddress) {
         MetaverseUser user = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
         Map<String, Object> claims = new HashMap<>();
-        claims.put(UserConstant.EMAIL, metaverseUserLoginReq.getEmail());
-        claims.put(UserConstant.REGION_ID, metaverseUserLoginReq.getRegionId());
-        claims.put(UserConstant.USER_ID, user.getId());
-        claims.put(UserConstant.USER_NAME, user.getName());
-        claims.put(UserConstant.USER_NAME, user.getName());
-        return JwtUtils.generateJwt(claims);
+        claims.put(UserConstant.METAVERSE_USER, user);
+        claims.put(UserConstant.IP_ADDRESS, ipAddress);
+        String token = JwtUtils.generateJwt(claims);
+        redisServer.storeToken(user.getId(), token);
+        return token;
+    }
+
+    public Boolean signOut(Long userId) {
+        redisServer.removeToken(userId);
+        return Boolean.TRUE;
     }
 
     @Transactional(rollbackFor = Exception.class)

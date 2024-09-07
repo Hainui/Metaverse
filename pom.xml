@@ -9,6 +9,7 @@
         <version>2.7.12</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.metaverse</groupId>
     <artifactId>Metaverse</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -35,12 +36,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.mybatis.spring.boot</groupId>-->
-        <!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
-        <!--            <version>2.2.2</version>-->
-        <!--        </dependency>-->
-        <!--        AOP      -->
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>2.7.12</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
@@ -62,6 +65,27 @@
             <version>2.3.0</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20211205</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vaadin.external.google</groupId>
+            <artifactId>android-json</artifactId>
+            <version>0.0.20131108.vaadin1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!--		邮箱验证-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -74,17 +98,12 @@
             <artifactId>fastjson</artifactId>
             <version>2.0.31</version>
         </dependency>
-        <!--        redis-->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>4.2.3</version>
-        </dependency>
 
 
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
+            <version>8.2.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -103,6 +122,15 @@
             <version>3.5.3.1</version> <!-- 请检查并使用最新版本 -->
         </dependency>
 
+        <!-- Hutool核心工具类 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>5.8.25</version> <!-- 请检查是否有更新的版本 -->
+        </dependency>
+        <!-- 根据需要添加其他模块 -->
+
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -114,32 +142,6 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.5.3.1</version> <!-- 请检查并使用最新版本 -->
-        </dependency>
-
-        <!-- 添加MapStruct核心库 -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.3.Final</version>
-            <!-- 仅当编译时需要MapStruct时才添加该依赖，否则可以将其范围设为provided -->
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- 添加MapStruct处理器 -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.3.Final</version>
-            <!-- 对于编译时生成映射器所需的处理器，使用annotationProcessor范围 -->
-            <scope>annotationProcessor</scope>
-        </dependency>
-
-        <!-- 如果使用Java 8及以上版本，需要添加mapstruct-jdk8依赖 -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-jdk8</artifactId>
-            <version>1.5.3.Final</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -160,7 +162,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
+            <version>1.9.4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/commons-collections/commons-collections -->
         <dependency>
@@ -193,7 +195,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.23</version> <!-- 根据你的MySQL版本选择合适的版本 -->
+            <version>8.0.28</version> <!-- 根据你的MySQL版本选择合适的版本 -->
         </dependency>
 
         <!-- Lombok -->
@@ -210,11 +212,13 @@
             <artifactId>freemarker</artifactId>
             <version>2.3.31</version> <!-- 请检查并使用最新版本 -->
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

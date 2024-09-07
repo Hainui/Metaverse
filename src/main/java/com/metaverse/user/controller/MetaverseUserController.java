@@ -1,5 +1,6 @@
 package com.metaverse.user.controller;
 
+import com.metaverse.common.Utils.HttpUtils;
 import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.Utils.VerificationCodeUtil;
 import com.metaverse.common.model.Result;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
@@ -34,17 +36,21 @@ public class MetaverseUserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "用户登录", tags = "1.0.0")
-    public Result<String> login(@ApiParam(name = "用户登录请求参数", required = true) @RequestBody @Valid MetaverseUserLoginReq req) {
-        return Result.success(userService.login(req));
+    public Result<String> login(@ApiParam(name = "用户登录请求参数", required = true) @RequestBody @Valid MetaverseUserLoginReq req, HttpServletRequest request) {
+        return Result.success(userService.login(req, HttpUtils.getIpAddress(request)));
     }
 
+    @GetMapping("/signOut")
+    @ApiOperation(value = "用户退出登录", tags = "1.0.0")
+    public Result<String> signOut() {
+        return Result.success(userService.signOut(JwtUtils.getCurrentUserId());
+    }
 
     @GetMapping("/searchUser")
     @ApiOperation(value = "根据用户名精确查找用户", tags = "1.0.0")
     public Result<SearchUserByNameResp> searchUser(@ApiParam(name = "用户搜索参数", required = true) @RequestParam(value = "userName") @NotBlank(message = "用户名不能为空") String userName) {
-        return Result.success(userService.searchUserByName(userName, JwtUtils.getCurrentUserRegionId()));
+        return Result.success(userService.searchUserByName(userName, JwtUtils.getCurrentUserRegion().getId()));
     }
-
 
     @PostMapping("/registration")
     @ApiOperation(value = "用户注册", tags = "1.0.0")
@@ -55,7 +61,6 @@ public class MetaverseUserController {
         }
         return Result.success(userService.registration(req));
     }
-
 
     @GetMapping("/registrationSendVerificationCode")
     @ApiOperation(value = "发送验证码", tags = "1.0.0")
@@ -69,5 +74,4 @@ public class MetaverseUserController {
     public Result<Boolean> modifyUserName(@ApiParam(name = "用户修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
         return Result.success(userService.modifyUserName(req, JwtUtils.getCurrentUserId()));
     }
-
 }

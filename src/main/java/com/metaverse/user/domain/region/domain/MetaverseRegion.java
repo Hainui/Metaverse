@@ -61,7 +61,9 @@ public class MetaverseRegion implements IEntity {
                 .setServerLocation(JSON.toJSONString(serverLocation))
                 .setCreateBy(currentUserId)
                 .setCreateAt(LocalDateTime.now());
-        repository.save(metaverseRegionDO);
+        if (!repository.save(metaverseRegionDO)) {
+            throw new IllegalArgumentException("分区新建失败");
+        }
         return metaverseRegionDO.getId();
 
     }

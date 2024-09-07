@@ -28,7 +28,6 @@ import java.util.List;
 public class RegionController {
     private final RegionService regionService;
 
-
     @GetMapping("/getAllRegion")
     @ApiOperation(value = "获取所有开放的区服", tags = "1.0.0")
     public Result<List<RegionResp>> getAllRegion() {

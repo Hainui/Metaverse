@@ -1,21 +1,13 @@
 package com.metaverse.common.constant;
 
 public interface UserConstant {
+    String METAVERSE_USER = "user";
 
-    String EMAIL = "email";
-
-    String REGION_ID = "regionId";
-
-    String USER_ID = "userId";
-
-    String USER_NAME = "userName";
+    String IP_ADDRESS = "ipAddress";
 
     String TOKEN = "token";
 
-    /**
-     * 解析盐 - UNIVERSE_METAVERSE
-     */
-    String SIGN_KEY = "xiaoze";
+    String SIGN_KEY = "UNIVERSE_METAVERSE";
 
     /**
      * 令牌过期时间 24小时
