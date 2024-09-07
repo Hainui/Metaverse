@@ -3,12 +3,12 @@ package com.metaverse.user.repository.impl;
 import com.alibaba.fastjson.JSON;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.constant.RepositoryConstant;
+import com.metaverse.region.db.entity.MetaverseRegionDO;
+import com.metaverse.region.db.service.IMetaverseRegionService;
+import com.metaverse.region.domain.MetaverseRegion;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
-import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
-import com.metaverse.user.domain.region.db.service.IMetaverseRegionService;
-import com.metaverse.user.domain.region.domain.MetaverseRegion;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -115,39 +115,23 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
 
     @Override
-    public boolean modifyUserName(Long userId, String name, Long updateBy, Long version) {
+    public boolean modifyUserName(Long userId, String name, Long updateBy, Long newVersion) {
         return userService.lambdaUpdate()
                 .eq(MetaverseUserDO::getId, userId)
                 .set(MetaverseUserDO::getUsername, name)
                 .set(MetaverseUserDO::getUpdateBy, updateBy)
-                .set(MetaverseUserDO::getVersion, version)
+                .set(MetaverseUserDO::getVersion, newVersion)
                 .update();
     }
 
     @Override
-    public boolean existByPassword(String password, Long userId) {
-        return userService.lambdaQuery()
+    public boolean modifyPassword(String newPassword, Long userId, Long updateBy, Long newVersion) {
+        return userService.lambdaUpdate()
                 .eq(MetaverseUserDO::getId, userId)
-                .eq(MetaverseUserDO::getPassword, BCryptUtil.hashPassword(password))
-                .last(RepositoryConstant.LIMIT_ONE)
-                .count() > 0;
-    }
-
-    @Override
-    public boolean modifyPassword(String password, Long userId, Long updateBy) {
-        MetaverseUserDO metaverseUserDO = userService.lambdaQuery().eq(MetaverseUserDO::getId, userId).one();
-        String storedHashedPassword = metaverseUserDO.getPassword();
-        if (BCryptUtil.checkPassword(password, storedHashedPassword)) {
-            throw new IllegalArgumentException("密码重复");
-
-        } else {
-            return userService.lambdaUpdate()
-                    .eq(MetaverseUserDO::getId, userId)
-                    .set(MetaverseUserDO::getPassword, BCryptUtil.hashPassword(password))
-                    .set(MetaverseUserDO::getUpdateBy, updateBy)
-                    .update();
-        }
-
+                .set(MetaverseUserDO::getPassword, BCryptUtil.hashPassword(newPassword))
+                .set(MetaverseUserDO::getUpdateBy, updateBy)
+                .set(MetaverseUserDO::getVersion, newVersion)
+                .update();
     }
 
 }

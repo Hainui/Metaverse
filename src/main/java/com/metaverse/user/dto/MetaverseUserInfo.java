@@ -1,6 +1,6 @@
 package com.metaverse.user.dto;
 
-import com.metaverse.user.domain.region.dto.MetaverseRegionInfo;
+import com.metaverse.region.dto.MetaverseRegionInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.metaverse.user.domain.region.resp;
+package com.metaverse.region.resp;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

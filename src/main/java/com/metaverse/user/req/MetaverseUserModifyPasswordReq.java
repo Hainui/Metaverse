@@ -14,5 +14,5 @@ public class MetaverseUserModifyPasswordReq {
 
     @ApiModelProperty(value = "密码", required = true)
     @NotBlank(message = "密码不能为空")
-    private String password;
+    private String newPassword;
 }

@@ -51,8 +51,8 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId) {
-        MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId());
+    public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId, Long currentRegionId) {
+        MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId(), currentRegionId);
         return metaverseUser.modifyUserName(req, currentUserId);
     }
 
@@ -76,9 +76,9 @@ public class UserService {
                 .setBirthTime(userDO.getBirthTime());
     }
 
-    @Transactional(rollbackFor = Exception.class)//修改密码
-    public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId) {
-        MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId());
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId, Long currentRegionId) {
+        MetaverseUser metaverseUser = MetaverseUser.loadAndAssertNotExist(req.getUserId(), currentRegionId);
         return metaverseUser.modifyPassword(req, currentUserId);
     }
 

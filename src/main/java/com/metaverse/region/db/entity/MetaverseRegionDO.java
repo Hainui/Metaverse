@@ -1,4 +1,4 @@
-package com.metaverse.user.domain.region.db.entity;
+package com.metaverse.region.db.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;

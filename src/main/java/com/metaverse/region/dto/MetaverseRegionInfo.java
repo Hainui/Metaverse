@@ -1,4 +1,4 @@
-package com.metaverse.user.domain.region.dto;
+package com.metaverse.region.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

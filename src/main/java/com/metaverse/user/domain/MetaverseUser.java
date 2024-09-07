@@ -3,10 +3,10 @@ package com.metaverse.user.domain;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IAggregateRoot;
+import com.metaverse.region.domain.MetaverseRegion;
+import com.metaverse.region.dto.MetaverseRegionInfo;
 import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
-import com.metaverse.user.domain.region.domain.MetaverseRegion;
-import com.metaverse.user.domain.region.dto.MetaverseRegionInfo;
 import com.metaverse.user.dto.MetaverseUserInfo;
 import com.metaverse.user.dto.MetaverseUserPermissionInfo;
 import com.metaverse.user.repository.MetaverseUserRepository;
@@ -70,10 +70,10 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     private Long version;
 
-    public static MetaverseUser loadAndAssertNotExist(Long userId) {
+    public static MetaverseUser loadAndAssertNotExist(Long userId, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         MetaverseUser user = repository.findByIdWithLock(userId);
-        if (Objects.isNull(user)) {
+        if (Objects.isNull(user) || regionId != null && !regionId.equals(user.getRegion().getId())) {
             throw new IllegalArgumentException("未找到该用户信息");
         }
         return user;
@@ -164,7 +164,11 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        return repository.modifyPassword(req.getPassword(), req.getUserId(), currentUserId);
+        if (BCryptUtil.checkPassword(req.getNewPassword(), this.password)) {
+            throw new IllegalArgumentException("新密码不能与旧密码相同");
+        }
+        Long newVersion = version + 1;
+        return repository.modifyPassword(req.getNewPassword(), req.getUserId(), currentUserId, newVersion);
     }
 
 

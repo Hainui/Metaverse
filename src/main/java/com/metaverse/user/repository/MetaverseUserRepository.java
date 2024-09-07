@@ -15,9 +15,7 @@ public interface MetaverseUserRepository {
 
     MetaverseUser findByIdWithLock(Long userId);
 
-    boolean modifyUserName(Long userId, String name, Long updateBy, Long version);
+    boolean modifyUserName(Long userId, String name, Long updateBy, Long newVersion);
 
-    boolean existByPassword(String password, Long userId);//判断密码是否重复
-
-    boolean modifyPassword(String password, Long userId, Long currentUserId);//修改密码
+    boolean modifyPassword(String newPassword, Long userId, Long currentUserId, Long newVersion);
 }

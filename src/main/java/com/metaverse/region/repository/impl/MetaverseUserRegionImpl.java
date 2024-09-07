@@ -1,12 +1,12 @@
-package com.metaverse.user.domain.region.repository.impl;
+package com.metaverse.region.repository.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.metaverse.common.constant.RepositoryConstant;
+import com.metaverse.region.db.entity.MetaverseRegionDO;
+import com.metaverse.region.db.service.IMetaverseRegionService;
+import com.metaverse.region.domain.MetaverseRegion;
+import com.metaverse.region.repository.MetaverseRegionRepository;
 import com.metaverse.user.db.service.IMetaverseUserService;
-import com.metaverse.user.domain.region.db.entity.MetaverseRegionDO;
-import com.metaverse.user.domain.region.db.service.IMetaverseRegionService;
-import com.metaverse.user.domain.region.domain.MetaverseRegion;
-import com.metaverse.user.domain.region.repository.MetaverseRegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

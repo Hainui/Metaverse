@@ -1,11 +1,11 @@
-package com.metaverse.user.domain.region.controller;
+package com.metaverse.region.controller;
 
 import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.model.Result;
-import com.metaverse.user.domain.region.req.ModifyRegionReq;
-import com.metaverse.user.domain.region.req.RegionCreateReq;
-import com.metaverse.user.domain.region.resp.RegionResp;
-import com.metaverse.user.domain.region.service.RegionService;
+import com.metaverse.region.req.ModifyRegionReq;
+import com.metaverse.region.req.RegionCreateReq;
+import com.metaverse.region.resp.RegionResp;
+import com.metaverse.region.service.RegionService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.metaverse.common.Utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metaverse.common.constant.UserConstant;
-import com.metaverse.user.domain.region.dto.MetaverseRegionInfo;
+import com.metaverse.region.dto.MetaverseRegionInfo;
 import com.metaverse.user.dto.MetaverseUserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
