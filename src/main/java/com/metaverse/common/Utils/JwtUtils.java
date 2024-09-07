@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metaverse.common.constant.UserConstant;
 import com.metaverse.region.dto.MetaverseRegionInfo;
 import com.metaverse.user.dto.MetaverseUserInfo;
+import com.metaverse.user.dto.MetaverseUserPermissionInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -74,6 +75,14 @@ public class JwtUtils {
             throw new IllegalArgumentException("登录信息异常");
         }
         return userInfo.getRegion();
+    }
+
+    public static MetaverseUserPermissionInfo getCurrentUserPermission() {
+        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        if (Objects.isNull(userInfo)) {
+            throw new IllegalArgumentException("登录信息异常");
+        }
+        return userInfo.getPermission();
     }
 
     private static String getToken() {
