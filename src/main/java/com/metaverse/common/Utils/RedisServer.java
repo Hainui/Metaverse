@@ -21,11 +21,10 @@ public class RedisServer {
     private final StringRedisTemplate stringRedisTemplate;
 
 
-    private final String HASH_KEY = "user_token";
-
     private static final Duration EXPIRATION_TIME = Duration.ofHours(24); // 过期时间为24小时
     private static final String EXPIRES_AT_FIELD = "expires_at"; // 存储过期时间的字段名
 
+    private final static String HASH_KEY = "user_token";
     private static final DefaultRedisScript<Boolean> LUA_SCRIPT = new DefaultRedisScript<>();
 
     static {
@@ -33,8 +32,8 @@ public class RedisServer {
                 "local userIdStr = KEYS[1]; " +
                         "local token = ARGV[1]; " +
                         "local expiresAt = ARGV[2]; " +
-                        "redis.call('hset', userIdStr, 'token', token); " +
-                        "redis.call('hset', userIdStr, userIdStr .. '_expires_at', expiresAt); " +
+                        "redis.call('hset', " + HASH_KEY + ", userIdStr, token); " +
+                        "redis.call('hset', " + HASH_KEY + ", userIdStr .. '_expires_at', expiresAt); " +
                         "return true;"
         );
         LUA_SCRIPT.setResultType(Boolean.class);
@@ -75,8 +74,8 @@ public class RedisServer {
      */
     public String getToken(Long userId) {
         String userIdStr = String.valueOf(userId);
-        String token = (String) hashOps().get(HASH_KEY, userIdStr);
-        String expiresAtStr = (String) hashOps().get(HASH_KEY, userIdStr + "_" + EXPIRES_AT_FIELD);
+        String token = hashOps().get(HASH_KEY, userIdStr);
+        String expiresAtStr = hashOps().get(HASH_KEY, userIdStr + "_" + EXPIRES_AT_FIELD);
         if (token != null && expiresAtStr != null) {
             long expiresAt = Long.parseLong(expiresAtStr);
             if (Instant.ofEpochMilli(expiresAt).isAfter(Instant.now())) {
