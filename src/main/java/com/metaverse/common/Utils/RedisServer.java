@@ -21,10 +21,10 @@ public class RedisServer {
     private final StringRedisTemplate stringRedisTemplate;
 
 
-    private static final Duration EXPIRATION_TIME = Duration.ofHours(24); // 过期时间为24小时
-    private static final String EXPIRES_AT_FIELD = "expires_at"; // 存储过期时间的字段名
+    public static final Duration EXPIRATION_TIME = Duration.ofHours(24); // 过期时间为24小时
+    public static final String EXPIRES_AT_FIELD = "expires_at"; // 存储过期时间的字段名
 
-    private final static String HASH_KEY = "user_token";
+    public final static String HASH_KEY = "user_token";
     private static final DefaultRedisScript<Boolean> LUA_SCRIPT = new DefaultRedisScript<>();
 
     static {
@@ -40,7 +40,7 @@ public class RedisServer {
     }
 
 
-    private HashOperations<String, String, String> hashOps() {
+    public HashOperations<String, String, String> hashOps() {
         return stringRedisTemplate.opsForHash();
     }
 

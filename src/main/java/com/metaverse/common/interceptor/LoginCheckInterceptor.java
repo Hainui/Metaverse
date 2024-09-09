@@ -58,7 +58,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             Long userId = userInfo.getId();
             if (!redisServer.validateToken(userId, jwt)) {
                 log.error("token已经过期或被销毁");
-                throw new IllegalArgumentException("无效的token");
+                throw new IllegalArgumentException("登陆已过期请重新登陆");
             }
         } catch (Exception e) {
             log.error("解析令牌失败，错误信息：{}", e.getMessage());
