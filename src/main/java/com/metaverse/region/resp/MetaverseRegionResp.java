@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class RegionResp {
+public class MetaverseRegionResp {
 
     @ApiModelProperty(value = "区服id", required = true)
     private Long id;

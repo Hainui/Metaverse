@@ -27,6 +27,9 @@ public class ServerLocationValidator {
 
         for (String location : serverLocation) {
             if (!isValidUrl(location) && !isValidDomain(location)) {
+                if (invalidLocations.isEmpty()) {
+                    invalidLocations.add("存在不合法的区服地址：");
+                }
                 invalidLocations.add(location);
             }
         }

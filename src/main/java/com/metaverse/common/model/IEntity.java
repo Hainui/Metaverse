@@ -9,4 +9,6 @@ public interface IEntity extends Serializable {
     Long pkVal();
 
     Long modelVersion();
+
+    Long changeVersion();
 }

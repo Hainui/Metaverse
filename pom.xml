@@ -44,6 +44,14 @@
             <version>2.7.12</version>
         </dependency>
 
+        <!-- Lombok 支持 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version> <!-- 确保使用最新的稳定版本 -->
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
@@ -196,14 +204,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.28</version> <!-- 根据你的MySQL版本选择合适的版本 -->
-        </dependency>
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version> <!-- 请检查并使用最新版本 -->
-            <scope>provided</scope>
         </dependency>
 
         <!-- Freemarker 模板引擎 -->

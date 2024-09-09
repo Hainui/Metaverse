@@ -1,5 +1,6 @@
 package com.metaverse.user.dto;
 
+import com.metaverse.permission.dto.MetaverseUserPermissionInfo;
 import com.metaverse.region.dto.MetaverseRegionInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -37,6 +39,6 @@ public class MetaverseUserInfo implements Serializable {
     /**
      * 权限
      */
-    private MetaverseUserPermissionInfo permission;
+    private List<MetaverseUserPermissionInfo> permissions;
 
 }

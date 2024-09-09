@@ -2,9 +2,9 @@ package com.metaverse.common.Utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metaverse.common.constant.UserConstant;
+import com.metaverse.permission.dto.MetaverseUserPermissionInfo;
 import com.metaverse.region.dto.MetaverseRegionInfo;
 import com.metaverse.user.dto.MetaverseUserInfo;
-import com.metaverse.user.dto.MetaverseUserPermissionInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -77,12 +78,12 @@ public class JwtUtils {
         return userInfo.getRegion();
     }
 
-    public static MetaverseUserPermissionInfo getCurrentUserPermission() {
+    public static List<MetaverseUserPermissionInfo> getCurrentUserPermission() {
         MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
         if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
-        return userInfo.getPermission();
+        return userInfo.getPermissions();
     }
 
     private static String getToken() {

@@ -13,7 +13,7 @@ public class ModifyRegionServerLocationReq {
     @NotNull(message = "区服id不能为空")
     private Long id;
 
-    @ApiModelProperty("区服请求地址列表")
+    @ApiModelProperty(value = "区服请求地址列表", required = true)
     @NotEmpty(message = "区服地址列表不能为空")
     private List<String> serverLocation;
 }

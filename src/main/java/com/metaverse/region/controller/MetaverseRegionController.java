@@ -5,15 +5,14 @@ import com.metaverse.common.model.Result;
 import com.metaverse.region.req.ModifyRegionNameReq;
 import com.metaverse.region.req.ModifyRegionServerLocationReq;
 import com.metaverse.region.req.RegionCreateReq;
-import com.metaverse.region.resp.RegionResp;
-import com.metaverse.region.service.RegionService;
+import com.metaverse.region.resp.MetaverseRegionResp;
+import com.metaverse.region.service.MetaverseRegionService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -27,13 +26,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/region")
 @RequiredArgsConstructor
-public class RegionController {
-    private final RegionService regionService;
+public class MetaverseRegionController {
+    private final MetaverseRegionService regionService;
 
-    @GetMapping("/getAllRegion")
+    @GetMapping("/getAllMetaverseRegion")
     @ApiOperation(value = "获取所有开放的区服", tags = "1.0.0")
-    public Result<List<RegionResp>> getAllRegion() {
-        return Result.success(regionService.getAllRegion());
+    public Result<List<MetaverseRegionResp>> getAllMetaverseRegion() {
+        return Result.success(regionService.getAllMetaverseRegion());
     }
 
     @PostMapping("/create")
@@ -52,7 +51,7 @@ public class RegionController {
 
     @PostMapping("/modifyRegionLocationList")
     @ApiOperation(value = "修改区服地址", tags = "1.0.0")
-    public Result<Boolean> modifyRegionLocationList(@ApiParam(name = "修改区域地址请求参数", required = true) @RequestBody @NotEmpty(message = "地址集合不能为空") ModifyRegionServerLocationReq req) {
+    public Result<Boolean> modifyRegionLocationList(@ApiParam(name = "修改区域地址请求参数", required = true) @RequestBody @Valid ModifyRegionServerLocationReq req) {
         // todo 权限校验
         return Result.success(regionService.modifyRegionLocationList(req, JwtUtils.getCurrentUserId()));
     }

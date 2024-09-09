@@ -1,5 +1,6 @@
 package com.metaverse.common.schedule;
 
+import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.Utils.RedisServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,9 @@ public class LoginSchedule {
 //                logger.info("打烊时间不工作，AI 下班了！");
 //                return;
 //            }
+
+            Long currentUserId = JwtUtils.getCurrentUserId();
+//            redisServer.validateToken();
             Map<String, String> allTokens = redisServer.getAllTokens();
             for (Map.Entry<String, String> entry : allTokens.entrySet()) {
                 String userIdStr = entry.getKey();

@@ -71,7 +71,7 @@ public class MetaverseUserController {
 
     @PostMapping("/modifyUserName")
     @ApiOperation(value = "修改用户名", tags = "1.0.0")
-    public Result<Boolean> modifyUserName(@ApiParam(name = "用户修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
+    public Result<Boolean> modifyUserName(@ApiParam(name = "用户名修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
         return Result.success(userService.modifyUserName(req, JwtUtils.getCurrentUserId(), JwtUtils.getCurrentUserRegion().getId()));
     }
 

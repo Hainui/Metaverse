@@ -1,4 +1,4 @@
-package com.metaverse.user.dto;
+package com.metaverse.permission.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +22,12 @@ public class MetaverseUserPermissionInfo implements Serializable {
      * 权限串集合
      */
     private List<String> permissions;
+    /**
+     * 创建人
+     */
+    private Long createBy;
+    /**
+     * 修改人 没有时为-1
+     */
+    private Long updateBy;
 }

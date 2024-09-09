@@ -7,7 +7,7 @@ import com.metaverse.region.domain.MetaverseRegion;
 import com.metaverse.region.req.ModifyRegionNameReq;
 import com.metaverse.region.req.ModifyRegionServerLocationReq;
 import com.metaverse.region.req.RegionCreateReq;
-import com.metaverse.region.resp.RegionResp;
+import com.metaverse.region.resp.MetaverseRegionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,20 +20,20 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RegionService {
+public class MetaverseRegionService {
 
     private final IMetaverseRegionService regionService;
 
-    public List<RegionResp> getAllRegion() {
+    public List<MetaverseRegionResp> getAllMetaverseRegion() {
         List<MetaverseRegionDO> list = regionService.lambdaQuery().list();
-        return list.stream().map(this::convertToRegionListResp).collect(Collectors.toList());
+        return list.stream().map(this::convertToRegionResp).collect(Collectors.toList());
     }
 
-    public RegionResp convertToRegionListResp(MetaverseRegionDO regionDO) {
+    public MetaverseRegionResp convertToRegionResp(MetaverseRegionDO regionDO) {
         if (Objects.isNull(regionDO)) {
             return null;
         }
-        return new RegionResp()
+        return new MetaverseRegionResp()
                 .setId(regionDO.getId())
                 .setName(regionDO.getName());
     }

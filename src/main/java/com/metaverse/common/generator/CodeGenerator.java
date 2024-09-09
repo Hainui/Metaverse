@@ -2,6 +2,7 @@ package com.metaverse.common.generator;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
@@ -21,22 +22,28 @@ public class CodeGenerator {
                     builder.author("Hainui") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
                             .fileOverride() // 覆盖已生成文件
-                            .outputDir("src/main/java"); // 指定输出目录
+                            .outputDir("src/main/java") // 指定输出目录
+                            .dateType(DateType.ONLY_DATE) // 设置日期类型
+                            .disableOpenDir() // 不打开输出目录
+                            .commentDate("yyyy-MM-dd HH:mm:ss"); // 设置注释日期格式
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.metaverse.region") // 设置父包名
+                    builder.parent("com.metaverse.permission") // 设置父包名
                             .moduleName("db") // 设置父包模块名
-                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper")); // 设置 XML 生成路径
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/permission")); // 设置 XML 生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.entityBuilder().enableLombok() // 开启 Lombok
-                            .controllerBuilder().enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
-                    builder.addInclude("metaverse_region") // 设置表前缀
-                            .entityBuilder()
+                    builder.entityBuilder()
                             .enableLombok() // 开启 Lombok
                             .enableRemoveIsPrefix() // 开启驼峰转下划线字段名
                             .naming(NamingStrategy.underline_to_camel) // 设置命名策略
                             .formatFileName("%sDO"); // 设置实体类的文件名格式
+                    builder.controllerBuilder().enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
+                    builder.addInclude("metaverse_permission,metaverse_user_permission_relationship,metaverse_user_permission_relationship_delete") // 设置表前缀
+                            .mapperBuilder()
+                            .enableBaseResultMap() // 启用基本的结果映射
+                            .enableBaseColumnList() // 启用基本的列列表
+                            .enableMapperAnnotation(); // 启用 Mapper 注解
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用 Freemarker 引擎
                 .execute();

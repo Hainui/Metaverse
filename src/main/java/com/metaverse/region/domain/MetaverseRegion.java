@@ -76,7 +76,7 @@ public class MetaverseRegion implements IEntity {
         if (repository.existByName(newRegionName)) {
             throw new IllegalArgumentException("该区服名已存在");
         }
-        Long newVersion = version + 1;
+        Long newVersion = changeVersion();
         return repository.updateRegionName(pkVal(), newRegionName, currentUserId, newVersion);
     }
 
@@ -99,12 +99,17 @@ public class MetaverseRegion implements IEntity {
         return MODEL_VERSION;
     }
 
+    @Override
+    public Long changeVersion() {
+        return ++version;
+    }
+
     public Boolean modifyRegionLocationList(List<String> newServerLocation, Long currentUserId) {
         if (Objects.equals(newServerLocation, serverLocation)) {
             throw new IllegalArgumentException("新区服地址和旧区服地址完全相同，无需修改");
         }
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
-        Long newVersion = version + 1;
+        Long newVersion = changeVersion();
         return repository.modifyRegionLocationList(newServerLocation, pkVal(), currentUserId, newVersion);
     }
 }

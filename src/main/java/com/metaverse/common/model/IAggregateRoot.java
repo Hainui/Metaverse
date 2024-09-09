@@ -11,4 +11,6 @@ public interface IAggregateRoot<T> extends Serializable {
     Long pkVal();
 
     Long modelVersion();
+
+    Long changeVersion();
 }

@@ -3,12 +3,13 @@ package com.metaverse.user.domain;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IAggregateRoot;
+import com.metaverse.permission.domain.MetaversePermission;
+import com.metaverse.permission.dto.MetaverseUserPermissionInfo;
 import com.metaverse.region.domain.MetaverseRegion;
 import com.metaverse.region.dto.MetaverseRegionInfo;
 import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.dto.MetaverseUserInfo;
-import com.metaverse.user.dto.MetaverseUserPermissionInfo;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.ModifyUserNameReq;
@@ -21,7 +22,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -60,9 +65,9 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      */
     private Gender gender;
     /**
-     * 权限
+     * 权限集合
      */
-    private MetaverseUserPermission permission;
+    private List<MetaversePermission> permissions;
 
     private Long updatedBy;
 
@@ -117,17 +122,19 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
                 .setEmail(user.getEmail())
                 .setName(user.getName())
                 .setRegion(convertToRegionInfo(user.getRegion()))
-                .setPermission(convertToUserPermissionInfo(user.getPermission()))
+                .setPermissions(Optional.of(user.getPermissions()).orElse(Collections.emptyList()).stream().map(MetaverseUser::convertToUserPermissionInfo).collect(Collectors.toList()))
                 .setGender(user.getGender().getBooleanValue());
     }
 
-    private static MetaverseUserPermissionInfo convertToUserPermissionInfo(MetaverseUserPermission permission) {
+    private static MetaverseUserPermissionInfo convertToUserPermissionInfo(MetaversePermission permission) {
         if (Objects.isNull(permission)) {
             return null;
         }
         return new MetaverseUserPermissionInfo()
                 .setPermissions(permission.getPermissions())
-                .setPermissionGroupName(permission.getPermissionGroupName());
+                .setPermissionGroupName(permission.getPermissionGroupName())
+                .setCreateBy(permission.getCreateBy())
+                .setUpdateBy(permission.getUpdatedBy());
     }
 
     private static MetaverseRegionInfo convertToRegionInfo(MetaverseRegion region) {
@@ -148,7 +155,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         if (repository.existByName(req.getName(), req.getRegionId())) {
             throw new IllegalArgumentException("名字已经存在");
         }
-        Long newVersion = version + 1;
+        Long newVersion = changeVersion();
         return repository.modifyUserName(req.getUserId(), req.getName(), currentUserId, newVersion);
     }
 
@@ -162,12 +169,17 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         return MODEL_VERSION;
     }
 
+    @Override
+    public Long changeVersion() {
+        return ++version;
+    }
+
     public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         if (BCryptUtil.checkPassword(req.getNewPassword(), this.password)) {
             throw new IllegalArgumentException("新密码不能与旧密码相同");
         }
-        Long newVersion = version + 1;
+        Long newVersion = changeVersion();
         return repository.modifyPassword(req.getNewPassword(), req.getUserId(), currentUserId, newVersion);
     }
 

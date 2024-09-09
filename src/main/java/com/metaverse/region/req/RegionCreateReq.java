@@ -14,7 +14,7 @@ public class RegionCreateReq {
     @NotBlank(message = "区服名称不能为空")
     private String name;
 
-    @ApiModelProperty("区服创建请求地址列表")
+    @ApiModelProperty(value = "区服创建请求地址列表", required = true)
     @NotEmpty(message = "区服地址列表不能为空")
     private List<String> serverLocation;
 }
