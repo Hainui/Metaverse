@@ -1,8 +1,14 @@
 package com.metaverse.user.repository.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.constant.RepositoryConstant;
+import com.metaverse.permission.db.entity.MetaversePermissionDO;
+import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO;
+import com.metaverse.permission.db.service.IMetaversePermissionService;
+import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipService;
+import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.domain.MetaverseRegion;
@@ -18,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -26,6 +33,8 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
 
     private final IMetaverseUserService userService;
     private final IMetaverseRegionService regionService;
+    private final IMetaversePermissionService permissionService;
+    private final IMetaverseUserPermissionRelationshipService permissionRelationshipService;
 
     @Override//查询是否用户名是否存在
     public boolean existByName(String name, Long regionId) {
@@ -85,17 +94,42 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
             return null;
         }
         MetaverseRegionDO regionDO = regionService.lambdaQuery().eq(MetaverseRegionDO::getId, metaverseUserDO.getRegionId()).one();
+        List<Long> permissionIds = permissionRelationshipService
+                .lambdaQuery()
+                .select(MetaverseUserPermissionRelationshipDO::getPermissionId)
+                .eq(MetaverseUserPermissionRelationshipDO::getUserId, metaverseUserDO.getId())
+                .list()
+                .stream()
+                .map(MetaverseUserPermissionRelationshipDO::getPermissionId)
+                .collect(Collectors.toList());
+        List<MetaversePermissionDO> permissionDOList = permissionService.lambdaQuery().in(MetaversePermissionDO::getId, permissionIds).list();
         return new MetaverseUser().
                 setId(metaverseUserDO.getId())
                 .setEmail(metaverseUserDO.getEmail())
                 .setName(metaverseUserDO.getUsername())
                 .setPassword(metaverseUserDO.getPassword())
                 .setRegion(regionDOConvertToRegion(regionDO))
+                .setPermissions(permissionDOList.stream().map(this::permissionDoConvertToPermission).collect(Collectors.toList()))
                 .setBirthTime(metaverseUserDO.getBirthTime())
                 .setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()))
                 .setUpdatedBy(metaverseUserDO.getUpdateBy())
                 .setUpdatedAt(metaverseUserDO.getUpdatedAt())
                 .setVersion(metaverseUserDO.getVersion());
+    }
+
+    private MetaversePermission permissionDoConvertToPermission(MetaversePermissionDO metaversePermissionDO) {
+        if (metaversePermissionDO == null) {
+            return null;
+        }
+        return new MetaversePermission()
+                .setId(metaversePermissionDO.getId())
+                .setPermissionGroupName(metaversePermissionDO.getPermissionGroupName())
+                .setCreateBy(metaversePermissionDO.getCreateBy())
+                .setCreateAt(metaversePermissionDO.getCreateAt())
+                .setUpdatedAt(metaversePermissionDO.getUpdateAt())
+                .setUpdatedBy(metaversePermissionDO.getUpdateBy())
+                .setVersion(metaversePermissionDO.getVersion())
+                .setPermissions(JSONArray.parseArray(metaversePermissionDO.getPermissions(), String.class));
     }
 
     private MetaverseRegion regionDOConvertToRegion(MetaverseRegionDO regionDO) {
