@@ -37,7 +37,7 @@ public class LoginSchedule {
             Map<Long, String> tokenMap = redisServer.getAllTokens();
             // todo tokenMap可以用于统计生成当前在线用户信息
         } catch (Exception e) {
-            log.error("处理登陆令牌时发生异常", e);
+            log.error("定时删除过期token时发生异常", e);
 
         }
     }
