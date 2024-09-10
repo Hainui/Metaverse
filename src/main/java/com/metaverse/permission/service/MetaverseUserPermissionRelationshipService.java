@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MetaverseUserPermissionRelationshipService {
     private final IMetaverseUserPermissionRelationshipService permissionRelationshipService;
-    private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;
+    private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;//备份 上面删除的信息下面要留作备份
 
     public Boolean authoritiesImpowerUsers(AuthoritiesForUsersReq req) {
         return null;

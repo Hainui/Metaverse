@@ -100,7 +100,7 @@ public class MetaversePermission implements IEntity {
         }
         permissionRepository repository = BeanManager.getBean(permissionRepository.class);
         Long newVersion = changeVersion();
-        return repository.modifyPermissions(permissions, pkVal(), currentUserId, newVersion);
+        return repository.modifyPermissions(permissions, pkVal(), currentUserId, newVersion, this.permissions);
     }
 
     @Override

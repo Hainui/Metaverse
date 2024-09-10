@@ -1,11 +1,13 @@
 package com.metaverse.permission.db.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -19,6 +21,7 @@ import lombok.Setter;
 @Setter
 @TableName("metaverse_locator_enum")
 @ApiModel(value = "MetaverseLocatorEnumDO对象", description = "定位符类型名称枚举表")
+@Accessors(chain = true)
 public class MetaverseLocatorEnumDO implements Serializable {
 
     private static final long serialVersionUID = 1L;

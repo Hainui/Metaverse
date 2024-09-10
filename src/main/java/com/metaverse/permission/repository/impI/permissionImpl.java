@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
+import com.metaverse.permission.db.service.IMetaverseActionEnumService;
+import com.metaverse.permission.db.service.IMetaverseLocatorEnumService;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
+import com.metaverse.permission.db.service.IMetaverseResourceTypeEnumService;
 import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.repository.permissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +20,26 @@ import java.util.Objects;
 @Repository
 public class permissionImpl implements permissionRepository {
     private final IMetaversePermissionService permissionService;
+    private final IMetaverseResourceTypeEnumService resourceTypeEnumService;
+    private final IMetaverseActionEnumService actionEnumService;
+    private final IMetaverseLocatorEnumService locatorEnumService;
 
     @Override
     public boolean save(MetaversePermissionDO metaversePermissionDO) {
-        return permissionService.save(metaversePermissionDO);
+        boolean saved = permissionService.save(metaversePermissionDO);
+        String permissionJson = metaversePermissionDO.getPermissions();
+        List<String> permissionList = JSONArray.parseArray(permissionJson, String.class);
+        for (String permission : permissionList) {
+            String[] permissionStr = permission.split("\\.");
+            String resourceType = permissionStr[0];
+            String action = permissionStr[1];
+            String locator = permissionStr[2];
+            // todo 这三个枚举分别要加入三个表中 resourceTypeEnum actionEnum locatorEnum
+
+        }
+        return saved;
+
+
     }
 
     // 快照读
@@ -71,9 +90,8 @@ public class permissionImpl implements permissionRepository {
         permission.setId(metaversePermissionDO.getId());
         permission.setPermissionGroupName(metaversePermissionDO.getPermissionGroupName());
 
-        String serverLocationJson = metaversePermissionDO.getPermissions();
-        List<String> serverLocations = JSONArray.parseArray(serverLocationJson, String.class);
-        permission.setPermissions(serverLocations);
+        String permissions = metaversePermissionDO.getPermissions();
+        permission.setPermissions(JSONArray.parseArray(permissions, String.class));
         permission.setCreateBy(metaversePermissionDO.getCreateBy());
         permission.setCreateAt(metaversePermissionDO.getCreateAt());
         permission.setUpdatedBy(metaversePermissionDO.getUpdateBy());
@@ -83,13 +101,20 @@ public class permissionImpl implements permissionRepository {
     }
 
     @Override
-    public Boolean modifyPermissions(List<String> permissions, Long id, Long currentUserId, Long newVersion) {
-        return permissionService.lambdaUpdate()
+    public Boolean modifyPermissions(List<String> newPermissions, Long id, Long currentUserId, Long newVersion, List<String> oldPermissions) {
+        boolean updated = permissionService.lambdaUpdate()
                 .eq(MetaversePermissionDO::getId, id)
-                .set(MetaversePermissionDO::getPermissions, JSON.toJSONString(permissions))
+                .set(MetaversePermissionDO::getPermissions, JSON.toJSONString(newPermissions))
                 .set(MetaversePermissionDO::getUpdateBy, currentUserId)
                 .set(MetaversePermissionDO::getVersion, newVersion)
                 .update();
+        for (String permission : oldPermissions) {
+            // 直接等值匹配删除
+        }
+        for (String permission : newPermissions) {
+            // 直接批量插入
+        }
+        return updated;
     }
 
 }

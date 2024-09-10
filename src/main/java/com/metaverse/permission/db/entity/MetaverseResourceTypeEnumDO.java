@@ -1,11 +1,13 @@
 package com.metaverse.permission.db.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -19,6 +21,7 @@ import lombok.Setter;
 @Setter
 @TableName("metaverse_resource_type_enum")
 @ApiModel(value = "MetaverseResourceTypeEnumDO对象", description = "资源类型名称枚举表")
+@Accessors(chain = true)
 public class MetaverseResourceTypeEnumDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
