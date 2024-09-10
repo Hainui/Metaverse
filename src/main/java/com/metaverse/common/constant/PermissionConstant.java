@@ -11,7 +11,6 @@ public class PermissionConstant {
     private static final int ACTIONS;
     private static final int LOCATORS;
 
-    // fast-fail
     public interface ResourceType {
         static String USER = "USER";
         // 可以在这里添加更多的资源类型常量
