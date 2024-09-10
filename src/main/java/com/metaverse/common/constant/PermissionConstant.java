@@ -12,19 +12,19 @@ public class PermissionConstant {
     private static final int LOCATORS;
 
     public interface ResourceType {
-        static String USER = "USER";
+        String USER = "USER";
         // 可以在这里添加更多的资源类型常量
         // static String OTHER_RESOURCE_TYPE = "OTHER_RESOURCE_TYPE";
     }
 
     public interface Action {
-        static String USER = "USER";
+        String USER = "USER";
         // 可以在这里添加更多的动作常量
         // static String OTHER_ACTION = "OTHER_ACTION";
     }
 
     public interface Locator {
-        static String USER = "USER";
+        String USER = "USER";
         // 可以在这里添加更多的定位器常量
         // static String OTHER_LOCATOR = "OTHER_LOCATOR";
     }
