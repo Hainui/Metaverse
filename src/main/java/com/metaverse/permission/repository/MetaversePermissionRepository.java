@@ -5,7 +5,7 @@ import com.metaverse.permission.domain.MetaversePermission;
 
 import java.util.List;
 
-public interface permissionRepository {
+public interface MetaversePermissionRepository {
     boolean save(MetaversePermissionDO metaversePermissionDO);
 
     boolean existByName(String name);

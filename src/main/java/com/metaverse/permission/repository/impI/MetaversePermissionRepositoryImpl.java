@@ -9,7 +9,7 @@ import com.metaverse.permission.db.service.IMetaverseLocatorEnumService;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
 import com.metaverse.permission.db.service.IMetaverseResourceTypeEnumService;
 import com.metaverse.permission.domain.MetaversePermission;
-import com.metaverse.permission.repository.permissionRepository;
+import com.metaverse.permission.repository.MetaversePermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Repository
-public class permissionImpl implements permissionRepository {
+public class MetaversePermissionRepositoryImpl implements MetaversePermissionRepository {
     private final IMetaversePermissionService permissionService;
     private final IMetaverseResourceTypeEnumService resourceTypeEnumService;
     private final IMetaverseActionEnumService actionEnumService;

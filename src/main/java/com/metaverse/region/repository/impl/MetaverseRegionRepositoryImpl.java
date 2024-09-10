@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Repository
-public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连接数据库操作,调用Iservice接口的方法
+public class MetaverseRegionRepositoryImpl implements MetaverseRegionRepository {//连接数据库操作,调用Iservice接口的方法
 
     private final IMetaverseUserService userService;
     private final IMetaverseRegionService regionService;

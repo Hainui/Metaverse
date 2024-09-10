@@ -5,7 +5,7 @@ import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IEntity;
 import com.metaverse.permission.PermissionIdGen;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
-import com.metaverse.permission.repository.permissionRepository;
+import com.metaverse.permission.repository.MetaversePermissionRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -59,7 +59,7 @@ public class MetaversePermission implements IEntity {
 
     public static Long create(String name, List<String> permissions, Long currentUserId) {
         PermissionIdGen idGen = BeanManager.getBean(PermissionIdGen.class);
-        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         MetaversePermissionDO metaversePermissionDO = new MetaversePermissionDO()
                 .setId(idGen.nextId())
                 .setPermissionGroupName(name)
@@ -73,7 +73,7 @@ public class MetaversePermission implements IEntity {
     }
 
     public static MetaversePermission writeLoadAndAssertNotExist(Long id) {
-        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         MetaversePermission permission = repository.findByIdWithWriteLock(id);
         if (Objects.isNull(permission)) {
             throw new IllegalArgumentException("未找到该权限信息");
@@ -82,7 +82,7 @@ public class MetaversePermission implements IEntity {
     }
 
     public static MetaversePermission readLoadAndAssertNotExist(Long id) {
-        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         MetaversePermission permission = repository.findByIdWithReadLock(id);
         if (Objects.isNull(permission)) {
             throw new IllegalArgumentException("未找到该权限信息");
@@ -95,7 +95,7 @@ public class MetaversePermission implements IEntity {
         if (StringUtils.equals(this.permissionGroupName, name)) {
             throw new IllegalArgumentException("新的权限名称不能和旧权限名称相同");
         }
-        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         if (repository.existByName(name)) {
             throw new IllegalArgumentException("该权限名称已存在");
         }
@@ -107,7 +107,7 @@ public class MetaversePermission implements IEntity {
         if (Objects.equals(this.permissions, permissions)) {
             throw new IllegalArgumentException("新权限串集合和旧权限串集合相同,无需修改");
         }
-        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         Long newVersion = changeVersion();
         return repository.modifyPermissions(permissions, pkVal(), currentUserId, newVersion, this.permissions);
     }
