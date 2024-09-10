@@ -4,6 +4,7 @@ import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipDeleteService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipService;
+import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.req.ModifyPermissionNameReq;
 import com.metaverse.permission.req.ModifyPermissionReq;
 import com.metaverse.permission.req.PermissionCreateReq;
@@ -40,11 +41,13 @@ public class PermissionService {
     }
 
     public Long create(PermissionCreateReq req, Long currentUserId) {
-        return null;
+        //todo 写一个查询权限串是否合理
+        return MetaversePermission.create(req.getName(), req.getPermissions(), currentUserId);
     }
 
     public Boolean modifyPermissionName(ModifyPermissionNameReq req, Long currentUserId) {
-        return null;
+        MetaversePermission permission = MetaversePermission.findPermissionId(req.getId());
+        return permission.modifyPermissionName(req.getName(), currentUserId);
     }
 
     public Boolean modifyPermissions(ModifyPermissionReq req, Long currentUserId) {

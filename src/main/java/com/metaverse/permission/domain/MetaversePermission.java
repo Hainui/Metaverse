@@ -1,13 +1,20 @@
 package com.metaverse.permission.domain;
 
+import com.alibaba.fastjson.JSON;
+import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IEntity;
+import com.metaverse.permission.PermissionIdGen;
+import com.metaverse.permission.db.entity.MetaversePermissionDO;
+import com.metaverse.permission.repository.permissionRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -48,6 +55,44 @@ public class MetaversePermission implements IEntity {
      * 版本号，每次变更+1
      */
     private Long version;
+
+
+    public static Long create(String name, List<String> permissions, Long currentUserId) {
+        PermissionIdGen idGen = BeanManager.getBean(PermissionIdGen.class);
+        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermissionDO metaversePermissionDO = new MetaversePermissionDO()
+                .setId(idGen.nextId())
+                .setPermissionGroupName(name)
+                .setPermissions(JSON.toJSONString(permissions))
+                .setCreateBy(currentUserId)
+                .setCreateAt(LocalDateTime.now());
+        if (!repository.save(metaversePermissionDO)) {
+            throw new IllegalArgumentException("权限新建失败");
+        }
+        return metaversePermissionDO.getId();
+    }
+
+    public static MetaversePermission findPermissionId(Long id) {
+        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermission permission = repository.findById(id);
+        if (Objects.isNull(permission)) {
+            throw new IllegalArgumentException("未找到该权限信息");
+        }
+        return permission;
+    }
+
+
+    public Boolean modifyPermissionName(String name, Long currentUserId) {
+        if (StringUtils.equals(this.permissionGroupName, name)) {
+            throw new IllegalArgumentException("新的权限名称不能和旧权限名称相同");
+        }
+        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        if (repository.existByName(name)) {
+            throw new IllegalArgumentException("该权限名称已存在");
+        }
+        Long newVersion = changeVersion();
+        return repository.updatePermissionName(pkVal(), name, currentUserId, newVersion);
+    }
 
     @Override
     public Long pkVal() {
