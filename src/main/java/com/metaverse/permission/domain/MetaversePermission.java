@@ -81,6 +81,15 @@ public class MetaversePermission implements IEntity {
         return permission;
     }
 
+    public static MetaversePermission readLoadAndAssertNotExist(Long id) {
+        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        MetaversePermission permission = repository.findByIdWithReadLock(id);
+        if (Objects.isNull(permission)) {
+            throw new IllegalArgumentException("未找到该权限信息");
+        }
+        return permission;
+    }
+
 
     public Boolean modifyPermissionName(String name, Long currentUserId) {
         if (StringUtils.equals(this.permissionGroupName, name)) {
