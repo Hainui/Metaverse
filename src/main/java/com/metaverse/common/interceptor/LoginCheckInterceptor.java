@@ -37,7 +37,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         }
 
         //3.获取请求头中的令牌（token） - token
-        String jwt = req.getHeader("token");
+        String jwt = req.getHeader(UserConstant.TOKEN);
 
         //4.判断令牌是否存在，如果不存在，返回错误结果（未登录）。
         if (!StringUtils.hasText(jwt)) {

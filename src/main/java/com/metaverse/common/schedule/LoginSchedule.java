@@ -1,6 +1,5 @@
 package com.metaverse.common.schedule;
 
-import com.metaverse.common.Utils.JwtUtils;
 import com.metaverse.common.Utils.RedisServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.time.Instant;
 import java.util.Map;
 
 //登陆令牌(寻时)
@@ -35,27 +33,11 @@ public class LoginSchedule {
 //                logger.info("打烊时间不工作，AI 下班了！");
 //                return;
 //            }
-
-            Long currentUserId = JwtUtils.getCurrentUserId();
-//            redisServer.validateToken();
-            Map<String, String> allTokens = redisServer.getAllTokens();
-            for (Map.Entry<String, String> entry : allTokens.entrySet()) {
-                String userIdStr = entry.getKey();
-                if (!userIdStr.endsWith("_" + RedisServer.EXPIRES_AT_FIELD)) { // 确保这不是过期时间字段
-                    String expiresAtStr = redisServer.hashOps().get(RedisServer.HASH_KEY, userIdStr + "_" + RedisServer.EXPIRES_AT_FIELD);
-                    if (expiresAtStr != null) {
-                        long expiresAt = Long.parseLong(expiresAtStr);
-                        if (Instant.ofEpochMilli(expiresAt).isBefore(Instant.now())) {
-                            // 调用 RedisServer 的 removeToken 方法或直接删除
-                            redisServer.removeToken(Long.parseLong(userIdStr));
-                            log.info("令牌被删除:{}", userIdStr);
-                        }
-                    }
-                }
-            }
-
+            // 删除所有过期的token，并且获取到当前最新的token
+            Map<Long, String> tokenMap = redisServer.getAllTokens();
+            // todo tokenMap可以用于统计生成当前在线用户信息
         } catch (Exception e) {
-            log.error("处理登陆令牌时发生异常", e);
+            log.error("定时删除过期token时发生异常", e);
 
         }
     }

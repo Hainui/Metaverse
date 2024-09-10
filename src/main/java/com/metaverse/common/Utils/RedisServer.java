@@ -63,7 +63,8 @@ public class RedisServer {
         }
 
         // 为整个Hash键设置过期时间
-        stringRedisTemplate.expire(HASH_KEY, (int) EXPIRATION_TIME.getSeconds(), java.util.concurrent.TimeUnit.SECONDS);
+        long expirationInSeconds = EXPIRATION_TIME.getSeconds();
+        stringRedisTemplate.expire(HASH_KEY, expirationInSeconds, java.util.concurrent.TimeUnit.SECONDS);
     }
 
     /**
@@ -104,16 +105,27 @@ public class RedisServer {
     }
 
     /**
-     * 获取Redis中所有用户Token。
+     * 获取Redis中所有未过期的用户Token。
      *
-     * @return 包含所有用户Token的Map
+     * @return 包含所有未过期用户Token的Map
      */
-    public Map<String, String> getAllTokens() {
-        Map<String, String> allTokens = new HashMap<>();
+    public Map<Long, String> getAllTokens() {
+        Map<Long, String> allTokens = new HashMap<>();
         Map<String, String> entries = (Map<String, String>) hashOps().entries(HASH_KEY);
         for (Map.Entry<String, String> entry : entries.entrySet()) {
             if (!entry.getKey().endsWith("_" + EXPIRES_AT_FIELD)) { // 排除过期时间字段
-                allTokens.put(entry.getKey(), entry.getValue());
+                Long userId = Long.parseLong(entry.getKey());
+                String token = entry.getValue();
+                String expiresAtStr = hashOps().get(HASH_KEY, userId + "_" + EXPIRES_AT_FIELD);
+                if (expiresAtStr != null) {
+                    long expiresAt = Long.parseLong(expiresAtStr);
+                    if (Instant.ofEpochMilli(expiresAt).isAfter(Instant.now())) {
+                        allTokens.put(userId, token); // Token未过期，加入结果集
+                    } else {
+                        // Token已过期，删除
+                        removeToken(userId);
+                    }
+                }
             }
         }
         return allTokens;

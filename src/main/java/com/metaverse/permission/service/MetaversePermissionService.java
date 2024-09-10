@@ -4,7 +4,6 @@ import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipDeleteService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipService;
-import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.req.ModifyPermissionNameReq;
 import com.metaverse.permission.req.ModifyPermissionReq;
 import com.metaverse.permission.req.PermissionCreateReq;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PermissionService {
+public class MetaversePermissionService {
 
     private final IMetaversePermissionService permissionService;
     private final IMetaverseUserPermissionRelationshipService permissionRelationshipService;
