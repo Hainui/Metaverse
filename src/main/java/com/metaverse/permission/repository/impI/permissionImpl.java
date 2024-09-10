@@ -1,5 +1,6 @@
 package com.metaverse.permission.repository.impI;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
@@ -43,11 +44,13 @@ public class permissionImpl implements permissionRepository {
     @Override
     public MetaversePermission findById(Long id) {
         MetaversePermissionDO entity = permissionService.lambdaQuery()
-                .eq(MetaversePermissionDO::getId,id)
+                .eq(MetaversePermissionDO::getId, id)
                 .last(RepositoryConstant.FOR_UPDATE)
                 .one();
         return covertFromDo(entity);
     }
+
+
     public static MetaversePermission covertFromDo(MetaversePermissionDO metaversePermissionDO) {
         if (Objects.isNull(metaversePermissionDO)) {
             return null;
@@ -65,6 +68,16 @@ public class permissionImpl implements permissionRepository {
         permission.setUpdatedAt(metaversePermissionDO.getUpdateAt());
         permission.setVersion(metaversePermissionDO.getVersion());
         return permission;
+    }
+
+    @Override
+    public Boolean modifyPermissions(List<String> permissions, Long id, Long currentUserId, Long newVersion) {
+        return permissionService.lambdaUpdate()
+                .eq(MetaversePermissionDO::getId, id)
+                .set(MetaversePermissionDO::getPermissions, JSON.toJSONString(permissions))
+                .set(MetaversePermissionDO::getUpdateBy, currentUserId)
+                .set(MetaversePermissionDO::getVersion, newVersion)
+                .update();
     }
 
 }

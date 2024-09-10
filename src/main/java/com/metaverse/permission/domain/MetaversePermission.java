@@ -94,6 +94,15 @@ public class MetaversePermission implements IEntity {
         return repository.updatePermissionName(pkVal(), name, currentUserId, newVersion);
     }
 
+    public Boolean modifyPermissions(List<String> permissions, Long currentUserId) {
+        if (Objects.equals(this.permissions, permissions)) {
+            throw new IllegalArgumentException("新权限码集合和旧权限码集合完全相同,无需修改");
+        }
+        permissionRepository repository = BeanManager.getBean(permissionRepository.class);
+        Long newVersion = changeVersion();
+        return repository.modifyPermissions(permissions, pkVal(), currentUserId, newVersion);
+    }
+
     @Override
     public Long pkVal() {
         return id;
@@ -108,4 +117,6 @@ public class MetaversePermission implements IEntity {
     public Long changeVersion() {
         return ++version;
     }
+
+
 }

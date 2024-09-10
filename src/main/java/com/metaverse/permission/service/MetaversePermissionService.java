@@ -1,5 +1,6 @@
 package com.metaverse.permission.service;
 
+import com.metaverse.common.Utils.PermissionCodeValidator;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipDeleteService;
@@ -51,7 +52,10 @@ public class MetaversePermissionService {
     }
 
     public Boolean modifyPermissions(ModifyPermissionReq req, Long currentUserId) {
+        List<String> permissions = req.getPermissions();
+        //todo PermissionCodeValidator是检验权限码是否合理的方法
+        PermissionCodeValidator.validatePermissionCodes(permissions);
         MetaversePermission permission = MetaversePermission.findPermissionId(req.getId());
-        return null;
+        return permission.modifyPermissions(req.getPermissions(), currentUserId);
     }
 }

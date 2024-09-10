@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -100,9 +101,17 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .eq(MetaverseUserPermissionRelationshipDO::getUserId, metaverseUserDO.getId())
                 .list()
                 .stream()
-                .map(MetaverseUserPermissionRelationshipDO::getPermissionId)
+                .map(permissionRelationship -> permissionRelationship.getPermissionId())
+//                .map(MetaverseUserPermissionRelationshipDO::getPermissionId)
                 .collect(Collectors.toList());
-        List<MetaversePermissionDO> permissionDOList = permissionService.lambdaQuery().in(MetaversePermissionDO::getId, permissionIds).list();
+
+        List<MetaversePermissionDO> permissionDOList;// = permissionService.lambdaQuery().in(MetaversePermissionDO::getId, permissionIds).list();
+
+        if (!permissionIds.isEmpty()) {
+            permissionDOList = permissionService.lambdaQuery().in(MetaversePermissionDO::getId, permissionIds).list();
+        } else {
+            permissionDOList = new ArrayList<>();
+        }
         return new MetaverseUser().
                 setId(metaverseUserDO.getId())
                 .setEmail(metaverseUserDO.getEmail())
