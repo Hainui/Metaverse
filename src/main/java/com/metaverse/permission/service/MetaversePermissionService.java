@@ -4,6 +4,7 @@ import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipDeleteService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipService;
+import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.req.ModifyPermissionNameReq;
 import com.metaverse.permission.req.ModifyPermissionReq;
 import com.metaverse.permission.req.PermissionCreateReq;
@@ -50,6 +51,7 @@ public class MetaversePermissionService {
     }
 
     public Boolean modifyPermissions(ModifyPermissionReq req, Long currentUserId) {
+        MetaversePermission permission = MetaversePermission.findPermissionId(req.getId());
         return null;
     }
 }
