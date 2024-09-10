@@ -50,7 +50,7 @@ public class MetaverseRegionService {
      */
     @Transactional(rollbackFor = Exception.class)
     public Boolean modifyRegionName(ModifyRegionNameReq req, Long currentUserId) {
-        MetaverseRegion region = MetaverseRegion.loadAndAssertNotExist(req.getId());
+        MetaverseRegion region = MetaverseRegion.writeLoadAndAssertNotExist(req.getId());
         return region.modifyRegionName(req.getName(), currentUserId);
     }
 
@@ -58,7 +58,7 @@ public class MetaverseRegionService {
     public Boolean modifyRegionLocationList(ModifyRegionServerLocationReq req, Long currentUserId) {
         List<String> serverLocation = req.getServerLocation();
         ServerLocationValidator.validateServerLocations(serverLocation);
-        MetaverseRegion region = MetaverseRegion.loadAndAssertNotExist(req.getId());
+        MetaverseRegion region = MetaverseRegion.writeLoadAndAssertNotExist(req.getId());
         return region.modifyRegionLocationList(req.getServerLocation(), currentUserId);
     }
 }

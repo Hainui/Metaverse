@@ -80,9 +80,9 @@ public class MetaverseRegion implements IEntity {
         return repository.updateRegionName(pkVal(), newRegionName, currentUserId, newVersion);
     }
 
-    public static MetaverseRegion loadAndAssertNotExist(Long Id) {
+    public static MetaverseRegion writeLoadAndAssertNotExist(Long Id) {
         MetaverseRegionRepository repository = BeanManager.getBean(MetaverseRegionRepository.class);
-        MetaverseRegion region = repository.findByIdWithLock(Id);
+        MetaverseRegion region = repository.findByIdWithWriteLock(Id);
         if (Objects.isNull(region)) {
             throw new IllegalArgumentException("未找到该用户信息");
         }

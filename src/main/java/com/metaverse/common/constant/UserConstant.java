@@ -1,7 +1,7 @@
 package com.metaverse.common.constant;
 
 public interface UserConstant {
-    String METAVERSE_USER = "user";
+    String METAVERSE_USER = "userInfo";
 
     String IP_ADDRESS = "ipAddress";
 

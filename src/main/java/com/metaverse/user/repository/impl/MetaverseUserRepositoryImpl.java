@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -95,23 +95,16 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
             return null;
         }
         MetaverseRegionDO regionDO = regionService.lambdaQuery().eq(MetaverseRegionDO::getId, metaverseUserDO.getRegionId()).one();
-        List<Long> permissionIds = permissionRelationshipService
+        List<Long> permissionIds = Optional.of(permissionRelationshipService
                 .lambdaQuery()
                 .select(MetaverseUserPermissionRelationshipDO::getPermissionId)
                 .eq(MetaverseUserPermissionRelationshipDO::getUserId, metaverseUserDO.getId())
                 .list()
                 .stream()
-                .map(permissionRelationship -> permissionRelationship.getPermissionId())
-//                .map(MetaverseUserPermissionRelationshipDO::getPermissionId)
-                .collect(Collectors.toList());
+                .map(MetaverseUserPermissionRelationshipDO::getPermissionId)
+                .collect(Collectors.toList())).orElse(Collections.emptyList());
 
-        List<MetaversePermissionDO> permissionDOList;// = permissionService.lambdaQuery().in(MetaversePermissionDO::getId, permissionIds).list();
-
-        if (!permissionIds.isEmpty()) {
-            permissionDOList = permissionService.lambdaQuery().in(MetaversePermissionDO::getId, permissionIds).list();
-        } else {
-            permissionDOList = new ArrayList<>();
-        }
+        List<MetaversePermissionDO> permissionDOList = permissionService.lambdaQuery().in(MetaversePermissionDO::getId, permissionIds).list();
         return new MetaverseUser().
                 setId(metaverseUserDO.getId())
                 .setEmail(metaverseUserDO.getEmail())

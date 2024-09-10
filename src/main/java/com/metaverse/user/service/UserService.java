@@ -33,7 +33,7 @@ public class UserService {
     public String login(MetaverseUserLoginReq metaverseUserLoginReq, String ipAddress) {
         MetaverseUserInfo userInfo = MetaverseUser.login(metaverseUserLoginReq.getEmail(), metaverseUserLoginReq.getPassword(), metaverseUserLoginReq.getRegionId());
         Map<String, Object> claims = new HashMap<>();
-        claims.put(UserConstant.METAVERSE_USER, (MetaverseUserInfo) userInfo);
+        claims.put(UserConstant.METAVERSE_USER, userInfo);
         claims.put(UserConstant.IP_ADDRESS, ipAddress);
         String token = JwtUtils.generateJwt(claims);
         redisServer.storeToken(userInfo.getId(), token);

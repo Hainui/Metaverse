@@ -1,10 +1,11 @@
 package com.metaverse.permission.service;
 
-import com.metaverse.common.Utils.PermissionCodeValidator;
+import com.metaverse.common.Utils.PermissionStrValidator;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
+import com.metaverse.permission.db.service.IMetaverseActionEnumService;
+import com.metaverse.permission.db.service.IMetaverseLocatorEnumService;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
-import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipDeleteService;
-import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipService;
+import com.metaverse.permission.db.service.IMetaverseResourceTypeEnumService;
 import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.req.ModifyPermissionNameReq;
 import com.metaverse.permission.req.ModifyPermissionReq;
@@ -13,6 +14,7 @@ import com.metaverse.permission.resp.MetaversePermissionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,8 +26,9 @@ import java.util.stream.Collectors;
 public class MetaversePermissionService {
 
     private final IMetaversePermissionService permissionService;
-    private final IMetaverseUserPermissionRelationshipService permissionRelationshipService;
-    private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;
+    private final IMetaverseResourceTypeEnumService resourceTypeEnumService;
+    private final IMetaverseActionEnumService actionEnumService;
+    private final IMetaverseLocatorEnumService locatorEnumService;
 
     public List<MetaversePermissionResp> getAllMetaversePermission() {
         List<MetaversePermissionDO> list = permissionService.lambdaQuery().list();
@@ -41,21 +44,33 @@ public class MetaversePermissionService {
                 .setPermissionGroupName(metaversePermissionDO.getPermissionGroupName());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Long create(PermissionCreateReq req, Long currentUserId) {
-        //todo 写一个查询权限串是否合理
-        return MetaversePermission.create(req.getName(), req.getPermissions(), currentUserId);
+        List<String> permissions = req.getPermissions();
+        PermissionStrValidator.validatePermissionStrs(permissions);
+        Long permissionId = MetaversePermission.create(req.getName(), permissions, currentUserId);
+        for (String permission : permissions) {
+            String[] permissionStr = permission.split("\\.");
+            String resourceType = permissionStr[0];
+            String action = permissionStr[1];
+            String locator = permissionStr[2];
+            // todo 这三个枚举分别要加入三个表中 resourceTypeEnum actionEnum locatorEnum
+
+        }
+        return permissionId;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean modifyPermissionName(ModifyPermissionNameReq req, Long currentUserId) {
-        MetaversePermission permission = MetaversePermission.findPermissionId(req.getId());
+        MetaversePermission permission = MetaversePermission.writeLoadAndAssertNotExist(req.getId());
         return permission.modifyPermissionName(req.getName(), currentUserId);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean modifyPermissions(ModifyPermissionReq req, Long currentUserId) {
         List<String> permissions = req.getPermissions();
-        //todo PermissionCodeValidator是检验权限码是否合理的方法
-        PermissionCodeValidator.validatePermissionCodes(permissions);
-        MetaversePermission permission = MetaversePermission.findPermissionId(req.getId());
+        PermissionStrValidator.validatePermissionStrs(permissions);
+        MetaversePermission permission = MetaversePermission.writeLoadAndAssertNotExist(req.getId());
         return permission.modifyPermissions(req.getPermissions(), currentUserId);
     }
 }

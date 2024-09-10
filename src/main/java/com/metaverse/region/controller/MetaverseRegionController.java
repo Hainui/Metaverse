@@ -39,6 +39,12 @@ public class MetaverseRegionController {
     @ApiOperation(value = "新建区服", tags = "1.0.0")
     public Result<Long> create(@ApiParam(name = "新建区服请求参数", required = true) @RequestBody @Valid RegionCreateReq req) {
         // todo 权限校验
+        // {huoxing.shuixing}
+        // huoxing.update.*
+        // shuixing.update.*
+        // *.update.*
+        // shuixing.*.*
+        // *.*.*
         return Result.success(regionService.create(req, JwtUtils.getCurrentUserId()));
     }
 

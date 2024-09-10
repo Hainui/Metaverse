@@ -56,7 +56,7 @@ public class MetaverseUserRegionImpl implements MetaverseRegionRepository {//连
     }
 
     @Override
-    public MetaverseRegion findByIdWithLock(Long id) {
+    public MetaverseRegion findByIdWithWriteLock(Long id) {
         MetaverseRegionDO entity = regionService.lambdaQuery()
                 .eq(MetaverseRegionDO::getId, id)
                 .last(RepositoryConstant.FOR_UPDATE)

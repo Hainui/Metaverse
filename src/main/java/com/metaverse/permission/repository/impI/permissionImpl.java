@@ -23,6 +23,7 @@ public class permissionImpl implements permissionRepository {
         return permissionService.save(metaversePermissionDO);
     }
 
+    // 快照读
     @Override
     public boolean existByName(String name) {
         return permissionService.lambdaQuery()
@@ -41,11 +42,22 @@ public class permissionImpl implements permissionRepository {
                 .update();
     }
 
+    // 排它锁
     @Override
-    public MetaversePermission findById(Long id) {
+    public MetaversePermission findByIdWithWriteLock(Long id) {
         MetaversePermissionDO entity = permissionService.lambdaQuery()
                 .eq(MetaversePermissionDO::getId, id)
                 .last(RepositoryConstant.FOR_UPDATE)
+                .one();
+        return covertFromDo(entity);
+    }
+
+    // 共享锁
+    @Override
+    public MetaversePermission findByIdWithReadLock(Long id) {
+        MetaversePermissionDO entity = permissionService.lambdaQuery()
+                .eq(MetaversePermissionDO::getId, id)
+                .last(RepositoryConstant.LOCK_IN_SHARE_MODE)
                 .one();
         return covertFromDo(entity);
     }

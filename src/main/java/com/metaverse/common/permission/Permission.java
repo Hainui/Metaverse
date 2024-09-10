@@ -10,6 +10,8 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Permission {
+    
+    // resourceTypeElements[].action.locator
 
     /**
      * 资源类型集合
@@ -23,4 +25,6 @@ public class Permission {
      * 定位符
      */
     private String locator;
+
+
 }

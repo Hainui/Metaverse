@@ -39,7 +39,7 @@ public class CodeGenerator {
                             .naming(NamingStrategy.underline_to_camel) // 设置命名策略
                             .formatFileName("%sDO"); // 设置实体类的文件名格式
                     builder.controllerBuilder().enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
-                    builder.addInclude("metaverse_permission,metaverse_user_permission_relationship,metaverse_user_permission_relationship_delete") // 设置表前缀
+                    builder.addInclude("metaverse_resource_type_enum,metaverse_action_enum,metaverse_locator_enum") // 设置表前缀
                             .mapperBuilder()
                             .enableBaseResultMap() // 启用基本的结果映射
                             .enableBaseColumnList() // 启用基本的列列表

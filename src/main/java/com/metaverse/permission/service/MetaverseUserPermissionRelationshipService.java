@@ -2,7 +2,10 @@ package com.metaverse.permission.service;
 
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipDeleteService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipService;
-import com.metaverse.permission.req.AuthoritiesAccreditUsersReq;
+import com.metaverse.permission.req.AuthoritiesForUserReq;
+import com.metaverse.permission.req.AuthoritiesForUsersReq;
+import com.metaverse.permission.req.UserAuthoritiesPageReq;
+import com.metaverse.permission.resp.UserAuthoritiesPageResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,12 +17,27 @@ public class MetaverseUserPermissionRelationshipService {
     private final IMetaverseUserPermissionRelationshipService permissionRelationshipService;
     private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;
 
-    public Boolean authoritiesImpowerUsers(AuthoritiesAccreditUsersReq req) {
-
+    public Boolean authoritiesImpowerUsers(AuthoritiesForUsersReq req) {
         return null;
     }
 
-    public Boolean authoritiesResetUsers(AuthoritiesAccreditUsersReq req) {
+    public Boolean authoritiesResetUsers(AuthoritiesForUsersReq req) {
+        return null;
+    }
+
+    public Boolean authoritiesRevokeForUsers(AuthoritiesForUsersReq req) {
+        return null;
+    }
+
+    public Boolean authoritiesRevokeForUser(AuthoritiesForUserReq req) {
+        return null;
+    }
+
+    public Boolean authoritiesImpowerUser(AuthoritiesForUserReq req) {
+        return null;
+    }
+
+    public UserAuthoritiesPageResp userAuthoritiesPageView(UserAuthoritiesPageReq req) {
         return null;
     }
 }

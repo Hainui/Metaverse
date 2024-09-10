@@ -1,2 +1,0 @@
-INSERT INTO requestDataTemplate
-(nodeId, type, url, params, paths, headers, cookies, bodyType, formDatas, wwwFormDatas, json, xml, rawData, binaryData) values('51fd117b63ea335a5ff3f2a27ea268fe','GET','/metaverseUser/registrationSendVerificationCode','<byte-array>rO0ABXQAgFt7ImlzRW5hYmxlZCI6dHJ1ZSwibmFtZSI6ImVtYWlsIiwidHlwZSI6InN0cmluZyIsInZhbHVlIjp7InR5cGUiOiJ0ZXh0IiwidmFsdWUiOiIiLCJhcnJheXMiOlsiIl0sImZpbGVzIjpbXX0sImRlc2NyaXB0aW9uIjoiIn1d</byte-array>','','','','none','','','','','','')

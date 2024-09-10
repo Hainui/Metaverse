@@ -1,7 +1,10 @@
 package com.metaverse.permission.controller;
 
 import com.metaverse.common.model.Result;
-import com.metaverse.permission.req.AuthoritiesAccreditUsersReq;
+import com.metaverse.permission.req.AuthoritiesForUserReq;
+import com.metaverse.permission.req.AuthoritiesForUsersReq;
+import com.metaverse.permission.req.UserAuthoritiesPageReq;
+import com.metaverse.permission.resp.UserAuthoritiesPageResp;
 import com.metaverse.permission.service.MetaverseUserPermissionRelationshipService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,42 +33,43 @@ public class MetaverseUserPermissionRelationshipController {
 
     @PostMapping("/authoritiesImpowerUsers")
     @ApiOperation(value = "多个权限同时授予多个用户", tags = "1.0.0")
-    public Result<Boolean> authoritiesImpowerUsers(@ApiParam(name = "多个权限同时授予多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesAccreditUsersReq req) {
+    public Result<Boolean> authoritiesImpowerUsers(@ApiParam(name = "多个权限同时授予多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
         // todo 权限校验
         return Result.success(permissionRelationshipService.authoritiesImpowerUsers(req));
     }
 
     @PostMapping("/authoritiesResetUsers")
     @ApiOperation(value = "多个权限同时重置多个用户", tags = "1.0.0")
-    public Result<Boolean> authoritiesResetUsers(@ApiParam(name = "多个权限同时重置多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesAccreditUsersReq req) {
+    public Result<Boolean> authoritiesResetUsers(@ApiParam(name = "多个权限同时重置多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
         // todo 权限校验
         return Result.success(permissionRelationshipService.authoritiesResetUsers(req));
     }
-    // todo 为多个用户批量删除选中的这些权限
-    // todo 精准剔除单个用户权限
-    // todo 为单个用户精准添加权限
-    // todo 用户权限视图查询
 
+    @PostMapping("/authoritiesRevokeUsers")
+    @ApiOperation(value = "为多个用户批量删除选中的这些权限", tags = "1.0.0")
+    public Result<Boolean> authoritiesRevokeUsers(@ApiParam(name = "为多个用户批量删除选中的这些权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
+        // todo 权限校验
+        return Result.success(permissionRelationshipService.authoritiesRevokeForUsers(req));
+    }
 
-//    @PostMapping("/create")
-//    @ApiOperation(value = "定义新权限", tags = "1.0.0")
-//    public Result<Long> create(@ApiParam(name = "新权限请求参数", required = true) @RequestBody @Valid PermissionCreateReq req) {
-//        // todo 权限校验
-//        return Result.success(permissionRelationshipService.create(req, JwtUtils.getCurrentUserId()));
-//    }
-//
-//    @PostMapping("/modifyPermissionName")
-//    @ApiOperation(value = "修改权限名称", tags = "1.0.0")
-//    public Result<Boolean> modifyPermissionName(@ApiParam(name = "修改权限名称请求参数", required = true) @RequestBody @Valid ModifyPermissionNameReq req) {
-//        // todo 权限校验
-//        return Result.success(permissionRelationshipService.modifyPermissionName(req, JwtUtils.getCurrentUserId()));
-//    }
-//
-//    @PostMapping("/modifyPermissions")
-//    @ApiOperation(value = "修改权限的权限串集合", tags = "1.0.0")
-//    public Result<Boolean> modifyPermissions(@ApiParam(name = "修改权限串请求参数", required = true) @RequestBody @Valid ModifyPermissionReq req) {
-//        // todo 权限校验
-//        return Result.success(permissionRelationshipService.modifyPermissions(req, JwtUtils.getCurrentUserId()));
-//    }
+    @PostMapping("/authoritiesRevokeForUser")
+    @ApiOperation(value = "精准剔除单个用户一个或者多个权限", tags = "1.0.0")
+    public Result<Boolean> authoritiesRevokeForUser(@ApiParam(name = "精准剔除单个用户的一个或者多个权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUserReq req) {
+        // todo 权限校验
+        return Result.success(permissionRelationshipService.authoritiesRevokeForUser(req));
+    }
 
+    @PostMapping("/authoritiesImpowerUser")
+    @ApiOperation(value = "为单个用户添加一个或多个权限", tags = "1.0.0")
+    public Result<Boolean> authoritiesImpowerUser(@ApiParam(name = "为单个用户添加一个或多个权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUserReq req) {
+        // todo 权限校验
+        return Result.success(permissionRelationshipService.authoritiesImpowerUser(req));
+    }
+
+    @PostMapping("/userAuthoritiesPageView")
+    @ApiOperation(value = "用户权限视图分页查询", tags = "1.0.0")
+    public Result<UserAuthoritiesPageResp> userAuthoritiesPageView(@ApiParam(name = "用户权限视图分页查询请求参数", required = true) @RequestBody @Valid UserAuthoritiesPageReq req) {
+        // todo 权限校验
+        return Result.success(permissionRelationshipService.userAuthoritiesPageView(req));
+    }
 }
