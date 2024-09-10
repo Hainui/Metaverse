@@ -3,7 +3,10 @@ package com.metaverse.permission.repository.impI;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.metaverse.common.constant.RepositoryConstant;
+import com.metaverse.permission.db.entity.MetaverseActionEnumDO;
+import com.metaverse.permission.db.entity.MetaverseLocatorEnumDO;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
+import com.metaverse.permission.db.entity.MetaverseResourceTypeEnumDO;
 import com.metaverse.permission.db.service.IMetaverseActionEnumService;
 import com.metaverse.permission.db.service.IMetaverseLocatorEnumService;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
@@ -11,6 +14,8 @@ import com.metaverse.permission.db.service.IMetaverseResourceTypeEnumService;
 import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.repository.MetaversePermissionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,6 +23,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Repository
+@Slf4j
 public class MetaversePermissionRepositoryImpl implements MetaversePermissionRepository {
     private final IMetaversePermissionService permissionService;
     private final IMetaverseResourceTypeEnumService resourceTypeEnumService;
@@ -34,7 +40,27 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
             String resourceType = permissionStr[0];
             String action = permissionStr[1];
             String locator = permissionStr[2];
-            // todo 这三个枚举分别要加入三个表中 resourceTypeEnum actionEnum locatorEnum
+            
+            try {
+                resourceTypeEnumService.save(new MetaverseResourceTypeEnumDO().setResourceType(resourceType));
+            } catch (DuplicateKeyException e) {
+                // 处理唯一键冲突，可以选择忽略或记录错误
+                log.info("资源类型 {} 已经存在，跳过插入。", resourceType);
+            }
+
+            try {
+                actionEnumService.save(new MetaverseActionEnumDO().setAction(action));
+            } catch (DuplicateKeyException e) {
+                // 处理唯一键冲突，可以选择忽略或记录错误
+                log.info("动作 {} 已经存在，跳过插入。", action);
+            }
+
+            try {
+                locatorEnumService.save(new MetaverseLocatorEnumDO().setLocator(locator));
+            } catch (DuplicateKeyException e) {
+                // 处理唯一键冲突，可以选择忽略或记录错误
+                log.info("定位器 {} 已经存在，跳过插入。", locator);
+            }
 
         }
         return saved;

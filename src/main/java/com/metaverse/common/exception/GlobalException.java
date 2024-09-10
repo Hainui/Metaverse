@@ -35,8 +35,8 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Result.error(errorMessages));
     }
 
-    @ExceptionHandler(InvalidServerLocationException.class)
-    public ResponseEntity<Result<List<String>>> handleInvalidServerLocationException(InvalidServerLocationException ex) {
+    @ExceptionHandler(InvalidStrReqListException.class)
+    public ResponseEntity<Result<List<String>>> handleInvalidServerLocationException(InvalidStrReqListException ex) {
         List<String> invalidLocations = ex.getInvalidLocations();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Result.error(invalidLocations));
     }

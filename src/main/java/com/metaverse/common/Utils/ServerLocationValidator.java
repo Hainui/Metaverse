@@ -1,6 +1,6 @@
 package com.metaverse.common.Utils;
 
-import com.metaverse.common.exception.InvalidServerLocationException;
+import com.metaverse.common.exception.InvalidStrReqListException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class ServerLocationValidator {
         }
 
         if (!invalidLocations.isEmpty()) {
-            throw new InvalidServerLocationException(invalidLocations);
+            throw new InvalidStrReqListException(invalidLocations);
         }
     }
 
