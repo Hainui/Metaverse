@@ -110,6 +110,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     public static MetaverseUserInfo login(String email, String password, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        // todo 登录添加分区ID校验
         return convertToUserInfo(repository.login(email, password, regionId));
     }
 

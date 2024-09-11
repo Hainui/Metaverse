@@ -1,7 +1,7 @@
 package com.metaverse.permission.db.service;
 
-import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO;
 
 /**
  * <p>
@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-09-09
  */
 public interface IMetaverseUserPermissionRelationshipService extends IService<MetaverseUserPermissionRelationshipDO> {
-
+    //权限关联表
 }
