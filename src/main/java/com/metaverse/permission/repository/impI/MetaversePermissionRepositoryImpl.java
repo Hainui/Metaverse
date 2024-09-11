@@ -2,6 +2,7 @@ package com.metaverse.permission.repository.impI;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.permission.db.entity.*;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -31,41 +33,9 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
     private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;//备份 上面删除的信息下面要留作备份
 
     @Override
-    public boolean save(MetaversePermissionDO metaversePermissionDO) {
-        boolean saved = permissionService.save(metaversePermissionDO);
-        String permissionJson = metaversePermissionDO.getPermissions();
-        List<String> permissionList = JSONArray.parseArray(permissionJson, String.class);
-        for (String permission : permissionList) {
-            String[] permissionStr = permission.split("\\.");
-            String resourceType = permissionStr[0];
-            String action = permissionStr[1];
-            String locator = permissionStr[2];
-
-            try {
-                resourceTypeEnumService.save(new MetaverseResourceTypeEnumDO().setResourceType(resourceType));
-            } catch (DuplicateKeyException e) {
-                // 处理唯一键冲突，可以选择忽略或记录错误
-                log.info("资源类型 {} 已经存在，跳过插入。", resourceType);
-            }
-
-            try {
-                actionEnumService.save(new MetaverseActionEnumDO().setAction(action));
-            } catch (DuplicateKeyException e) {
-                // 处理唯一键冲突，可以选择忽略或记录错误
-                log.info("动作 {} 已经存在，跳过插入。", action);
-            }
-
-            try {
-                locatorEnumService.save(new MetaverseLocatorEnumDO().setLocator(locator));
-            } catch (DuplicateKeyException e) {
-                // 处理唯一键冲突，可以选择忽略或记录错误
-                log.info("定位器 {} 已经存在，跳过插入。", locator);
-            }
-
-        }
-        return saved;
-
-
+    public boolean save(MetaversePermissionDO metaversePermissionDO, List<String> permissions) {
+        savePermissionConstantPool(permissions);
+        return permissionService.save(metaversePermissionDO);
     }
 
     // 快照读
@@ -78,7 +48,7 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
     }
 
     @Override
-    public Boolean updatePermissionName(Long id, String name, Long currentUserId, Long version) {
+    public boolean updatePermissionName(Long id, String name, Long currentUserId, Long version) {
         return permissionService.lambdaUpdate()
                 .eq(MetaversePermissionDO::getId, id)
                 .set(MetaversePermissionDO::getPermissionGroupName, name)
@@ -102,7 +72,7 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
     public MetaversePermission findByIdWithReadLock(Long id) {
         MetaversePermissionDO entity = permissionService.lambdaQuery()
                 .eq(MetaversePermissionDO::getId, id)
-                .last(RepositoryConstant.LOCK_IN_SHARE_MODE)
+                .last(RepositoryConstant.FOR_SHARE)
                 .one();
         return covertFromDo(entity);
     }
@@ -127,20 +97,78 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
     }
 
     @Override
-    public Boolean modifyPermissions(List<String> newPermissions, Long id, Long currentUserId, Long newVersion, List<String> oldPermissions) {
+    public boolean modifyPermissions(List<String> newPermissions, Long id, Long currentUserId, Long newVersion, List<String> oldPermissions) {
         boolean updated = permissionService.lambdaUpdate()
                 .eq(MetaversePermissionDO::getId, id)
                 .set(MetaversePermissionDO::getPermissions, JSON.toJSONString(newPermissions))
                 .set(MetaversePermissionDO::getUpdateBy, currentUserId)
                 .set(MetaversePermissionDO::getVersion, newVersion)
                 .update();
-        for (String oldPermission : oldPermissions) {
-            // 直接等值匹配删除
+
+        List<String> permissions = permissionService
+                .lambdaQuery()
+                .select(MetaversePermissionDO::getPermissions)
+                .last(RepositoryConstant.FOR_SHARE)
+                .list()
+                .parallelStream() // 使用 parallelStream 而不是 stream
+                .map(MetaversePermissionDO::getPermissions)
+                .flatMap(permissionJson -> JSONArray.parseArray(permissionJson, String.class).stream())
+                .collect(Collectors.toList());
+
+        for (String oldPermission : oldPermissions) { // 执行权限串常量池删除逻辑
+            String[] permissionStr = oldPermission.split("\\.");
+            String resourceType = permissionStr[0];
+            String action = permissionStr[1];
+            String locator = permissionStr[2];
+
+            boolean startsWithResourceType = permissions.stream().anyMatch(permission -> permission.startsWith(resourceType + "."));
+            if (!startsWithResourceType) {
+                resourceTypeEnumService.remove(new LambdaQueryWrapper<MetaverseResourceTypeEnumDO>().eq(MetaverseResourceTypeEnumDO::getResourceType, resourceType));
+            }
+
+            boolean containsAction = permissions.stream().anyMatch(permission -> permission.contains("." + action + "."));
+            if (!containsAction) {
+                actionEnumService.remove(new LambdaQueryWrapper<MetaverseActionEnumDO>().eq(MetaverseActionEnumDO::getAction, action));
+            }
+
+            boolean endsWithLocator = permissions.stream().anyMatch(permission -> permission.endsWith("." + locator));
+            if (!endsWithLocator) {
+                locatorEnumService.remove(new LambdaQueryWrapper<MetaverseLocatorEnumDO>().eq(MetaverseLocatorEnumDO::getLocator, locator));
+            }
         }
-        for (String newPermission : newPermissions) {
-            // 直接批量插入
-        }
+        // 执行权限串常量池新增逻辑
+        savePermissionConstantPool(newPermissions);
         return updated;
+    }
+
+    private void savePermissionConstantPool(List<String> newPermissions) {
+        for (String newPermission : newPermissions) {
+            String[] permissionStr = newPermission.split("\\.");
+            String resourceType = permissionStr[0];
+            String action = permissionStr[1];
+            String locator = permissionStr[2];
+
+            try {
+                resourceTypeEnumService.save(new MetaverseResourceTypeEnumDO().setResourceType(resourceType));
+            } catch (DuplicateKeyException e) {
+                // 处理唯一键冲突，可以选择忽略或记录错误
+                log.info("资源类型 {} 已经存在，跳过插入。", resourceType);
+            }
+
+            try {
+                actionEnumService.save(new MetaverseActionEnumDO().setAction(action));
+            } catch (DuplicateKeyException e) {
+                // 处理唯一键冲突，可以选择忽略或记录错误
+                log.info("动作 {} 已经存在，跳过插入。", action);
+            }
+
+            try {
+                locatorEnumService.save(new MetaverseLocatorEnumDO().setLocator(locator));
+            } catch (DuplicateKeyException e) {
+                // 处理唯一键冲突，可以选择忽略或记录错误
+                log.info("定位器 {} 已经存在，跳过插入。", locator);
+            }
+        }
     }
 
     @Override

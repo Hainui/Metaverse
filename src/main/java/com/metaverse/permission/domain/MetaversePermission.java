@@ -67,7 +67,7 @@ public class MetaversePermission implements IEntity {
                 .setPermissions(JSON.toJSONString(permissions))
                 .setCreateBy(currentUserId)
                 .setCreateAt(LocalDateTime.now());
-        if (!repository.save(metaversePermissionDO)) {
+        if (!repository.save(metaversePermissionDO, permissions)) {
             throw new IllegalArgumentException("权限新建失败");
         }
         return metaversePermissionDO.getId();

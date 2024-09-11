@@ -4,7 +4,7 @@ public interface RepositoryConstant {
 
     String FOR_UPDATE = "FOR UPDATE";
 
-    String LOCK_IN_SHARE_MODE = "LOCK IN SHARE MODE";
+    String FOR_SHARE = "FOR SHARE";
 
     String LIMIT_ONE = "LIMIT 1";
 }

@@ -7,18 +7,17 @@ import com.metaverse.permission.domain.MetaversePermission;
 import java.util.List;
 
 public interface MetaversePermissionRepository {
-    boolean save(MetaversePermissionDO metaversePermissionDO);
+    boolean save(MetaversePermissionDO metaversePermissionDO, List<String> permissions);
 
     boolean existByName(String name);
 
-
-    Boolean updatePermissionName(Long pkVal, String name, Long currentUserId, Long newVersion);
+    boolean updatePermissionName(Long pkVal, String name, Long currentUserId, Long newVersion);
 
     MetaversePermission findByIdWithWriteLock(Long id);
 
     MetaversePermission findByIdWithReadLock(Long id);
 
-    Boolean modifyPermissions(List<String> newPermissions, Long id, Long currentUserId, Long newVersion, List<String> oldPermissions);
+    boolean modifyPermissions(List<String> newPermissions, Long id, Long currentUserId, Long newVersion, List<String> oldPermissions);
 
     boolean deleteAllUserIdPermission(Long userId);
 
