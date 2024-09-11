@@ -111,7 +111,7 @@ public class RedisServer {
      */
     public Map<Long, String> getAllTokens() {
         Map<Long, String> allTokens = new HashMap<>();
-        Map<String, String> entries = (Map<String, String>) hashOps().entries(HASH_KEY);
+        Map<String, String> entries = hashOps().entries(HASH_KEY);
         for (Map.Entry<String, String> entry : entries.entrySet()) {
             if (!entry.getKey().endsWith("_" + EXPIRES_AT_FIELD)) { // 排除过期时间字段
                 Long userId = Long.parseLong(entry.getKey());

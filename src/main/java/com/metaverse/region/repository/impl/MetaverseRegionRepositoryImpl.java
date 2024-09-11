@@ -7,7 +7,6 @@ import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.domain.MetaverseRegion;
 import com.metaverse.region.repository.MetaverseRegionRepository;
-import com.metaverse.user.db.service.IMetaverseUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,6 @@ import java.util.Objects;
 @Repository
 public class MetaverseRegionRepositoryImpl implements MetaverseRegionRepository {//连接数据库操作,调用Iservice接口的方法
 
-    private final IMetaverseUserService userService;
     private final IMetaverseRegionService regionService;
 
     @Override
@@ -43,6 +41,11 @@ public class MetaverseRegionRepositoryImpl implements MetaverseRegionRepository 
                 .set(MetaverseRegionDO::getVersion, version)
                 .set(MetaverseRegionDO::getUpdateBy, currentUserId)
                 .update();
+    }
+
+    @Override
+    public Boolean existByRegionId(Long regionId) {
+        return regionService.lambdaQuery().eq(MetaverseRegionDO::getId, regionId).exists();
     }
 
     @Override

@@ -134,10 +134,10 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
                 .set(MetaversePermissionDO::getUpdateBy, currentUserId)
                 .set(MetaversePermissionDO::getVersion, newVersion)
                 .update();
-        for (String permission : oldPermissions) {
+        for (String oldPermission : oldPermissions) {
             // 直接等值匹配删除
         }
-        for (String permission : newPermissions) {
+        for (String newPermission : newPermissions) {
             // 直接批量插入
         }
         return updated;

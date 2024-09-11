@@ -7,6 +7,7 @@ import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.dto.MetaverseUserPermissionInfo;
 import com.metaverse.region.domain.MetaverseRegion;
 import com.metaverse.region.dto.MetaverseRegionInfo;
+import com.metaverse.region.repository.MetaverseRegionRepository;
 import com.metaverse.user.UserIdGen;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.dto.MetaverseUserInfo;
@@ -75,9 +76,9 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     private Long version;
 
-    public static MetaverseUser loadAndAssertNotExist(Long userId, Long regionId) {
+    public static MetaverseUser writeLoadAndAssertNotExist(Long userId, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        MetaverseUser user = repository.findByIdWithLock(userId);
+        MetaverseUser user = repository.findByIdWithWriteLock(userId);
         if (Objects.isNull(user) || regionId != null && !regionId.equals(user.getRegion().getId())) {
             throw new IllegalArgumentException("未找到该用户信息");
         }
@@ -87,11 +88,12 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     public static boolean registration(String name, String email, String password, Long regionId, Gender gender) {
         UserIdGen idGen = BeanManager.getBean(UserIdGen.class);
-        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        if (!repository.existByRegionId(regionId)) {
+        MetaverseUserRepository userRepository = BeanManager.getBean(MetaverseUserRepository.class);
+        MetaverseRegionRepository regionRepository = BeanManager.getBean(MetaverseRegionRepository.class);
+        if (!regionRepository.existByRegionId(regionId)) {
             throw new IllegalArgumentException("非法的区服！");
         }
-        if (repository.existByName(name, regionId)) {
+        if (userRepository.existByName(name, regionId)) {
             throw new IllegalArgumentException("该用户名已经存在！");
         }
         MetaverseUserDO entity = new MetaverseUserDO()
@@ -104,14 +106,17 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
                 .setBirthTime(LocalDateTime.now())
                 .setUpdateBy(-1L)
                 .setVersion(0L);
-        return repository.save(entity);
+        return userRepository.save(entity);
     }
 
 
     public static MetaverseUserInfo login(String email, String password, Long regionId) {
-        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        // todo 登录添加分区ID校验
-        return convertToUserInfo(repository.login(email, password, regionId));
+        MetaverseRegionRepository regionRepository = BeanManager.getBean(MetaverseRegionRepository.class);
+        if (!regionRepository.existByRegionId(regionId)) {
+            throw new IllegalArgumentException("非法的区服！");
+        }
+        MetaverseUserRepository userRepository = BeanManager.getBean(MetaverseUserRepository.class);
+        return convertToUserInfo(userRepository.login(email, password, regionId));
     }
 
     private static MetaverseUserInfo convertToUserInfo(MetaverseUser user) {

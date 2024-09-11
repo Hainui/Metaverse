@@ -18,7 +18,7 @@ public interface MetaversePermissionRepository {
 
     MetaversePermission findByIdWithReadLock(Long id);
 
-    Boolean modifyPermissions(List<String> newPermissions, Long pkVal, Long currentUserId, Long newVersion, List<String> oldPermissions);
+    Boolean modifyPermissions(List<String> newPermissions, Long id, Long currentUserId, Long newVersion, List<String> oldPermissions);
 
     boolean deleteAllUserIdPermission(Long userId);
 

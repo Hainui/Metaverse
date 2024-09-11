@@ -45,9 +45,6 @@ public class MetaverseRegionService {
         return MetaverseRegion.create(req.getName(), serverLocation, currentUserId);
     }
 
-    /**
-     * 修改区服名称
-     */
     @Transactional(rollbackFor = Exception.class)
     public Boolean modifyRegionName(ModifyRegionNameReq req, Long currentUserId) {
         MetaverseRegion region = MetaverseRegion.writeLoadAndAssertNotExist(req.getId());

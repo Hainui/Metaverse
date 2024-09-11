@@ -35,7 +35,7 @@ public class MetaverseUserPermissionRelationshipService {
         MetaversePermission permission = new MetaversePermission();
         //todo 遍历每个用户id进行校验是否存在
         for (Long userId : req.getUserIds()) {
-            permission.writeLoadAndAssertNotExist(userId);
+            MetaversePermission.writeLoadAndAssertNotExist(userId);
         }
         return permission.authoritiesResetUsers(req.getPermissionIds(), req.getUserIds(), currentUserId);
 
@@ -46,14 +46,14 @@ public class MetaverseUserPermissionRelationshipService {
     public Boolean authoritiesRevokeForUsers(AuthoritiesForUsersReq req, Long currentUserId) {
         MetaversePermission permission = new MetaversePermission();
         for (Long userId : req.getUserIds()) {
-            permission.writeLoadAndAssertNotExist(userId);
+            MetaversePermission.writeLoadAndAssertNotExist(userId);
         }
         return permission.authoritiesRevokeForUsers(req.getUserIds(), req.getPermissionIds(), currentUserId);
     }
 
     public Boolean authoritiesRevokeForUser(AuthoritiesForUserReq req, Long currentUserId) {
         MetaversePermission permission = new MetaversePermission();
-        permission.writeLoadAndAssertNotExist(req.getUserId());
+        MetaversePermission.writeLoadAndAssertNotExist(req.getUserId());
         return permission.authoritiesRevokeForUser(req.getUserId(), req.getPermissionIds(), currentUserId);
     }
 

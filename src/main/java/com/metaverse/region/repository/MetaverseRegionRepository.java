@@ -16,5 +16,7 @@ public interface MetaverseRegionRepository {
 
     MetaverseRegion findByIdWithWriteLock(Long id);
 
+    Boolean existByRegionId(Long regionId);
+
     Boolean modifyRegionLocationList(List<String> newServerLocation, Long regionId, Long currentUserId, Long newVersion);
 }

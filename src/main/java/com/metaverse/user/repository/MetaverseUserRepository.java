@@ -11,9 +11,7 @@ public interface MetaverseUserRepository {
 
     MetaverseUser login(String email, String password, Long regionId);
 
-    boolean existByRegionId(Long regionId);
-
-    MetaverseUser findByIdWithLock(Long userId);
+    MetaverseUser findByIdWithWriteLock(Long userId);
 
     boolean modifyUserName(Long userId, String name, Long updateBy, Long newVersion);
 

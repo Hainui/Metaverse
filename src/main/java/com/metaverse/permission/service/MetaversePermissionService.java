@@ -53,8 +53,7 @@ public class MetaversePermissionService {
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean modifyPermissions(ModifyPermissionReq req, Long currentUserId) {
-        List<String> permissions = req.getPermissions();
-        PermissionStrValidator.validatePermissionStrs(permissions);
+        PermissionStrValidator.validatePermissionStrs(req.getPermissions());
         MetaversePermission permission = MetaversePermission.writeLoadAndAssertNotExist(req.getId());
         return permission.modifyPermissions(req.getPermissions(), currentUserId);
     }
