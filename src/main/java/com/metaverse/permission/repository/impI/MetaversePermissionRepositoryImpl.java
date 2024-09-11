@@ -2,15 +2,10 @@ package com.metaverse.permission.repository.impI;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.metaverse.common.constant.RepositoryConstant;
-import com.metaverse.permission.db.entity.MetaverseActionEnumDO;
-import com.metaverse.permission.db.entity.MetaverseLocatorEnumDO;
-import com.metaverse.permission.db.entity.MetaversePermissionDO;
-import com.metaverse.permission.db.entity.MetaverseResourceTypeEnumDO;
-import com.metaverse.permission.db.service.IMetaverseActionEnumService;
-import com.metaverse.permission.db.service.IMetaverseLocatorEnumService;
-import com.metaverse.permission.db.service.IMetaversePermissionService;
-import com.metaverse.permission.db.service.IMetaverseResourceTypeEnumService;
+import com.metaverse.permission.db.entity.*;
+import com.metaverse.permission.db.service.*;
 import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.repository.MetaversePermissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,10 +22,13 @@ import java.util.Objects;
 @Repository
 @Slf4j
 public class MetaversePermissionRepositoryImpl implements MetaversePermissionRepository {
-    private final IMetaversePermissionService permissionService;
-    private final IMetaverseResourceTypeEnumService resourceTypeEnumService;
-    private final IMetaverseActionEnumService actionEnumService;
-    private final IMetaverseLocatorEnumService locatorEnumService;
+    private final IMetaversePermissionService permissionService;//用户权限
+    private final IMetaverseResourceTypeEnumService resourceTypeEnumService;//资源
+    private final IMetaverseActionEnumService actionEnumService;//动作
+    private final IMetaverseLocatorEnumService locatorEnumService;//定位
+    private final IMetaverseUserPermissionRelationshipService userPermissionService;//用户关联
+
+    private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;//备份 上面删除的信息下面要留作备份
 
     @Override
     public boolean save(MetaversePermissionDO metaversePermissionDO) {
@@ -40,7 +40,7 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
             String resourceType = permissionStr[0];
             String action = permissionStr[1];
             String locator = permissionStr[2];
-            
+
             try {
                 resourceTypeEnumService.save(new MetaverseResourceTypeEnumDO().setResourceType(resourceType));
             } catch (DuplicateKeyException e) {
@@ -90,11 +90,11 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
     // 排它锁
     @Override
     public MetaversePermission findByIdWithWriteLock(Long id) {
-        MetaversePermissionDO entity = permissionService.lambdaQuery()
+        MetaversePermissionDO permission = permissionService.lambdaQuery()
                 .eq(MetaversePermissionDO::getId, id)
                 .last(RepositoryConstant.FOR_UPDATE)
                 .one();
-        return covertFromDo(entity);
+        return covertFromDo(permission);
     }
 
     // 共享锁
@@ -142,5 +142,56 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
         }
         return updated;
     }
+
+    @Override
+    public boolean deleteAllUserIdPermission(Long userId) {
+        //todo 删除之后要备份
+        QueryWrapper<MetaverseUserPermissionRelationshipDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("user_id", userId);
+        return userPermissionService.remove(queryWrapper);
+    }
+
+    @Override
+    public boolean backupDeleteAllUserIdPermission(MetaverseUserPermissionRelationshipDeleteDO metaverseUserPermissionRelationshipDeleteDO) {
+        return permissionRelationshipDeleteService.save(metaverseUserPermissionRelationshipDeleteDO);
+    }
+
+    @Override
+    public boolean saveUserPermission(List<Long> permissionIds, List<Long> userIds, Long currentUserId) {
+        List<MetaverseUserPermissionRelationshipDO> newRelationships = new ArrayList<>();
+        for (Long userId : userIds) {
+            for (Long permissionId : permissionIds) {
+                MetaverseUserPermissionRelationshipDO userPermission = new MetaverseUserPermissionRelationshipDO();
+                userPermission.setUserId(userId);
+                userPermission.setPermissionId(permissionId);
+                userPermission.setImpowerBy(currentUserId);
+                userPermission.setImpowerAt(LocalDateTime.now());
+                newRelationships.add(userPermission);
+            }
+        }
+        try {
+            //saveBatch批量插入实体到数据库
+            return userPermissionService.saveBatch(newRelationships);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteUserIdPermission(List<Long> userId, List<Long> permissionIds) {
+        QueryWrapper<MetaverseUserPermissionRelationshipDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("user_id", userId);
+        queryWrapper.in("permission_id", permissionIds);
+        return userPermissionService.remove(queryWrapper);
+    }
+
+    @Override
+    public boolean deleteOneUserPermission(Long userId, List<Long> permissionIds) {
+        QueryWrapper<MetaverseUserPermissionRelationshipDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        queryWrapper.in("permission_id", permissionIds);
+        return userPermissionService.remove(queryWrapper);
+    }
+
 
 }

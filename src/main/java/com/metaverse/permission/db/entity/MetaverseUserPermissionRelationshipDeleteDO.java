@@ -46,5 +46,5 @@ public class MetaverseUserPermissionRelationshipDeleteDO implements Serializable
     private LocalDateTime deleteAt;
 
     @ApiModelProperty("删除人ID")
-    private LocalDateTime deleteBy;
+    private Long deleteBy;
 }
