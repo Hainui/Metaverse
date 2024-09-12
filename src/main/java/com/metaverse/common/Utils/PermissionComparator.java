@@ -3,6 +3,7 @@ package com.metaverse.common.Utils;
 import com.metaverse.permission.domain.MetaversePermission;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -10,148 +11,11 @@ import java.util.stream.Collectors;
 
 public class PermissionComparator {
 
-/*    public static void main(String[] args) {
-        // 测试用例 1: 完全包含
-        List<List<String>> testCase1 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local")
-        );
-        System.out.println("Test Case 1 Result: " + filterIncludedPermissions(testCase1)); // 预期结果：[[resouc.*.local]]
-
-        // 测试用例 2: 互不相交
-        List<List<String>> testCase2 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.action")
-        );
-        System.out.println("Test Case 2 Result: " + filterIncludedPermissions(testCase2)); // 预期结果：[[resouc.*.local], [resouc.action.action]]
-
-        // 测试用例 3: 部分包含
-        List<List<String>> testCase3 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action")
-        );
-        System.out.println("Test Case 3 Result: " + filterIncludedPermissions(testCase3)); // 预期结果：[[resouc.*.local], [resouc.action.local, resouc.another.action]]
-
-        // 测试用例 4: 多列表
-        List<List<String>> testCase4 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.another.local")
-        );
-        System.out.println("Test Case 4 Result: " + filterIncludedPermissions(testCase4)); // 预期结果：[[resouc.*.local], [resouc.action.local, resouc.another.action]]
-
-        // 测试用例 5: 空列表
-        List<List<String>> testCase5 = new ArrayList<>();
-        System.out.println("Test Case 5 Result: " + filterIncludedPermissions(testCase5)); // 预期结果：[]
-
-        // 测试用例 6: 含空列表
-        List<List<String>> testCase6 = Arrays.asList(
-                new ArrayList<>(),
-                Arrays.asList("resouc.*.local")
-        );
-        System.out.println("Test Case 6 Result: " + filterIncludedPermissions(testCase6)); // 预期结果：[[resouc.*.local]]
-
-        // 测试用例 7: 相同列表
-        List<List<String>> testCase7 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.*.local")
-        );
-        System.out.println("Test Case 7 Result: " + filterIncludedPermissions(testCase7)); // 预期结果：[[resouc.*.local]]
-
-        // 测试用例 8: 复杂多列表
-        List<List<String>> testCase8 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.another.local"),
-                Arrays.asList("resouc.*.local", "resouc.action.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action")
-        );
-        System.out.println("Test Case 8 Result: " + filterIncludedPermissions(testCase8)); // 预期结果：[[resouc.*.local, resouc.action.local, resouc.another.action]]
-
-        // 测试用例 9: 更复杂的多列表
-        List<List<String>> testCase9 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.another.local"),
-                Arrays.asList("resouc.*.local", "resouc.action.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action", "resouc.new.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action", "resouc.new.action", "resouc.new.local")
-        );
-        System.out.println("Test Case 9 Result: " + filterIncludedPermissions(testCase9)); // 预期结果：[[resouc.*.local, resouc.action.local, resouc.another.action, resouc.new.action, resouc.new.local]]
-
-        // 测试用例 10: 多个完全包含的情况
-        List<List<String>> testCase10 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local"),
-                Arrays.asList("resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action")
-        );
-        System.out.println("Test Case 10 Result: " + filterIncludedPermissions(testCase10)); // 预期结果：[[resouc.*.local, resouc.action.local, resouc.another.action]]
-
-        // 测试用例 11: 多个互不相交的情况
-        List<List<String>> testCase11 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.action"),
-                Arrays.asList("resouc.another.local")
-        );
-        System.out.println("Test Case 11 Result: " + filterIncludedPermissions(testCase11)); // 预期结果：[[resouc.*.local], [resouc.action.action], [resouc.another.local]]
-
-        // 测试用例 12: 多个部分包含的情况
-        List<List<String>> testCase12 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.action.local"),
-                Arrays.asList("resouc.another.action")
-        );
-        System.out.println("Test Case 12 Result: " + filterIncludedPermissions(testCase12)); // 预期结果：[[resouc.*.local], [resouc.action.local, resouc.another.action]]
-
-        // 测试用例 13: 包含多种情况的多列表
-        List<List<String>> testCase13 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local"),
-                Arrays.asList("resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local"),
-                Arrays.asList("resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action", "resouc.new.action")
-        );
-        System.out.println("Test Case 13 Result: " + filterIncludedPermissions(testCase13)); // 预期结果：[[resouc.*.local, resouc.action.local, resouc.another.action, resouc.new.action]]
-
-        // 测试用例 14: 包含空列表的情况
-        List<List<String>> testCase14 = Arrays.asList(
-                new ArrayList<>(),
-                new ArrayList<>(),
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local"),
-                Arrays.asList("resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action")
-        );
-        System.out.println("Test Case 14 Result: " + filterIncludedPermissions(testCase14)); // 预期结果：[[resouc.*.local, resouc.action.local, resouc.another.action]]
-
-        // 测试用例 15: 包含重复列表的情况
-        List<List<String>> testCase15 = Arrays.asList(
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.*.local"),
-                Arrays.asList("resouc.action.local"),
-                Arrays.asList("resouc.another.action"),
-                Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action")
-        );
-        System.out.println("Test Case 15 Result: " + filterIncludedPermissions(testCase15)); // 预期结果：[[resouc.*.local, resouc.action.local, resouc.another.action]]
-
-        // 测试用例 16: 极端情况
-        List<List<String>> testCase16 = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            testCase16.add(Arrays.asList("resouc.*.local"));
-            testCase16.add(Arrays.asList("resouc.action.local"));
-            testCase16.add(Arrays.asList("resouc.another.action"));
-            testCase16.add(Arrays.asList("resouc.*.local", "resouc.action.local", "resouc.another.action"));
-        }
-        System.out.println("Test Case 16 Result: " + filterIncludedPermissions(testCase16)); // 预期结果：[[resouc.*.local, resouc.action.local, resouc.another.action]]
-    }*/
+    public static void main(String[] args) {
+        List<String> list1 = Arrays.asList("*.*.*");
+        List<String> list2 = Arrays.asList("dd.wqe.dsad", "dd.wwwww.dsad");
+        System.out.println(compareLists(list1, list2));
+    }
 
     /**
      * 比较两个字符串列表的关系，考虑通配符 * 的逻辑。
@@ -168,11 +32,6 @@ public class PermissionComparator {
         Set<Pattern> patterns1 = permissionList1.stream().map(PermissionComparator::toPattern).collect(Collectors.toSet());
         Set<Pattern> patterns2 = permissionList2.stream().map(PermissionComparator::toPattern).collect(Collectors.toSet());
 
-        // 检查第一个列表是否包含第二个列表的所有项
-        boolean list1ContainsList2 = patterns2.stream().allMatch(pattern2 -> patterns1.stream().anyMatch(pattern1 -> pattern1.matcher(pattern2.pattern()).find()));
-        // 检查第二个列表是否包含第一个列表的所有项（注意：这里使用了find()而不是matches()，因为matches()要求整个字符串匹配）
-        boolean list2ContainsList1 = patterns1.stream().allMatch(pattern1 -> patterns2.stream().anyMatch(pattern2 -> pattern2.matcher(pattern1.pattern()).find()));
-
         if (patterns1.contains(Pattern.compile("^.*\\..*\\..*$"))) {
             return 1;
         }
@@ -181,47 +40,18 @@ public class PermissionComparator {
             return 2;
         }
 
-        if (list1ContainsList2 && (patterns1.size() == patterns2.size() || containsExactOrWildcardMatch(patterns1, patterns2))) {
+        boolean list1ContainsList2 = patterns2.stream().allMatch(pattern -> patterns1.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
+        boolean list2ContainsList1 = patterns1.stream().allMatch(pattern -> patterns2.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
+
+        if (list1ContainsList2 && patterns1.size() >= patterns2.size()) {
             return 1;
-        } else if (list2ContainsList1 && (patterns2.size() > patterns1.size() || containsExactOrWildcardMatch(patterns2, patterns1))) {
+        } else if (list2ContainsList1 && patterns2.size() > patterns1.size()) {
             return 2;
         } else if (list1ContainsList2 || list2ContainsList1) {
-            // 如果有交集但不完全包含，则返回3
             return 3;
         } else {
             return 0;
         }
-
-//        boolean list1ContainsList2 = patterns2.stream().allMatch(pattern -> patterns1.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
-//        boolean list2ContainsList1 = patterns1.stream().allMatch(pattern -> patterns2.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
-
-//        if (list1ContainsList2 && patterns1.size() >= patterns2.size()) {
-//            return 1;
-//        } else if (list2ContainsList1 && patterns2.size() > patterns1.size()) {
-//            return 2;
-//        } else if (list1ContainsList2 || list2ContainsList1) {
-//            return 3;
-//        } else {
-//            return 0;
-//        }
-
-    }
-
-    private static boolean containsExactOrWildcardMatch(Set<Pattern> patterns1, Set<Pattern> patterns2) {
-        for (Pattern pattern1 : patterns1) {
-            String regex1 = pattern1.pattern(); // 获取pattern1的正则表达式字符串
-            for (Pattern pattern2 : patterns2) {
-                if (regex1.equals(pattern2.pattern())) {
-                    return true;
-                }
-            }
-        }
-
-        // 检查patterns2中的模式是否可以匹配patterns1中的某个模式的字符串表示（同样，这不是真正的通配符匹配）
-        // ...（省略，因为逻辑与上面相同，但方向相反）
-
-        // 如果没有找到精确匹配或我们想要的通配符匹配，则返回false
-        return false;
     }
 
     /**
@@ -230,13 +60,9 @@ public class PermissionComparator {
      * @param permission 权限字符串
      * @return 正则表达式模式
      */
-//    private static Pattern toPattern(String permission) {
-//        String regex = "^" + permission.replace(".", "\\.").replace("*", "[^.]*(?:[^.]*)?") + "$";
-//        return Pattern.compile(regex);
-//    }
-    public static Pattern toPattern(String permission) {
-        // 使用replace替换*为.*，并添加^和$确保匹配整个字符串
-        return Pattern.compile("^" + permission.replace("*", ".*") + "$");
+    private static Pattern toPattern(String permission) {
+        String regex = "^" + permission.replace(".", "\\.").replace("*", "[^.]*(?:[^.]*)?") + "$";
+        return Pattern.compile(regex);
     }
 
     /**
