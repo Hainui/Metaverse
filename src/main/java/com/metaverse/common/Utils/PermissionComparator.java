@@ -168,6 +168,11 @@ public class PermissionComparator {
         Set<Pattern> patterns1 = permissionList1.stream().map(PermissionComparator::toPattern).collect(Collectors.toSet());
         Set<Pattern> patterns2 = permissionList2.stream().map(PermissionComparator::toPattern).collect(Collectors.toSet());
 
+        // 检查第一个列表是否包含第二个列表的所有项
+        boolean list1ContainsList2 = patterns2.stream().allMatch(pattern2 -> patterns1.stream().anyMatch(pattern1 -> pattern1.matcher(pattern2.pattern()).find()));
+        // 检查第二个列表是否包含第一个列表的所有项（注意：这里使用了find()而不是matches()，因为matches()要求整个字符串匹配）
+        boolean list2ContainsList1 = patterns1.stream().allMatch(pattern1 -> patterns2.stream().anyMatch(pattern2 -> pattern2.matcher(pattern1.pattern()).find()));
+
         if (patterns1.contains(Pattern.compile("^.*\\..*\\..*$"))) {
             return 1;
         }
@@ -176,18 +181,47 @@ public class PermissionComparator {
             return 2;
         }
 
-        boolean list1ContainsList2 = patterns2.stream().allMatch(pattern -> patterns1.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
-        boolean list2ContainsList1 = patterns1.stream().allMatch(pattern -> patterns2.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
-
-        if (list1ContainsList2 && patterns1.size() >= patterns2.size()) {
+        if (list1ContainsList2 && (patterns1.size() == patterns2.size() || containsExactOrWildcardMatch(patterns1, patterns2))) {
             return 1;
-        } else if (list2ContainsList1 && patterns2.size() > patterns1.size()) {
+        } else if (list2ContainsList1 && (patterns2.size() > patterns1.size() || containsExactOrWildcardMatch(patterns2, patterns1))) {
             return 2;
         } else if (list1ContainsList2 || list2ContainsList1) {
+            // 如果有交集但不完全包含，则返回3
             return 3;
         } else {
             return 0;
         }
+
+//        boolean list1ContainsList2 = patterns2.stream().allMatch(pattern -> patterns1.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
+//        boolean list2ContainsList1 = patterns1.stream().allMatch(pattern -> patterns2.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
+
+//        if (list1ContainsList2 && patterns1.size() >= patterns2.size()) {
+//            return 1;
+//        } else if (list2ContainsList1 && patterns2.size() > patterns1.size()) {
+//            return 2;
+//        } else if (list1ContainsList2 || list2ContainsList1) {
+//            return 3;
+//        } else {
+//            return 0;
+//        }
+
+    }
+
+    private static boolean containsExactOrWildcardMatch(Set<Pattern> patterns1, Set<Pattern> patterns2) {
+        for (Pattern pattern1 : patterns1) {
+            String regex1 = pattern1.pattern(); // 获取pattern1的正则表达式字符串
+            for (Pattern pattern2 : patterns2) {
+                if (regex1.equals(pattern2.pattern())) {
+                    return true;
+                }
+            }
+        }
+
+        // 检查patterns2中的模式是否可以匹配patterns1中的某个模式的字符串表示（同样，这不是真正的通配符匹配）
+        // ...（省略，因为逻辑与上面相同，但方向相反）
+
+        // 如果没有找到精确匹配或我们想要的通配符匹配，则返回false
+        return false;
     }
 
     /**
@@ -196,9 +230,13 @@ public class PermissionComparator {
      * @param permission 权限字符串
      * @return 正则表达式模式
      */
-    private static Pattern toPattern(String permission) {
-        String regex = "^" + permission.replace(".", "\\.").replace("*", "[^.]*(?:[^.]*)?") + "$";
-        return Pattern.compile(regex);
+//    private static Pattern toPattern(String permission) {
+//        String regex = "^" + permission.replace(".", "\\.").replace("*", "[^.]*(?:[^.]*)?") + "$";
+//        return Pattern.compile(regex);
+//    }
+    public static Pattern toPattern(String permission) {
+        // 使用replace替换*为.*，并添加^和$确保匹配整个字符串
+        return Pattern.compile("^" + permission.replace("*", ".*") + "$");
     }
 
     /**

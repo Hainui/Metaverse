@@ -3,6 +3,7 @@ package com.metaverse.permission.repository.impI;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.permission.db.entity.*;
 import com.metaverse.permission.db.service.*;
@@ -135,10 +136,6 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
         return updated;
     }
 
-    @Override
-    public boolean deleteAllUserIdPermission(Long userId) {
-        return false;
-    }
 
     private void savePermissionConstantPool(List<String> newPermissions) {
         for (String newPermission : newPermissions) {
@@ -170,13 +167,20 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
         }
     }
 
-//    @Override
-//    public boolean deleteAllUserIdPermission(Long userId) {
-//        //todo 删除之后要备份
-//        QueryWrapper<MetaverseUserPermissionRelationshipDO> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.in("user_id", userId);
-//        return userPermissionService.remove(queryWrapper);
-//    }
+    @Override//多个权限同时重置多个用户
+    public boolean deleteAllUserIdPermission(Long userId) {
+        QueryWrapper<MetaverseUserPermissionRelationshipDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("user_id", userId);
+        return permissionRelationshipService.remove(queryWrapper);
+    }
+
+    @Override//为多个用户删除选定权限
+    public boolean deleteUserPermissionId(Long userId, Long permissionId) {
+        QueryWrapper<MetaverseUserPermissionRelationshipDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("user_id", userId);
+        queryWrapper.in("permission_id", permissionId);
+        return permissionRelationshipService.remove(queryWrapper);
+    }
 
     @Override
     public boolean backupDeleteAllUserIdPermission(MetaverseUserPermissionRelationshipDeleteDO metaverseUserPermissionRelationshipDeleteDO) {
@@ -197,6 +201,7 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
     public boolean deleteOneUserPermission(Long userId, List<Long> permissionIds) {
         return false;
     }
+
 
 //    @Override
 //    public boolean saveUserPermission(List<Long> permissionIds, List<Long> userIds, Long currentUserId) {

@@ -3,10 +3,11 @@ package com.metaverse.permission.domain;
 import com.alibaba.fastjson.JSON;
 import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IEntity;
-import com.metaverse.permission.PermissionIdGen;
+import com.metaverse.permission.MetaversePermissionIdGen;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDeleteDO;
 import com.metaverse.permission.repository.MetaversePermissionRepository;
+import com.metaverse.user.domain.MetaverseUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -59,7 +60,7 @@ public class MetaversePermission implements IEntity {
 
 
     public static Long create(String name, List<String> permissions, Long currentUserId) {
-        PermissionIdGen idGen = BeanManager.getBean(PermissionIdGen.class);
+        MetaversePermissionIdGen idGen = BeanManager.getBean(MetaversePermissionIdGen.class);
         MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         MetaversePermissionDO metaversePermissionDO = new MetaversePermissionDO()
                 .setId(idGen.nextId())
@@ -132,7 +133,6 @@ public class MetaversePermission implements IEntity {
             }
         }
         // 插入新的权限关系
-
         if (!repository.saveUserPermission(permissionIds, userIds, currentUserId)) {
             throw new IllegalArgumentException("权限关系重置失败");
         }
@@ -197,4 +197,18 @@ public class MetaversePermission implements IEntity {
     }
 
 
+    public void deleteUserPermission(MetaverseUser metaverseUser) {
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
+        if (!repository.deleteAllUserIdPermission(metaverseUser.getId())) {
+            throw new IllegalArgumentException("权限删除失败");
+        }
+    }
+
+
+    public void deleteUserPermissionId(Long UserId, Long permissionsId) {
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
+        if (!repository.deleteUserPermissionId(UserId, permissionsId)) {
+            throw new IllegalArgumentException("权限删除失败");
+        }
+    }
 }

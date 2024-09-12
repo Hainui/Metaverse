@@ -23,6 +23,8 @@ public interface MetaversePermissionRepository {
 
     boolean backupDeleteAllUserIdPermission(MetaverseUserPermissionRelationshipDeleteDO metaverseUserPermissionRelationshipDeleteDO);
 
+    boolean deleteUserPermissionId(Long id, Long permissionId);
+
     boolean saveUserPermission(List<Long> permissionIds, List<Long> userIds, Long currentUserId);
 
 
