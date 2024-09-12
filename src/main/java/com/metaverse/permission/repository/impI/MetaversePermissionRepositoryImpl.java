@@ -75,8 +75,18 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
         return covertFromDo(entity);
     }
 
+    // 共享锁
+    @Override
+    public List<MetaversePermission> findByIdsWithReadLock(List<Long> ids) {
+        List<MetaversePermissionDO> dos = permissionService.lambdaQuery()
+                .in(MetaversePermissionDO::getId, ids)
+                .last(RepositoryConstant.FOR_SHARE)
+                .list();
+        return dos.stream().map(this::covertFromDo).collect(Collectors.toList());
+    }
 
-    public static MetaversePermission covertFromDo(MetaversePermissionDO metaversePermissionDO) {
+
+    private MetaversePermission covertFromDo(MetaversePermissionDO metaversePermissionDO) {
         if (Objects.isNull(metaversePermissionDO)) {
             return null;
         }

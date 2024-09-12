@@ -1,5 +1,6 @@
 package com.metaverse.permission.domain;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IEntity;
@@ -8,9 +9,7 @@ import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDeleteDO;
 import com.metaverse.permission.repository.MetaversePermissionRepository;
 import com.metaverse.user.domain.MetaverseUser;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,8 +18,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Accessors(chain = true)
 public class MetaversePermission implements IEntity {
 
@@ -90,6 +87,15 @@ public class MetaversePermission implements IEntity {
             throw new IllegalArgumentException("未找到该权限信息");
         }
         return permission;
+    }
+
+    public static List<MetaversePermission> readLoadAndAssertNotExist(List<Long> ids) {//读锁
+        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
+        List<MetaversePermission> permissions = repository.findByIdsWithReadLock(ids);
+        if (CollectionUtil.isNotEmpty(permissions)) {
+            throw new IllegalArgumentException("未找到该权限信息");
+        }
+        return permissions;
     }
 
 

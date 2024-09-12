@@ -42,7 +42,7 @@ public class MetaverseUserPermissionRelationshipController {
     @PostMapping("/authoritiesResetUsers")
     @ApiOperation(value = "多个权限同时重置多个用户", tags = "1.0.0")
     public Result<Boolean> authoritiesResetUsers(@ApiParam(name = "多个权限同时重置多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
-        // todo 权限校验 lzw
+        // todo 权限校验
         return Result.success(permissionRelationshipService.authoritiesResetUsers(req, JwtUtils.getCurrentUserId()));
     }
 
@@ -64,7 +64,7 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "为单个用户添加一个或多个权限", tags = "1.0.0")
     public Result<Boolean> authoritiesImpowerUser(@ApiParam(name = "为单个用户添加一个或多个权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUserReq req) {
         // todo 权限校验
-        return Result.success(permissionRelationshipService.authoritiesImpowerUser(req));
+        return Result.success(permissionRelationshipService.authoritiesImpowerUser(req, JwtUtils.getCurrentUserId()));
     }
 
     @PostMapping("/userAuthoritiesPageView")

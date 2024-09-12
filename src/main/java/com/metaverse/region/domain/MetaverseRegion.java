@@ -6,9 +6,7 @@ import com.metaverse.common.model.IEntity;
 import com.metaverse.region.RegionIdGen;
 import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.repository.MetaverseRegionRepository;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,9 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Accessors(chain = true)//用于链式方法
+@Accessors(chain = true)
 public class MetaverseRegion implements IEntity {
 
     protected static final Long MODEL_VERSION = 1L;

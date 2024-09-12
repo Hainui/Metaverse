@@ -3,6 +3,8 @@ package com.metaverse.user.repository;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.domain.MetaverseUser;
 
+import java.util.List;
+
 public interface MetaverseUserRepository {
 
     boolean existByName(String name, Long regionId);
@@ -14,6 +16,8 @@ public interface MetaverseUserRepository {
     MetaverseUser findByIdWithWriteLock(Long userId);
 
     MetaverseUser findByIdWithReadLock(Long userId);
+
+    List<MetaverseUser> findByIdsWithReadLock(List<Long> userIds);
 
     boolean modifyUserName(Long userId, String name, Long updateBy, Long newVersion);
 

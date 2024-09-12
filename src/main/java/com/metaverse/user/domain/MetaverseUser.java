@@ -1,5 +1,6 @@
 package com.metaverse.user.domain;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.Utils.BeanManager;
 import com.metaverse.common.model.IAggregateRoot;
@@ -14,10 +15,8 @@ import com.metaverse.user.dto.MetaverseUserInfo;
 import com.metaverse.user.repository.MetaverseUserRepository;
 import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.ModifyUserNameReq;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,8 +29,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Accessors(chain = true)
 public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
@@ -98,6 +95,21 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
             throw new IllegalArgumentException("未找到该用户信息");
         }
         return user;
+    }
+
+    /**
+     * 读锁加载用户信息，提供管理员使用，暂时无需对分区加限制
+     *
+     * @param userIds 用户ids
+     * @return 用户信息
+     */
+    public static List<MetaverseUser> readLoadAndAssertNotExist(List<Long> userIds) {
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        List<MetaverseUser> users = repository.findByIdsWithReadLock(userIds);
+        if (CollectionUtil.isNotEmpty(users)) {
+            throw new IllegalArgumentException("未找到该用户信息");
+        }
+        return users;
     }
 
     /**
