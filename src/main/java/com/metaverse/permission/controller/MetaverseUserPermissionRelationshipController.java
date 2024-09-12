@@ -36,7 +36,7 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "多个权限同时授予多个用户", tags = "1.0.0")
     public Result<Boolean> authoritiesImpowerUsers(@ApiParam(name = "多个权限同时授予多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
         // todo 权限校验
-        return Result.success(permissionRelationshipService.authoritiesImpowerUsers(req));
+        return Result.success(permissionRelationshipService.authoritiesImpowerUsers(req, JwtUtils.getCurrentUserId()));
     }
 
     @PostMapping("/authoritiesResetUsers")

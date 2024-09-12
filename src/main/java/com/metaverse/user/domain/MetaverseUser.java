@@ -85,6 +85,37 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         return user;
     }
 
+    /**
+     * 读锁加载用户信息，提供管理员使用，暂时无需对分区加限制
+     *
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    public static MetaverseUser readLoadAndAssertNotExist(Long userId) {
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        MetaverseUser user = repository.findByIdWithReadLock(userId);
+        if (Objects.isNull(user)) {
+            throw new IllegalArgumentException("未找到该用户信息");
+        }
+        return user;
+    }
+
+    /**
+     * 对分区有限制
+     *
+     * @param userId   用户id
+     * @param regionId 分区id
+     * @return 用户信息
+     */
+    public static MetaverseUser readLoadAndAssertNotExist(Long userId, Long regionId) {
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        MetaverseUser user = repository.findByIdWithReadLock(userId);
+        if (Objects.isNull(user) || regionId != null && !regionId.equals(user.getRegion().getId())) {
+            throw new IllegalArgumentException("未找到该用户信息");
+        }
+        return user;
+    }
+
 
     public static boolean registration(String name, String email, String password, Long regionId, Gender gender) {
         UserIdGen idGen = BeanManager.getBean(UserIdGen.class);

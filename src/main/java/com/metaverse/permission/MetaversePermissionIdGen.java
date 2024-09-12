@@ -4,5 +4,5 @@ import com.metaverse.common.Utils.SnowflakeIdWorker;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PermissionIdGen extends SnowflakeIdWorker {
+public class MetaversePermissionIdGen extends SnowflakeIdWorker {
 }

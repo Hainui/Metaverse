@@ -13,6 +13,8 @@ public interface MetaverseUserRepository {
 
     MetaverseUser findByIdWithWriteLock(Long userId);
 
+    MetaverseUser findByIdWithReadLock(Long userId);
+
     boolean modifyUserName(Long userId, String name, Long updateBy, Long newVersion);
 
     boolean modifyPassword(String newPassword, Long userId, Long currentUserId, Long newVersion);

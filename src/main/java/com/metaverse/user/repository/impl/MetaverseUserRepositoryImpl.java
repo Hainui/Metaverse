@@ -85,6 +85,14 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
         return userDOConvertToUser(userDO);
     }
 
+    @Override
+    public MetaverseUser findByIdWithReadLock(Long userId) {
+        MetaverseUserDO userDO = userService.lambdaQuery()
+                .eq(MetaverseUserDO::getId, userId)
+                .last(RepositoryConstant.FOR_SHARE)
+                .one();
+        return userDOConvertToUser(userDO);
+    }
 
     public MetaverseUser userDOConvertToUser(MetaverseUserDO metaverseUserDO) {
         if (Objects.isNull(metaverseUserDO)) {
