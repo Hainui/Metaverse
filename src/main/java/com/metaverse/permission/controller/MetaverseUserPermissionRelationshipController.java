@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -49,14 +50,14 @@ public class MetaverseUserPermissionRelationshipController {
     @PostMapping("/authoritiesRevokeUsers")
     @ApiOperation(value = "为多个用户批量删除选中的这些权限", tags = "1.0.0")
     public Result<Boolean> authoritiesRevokeUsers(@ApiParam(name = "为多个用户批量删除选中的这些权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
-        // todo 权限校验 lzw完成
+        // todo 权限校验
         return Result.success(permissionRelationshipService.authoritiesRevokeForUsers(req, JwtUtils.getCurrentUserId()));
     }
 
     @PostMapping("/authoritiesRevokeForUser")
     @ApiOperation(value = "精准剔除单个用户一个或者多个权限", tags = "1.0.0")
     public Result<Boolean> authoritiesRevokeForUser(@ApiParam(name = "精准剔除单个用户的一个或者多个权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUserReq req) {
-        // todo 权限校验 lzw完成
+        // todo 权限校验
         return Result.success(permissionRelationshipService.authoritiesRevokeForUser(req, JwtUtils.getCurrentUserId()));
     }
 
@@ -69,8 +70,8 @@ public class MetaverseUserPermissionRelationshipController {
 
     @PostMapping("/userAuthoritiesPageView")
     @ApiOperation(value = "用户权限视图分页查询", tags = "1.0.0")
-    public Result<UserAuthoritiesPageResp> userAuthoritiesPageView(@ApiParam(name = "用户权限视图分页查询请求参数", required = true) @RequestBody @Valid UserAuthoritiesPageReq req) {
-        // todo 权限校验 lzw
+    public Result<List<UserAuthoritiesPageResp>> userAuthoritiesPageView(@ApiParam(name = "用户权限视图分页查询请求参数") @RequestBody(required = false) @Valid UserAuthoritiesPageReq req) {
+        // todo 权限校验
         return Result.success(permissionRelationshipService.userAuthoritiesPageView(req));
     }
 }

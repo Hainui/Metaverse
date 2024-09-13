@@ -29,7 +29,7 @@ public class MetaverseRegionService {
         return list.stream().map(this::convertToRegionResp).collect(Collectors.toList());
     }
 
-    public MetaverseRegionResp convertToRegionResp(MetaverseRegionDO regionDO) {
+    private MetaverseRegionResp convertToRegionResp(MetaverseRegionDO regionDO) {
         if (Objects.isNull(regionDO)) {
             return null;
         }

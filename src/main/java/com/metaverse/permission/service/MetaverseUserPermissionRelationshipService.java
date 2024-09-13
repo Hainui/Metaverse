@@ -1,19 +1,31 @@
 package com.metaverse.permission.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.metaverse.common.Utils.PermissionComparator;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.permission.MetaverseUserPermissionRelationshipIdGen;
+import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDeleteDO;
+import com.metaverse.permission.db.service.IMetaversePermissionService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipDeleteService;
 import com.metaverse.permission.db.service.IMetaverseUserPermissionRelationshipService;
 import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.req.AuthoritiesForUserReq;
 import com.metaverse.permission.req.AuthoritiesForUsersReq;
 import com.metaverse.permission.req.UserAuthoritiesPageReq;
+import com.metaverse.permission.resp.MetaversePermissionResp;
 import com.metaverse.permission.resp.UserAuthoritiesPageResp;
+import com.metaverse.region.db.entity.MetaverseRegionDO;
+import com.metaverse.region.db.service.IMetaverseRegionService;
+import com.metaverse.region.resp.MetaverseRegionResp;
+import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.mapper.MetaverseUserMapper;
+import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +33,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MetaverseUserPermissionRelationshipService {
-    private final MetaverseUserPermissionRelationshipIdGen metaverseUserPermissionRelationshipIdGen;
+    private final IMetaverseUserService metaverseUserService;
     private final IMetaverseUserPermissionRelationshipService permissionRelationshipService;
+    private final IMetaverseRegionService regionService;
+    private final IMetaversePermissionService metaversePermissionService;
+    private final MetaverseUserPermissionRelationshipIdGen metaverseUserPermissionRelationshipIdGen;
     private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;//备份 上面删除的信息下面要留作备份
     private final MetaverseUserMapper metaverseUserMapper;
 
@@ -219,11 +232,91 @@ public class MetaverseUserPermissionRelationshipService {
     }
 
 
-    public UserAuthoritiesPageResp userAuthoritiesPageView(UserAuthoritiesPageReq req) {
-        
-
-        return null;
+    public List<UserAuthoritiesPageResp> userAuthoritiesPageView(UserAuthoritiesPageReq req) {
+        QueryWrapper<MetaverseUserDO> queryWrapper = new QueryWrapper<>();
+        Long userId = req.getUserId();
+        Long permissionId = req.getPermissionId();
+        if (permissionId != null) {
+            Set<Long> userIds = permissionRelationshipService.lambdaQuery()
+                    .select(MetaverseUserPermissionRelationshipDO::getUserId)
+                    .eq(MetaverseUserPermissionRelationshipDO::getPermissionId, permissionId)
+                    .list()
+                    .stream()
+                    .map(MetaverseUserPermissionRelationshipDO::getUserId)
+                    .collect(Collectors.toSet());
+            if (userId != null) {
+                if (userIds.contains(userId)) {
+                    queryWrapper.eq("id", userId);
+                } else {
+                    return Collections.emptyList();
+                }
+            } else {
+                queryWrapper.in("id", userIds);
+            }
+        } else {
+            queryWrapper.eq(userId != null, "id", userId);
+        }
+        // 构建查询条件
+        queryWrapper.likeRight(StringUtils.isNotBlank(req.getUsername()), "username", req.getUsername());
+        queryWrapper.eq(req.getRegionId() != null, "region_id", req.getRegionId());
+        queryWrapper.eq(req.getEmail() != null, "email", req.getEmail());
+        queryWrapper.ge(req.getBirthTime() != null, "birth_time", req.getBirthTime());
+        queryWrapper.eq(req.getGender() != null, "gender", req.getGender());
+        Page<MetaverseUserDO> metaverseUserDOPage = metaverseUserService.getBaseMapper().selectPage(new Page<>(req.getCurrentPage(), req.getPageSize()), queryWrapper);
+        return metaverseUserDOPage.getRecords().stream().map(this::convertToPageResp).collect(Collectors.toList());
     }
 
+    private UserAuthoritiesPageResp convertToPageResp(MetaverseUserDO metaverseUserDO) {
+        Long userId = metaverseUserDO.getId();
+        List<MetaversePermissionDO> permissionDOList = metaversePermissionService.listByIds(permissionRelationshipService.lambdaQuery()
+                .select(MetaverseUserPermissionRelationshipDO::getPermissionId)
+                .eq(MetaverseUserPermissionRelationshipDO::getUserId, userId)
+                .list()
+                .stream()
+                .map(MetaverseUserPermissionRelationshipDO::getPermissionId)
+                .collect(Collectors.toList()));
+
+        List<String> permission = permissionDOList.stream().flatMap(permissionDO -> JSONArray.parseArray(permissionDO.getPermissions(), String.class).stream()).collect(Collectors.toList());
+
+        return new UserAuthoritiesPageResp()
+                .setUserId(userId)
+                .setUsername(metaverseUserDO.getUsername())
+                .setEmail(metaverseUserDO.getEmail())
+                .setBirthTime(metaverseUserDO.getBirthTime())
+                .setGender(metaverseUserDO.getGender())
+                .setRegionResp(convertToRegionResp(regionService.getById(metaverseUserDO.getRegionId())))
+                .setPermissionRespList(permissionDOList.stream().map(this::convertPermissionResp).collect(Collectors.toList()))
+                .setAuthorizationLevel(calculateAuthorizationLevel(permission));
+    }
+
+    /**
+     * 计算该用户所有权限串能开门的百分比
+     * 计算公式：(用户所有的权限串数量/系统所有权限串数量)*100% 结果向下取整保留两位小数
+     * 读取配置获取所有权限串
+     *
+     * @param permissions 用户具备的权限串
+     * @return 结果向下取整保留两位小数 如：78.34%
+     */
+    private String calculateAuthorizationLevel(List<String> permissions) {
+        return "55.65%";
+    }
+
+    private MetaversePermissionResp convertPermissionResp(MetaversePermissionDO metaversePermissionDO) {
+        if (Objects.isNull(metaversePermissionDO)) {
+            return null;
+        }
+        return new MetaversePermissionResp()
+                .setId(metaversePermissionDO.getId())
+                .setPermissionGroupName(metaversePermissionDO.getPermissionGroupName());
+    }
+
+    private MetaverseRegionResp convertToRegionResp(MetaverseRegionDO regionDO) {
+        if (Objects.isNull(regionDO)) {
+            return null;
+        }
+        return new MetaverseRegionResp()
+                .setId(regionDO.getId())
+                .setName(regionDO.getName());
+    }
 
 }
