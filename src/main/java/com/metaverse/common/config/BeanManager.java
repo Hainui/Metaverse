@@ -1,4 +1,4 @@
-package com.metaverse.common.Utils;
+package com.metaverse.common.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

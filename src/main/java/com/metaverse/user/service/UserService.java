@@ -1,7 +1,7 @@
 package com.metaverse.user.service;
 
 import com.metaverse.common.Utils.JwtUtils;
-import com.metaverse.common.Utils.RedisServer;
+import com.metaverse.common.config.RedisServer;
 import com.metaverse.common.constant.UserConstant;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;

@@ -56,3 +56,12 @@ snowflake:
 #        ssl:
 #          # 启用 SSL 加密
 #          enable: true
+
+
+
+metaverse:
+  config:
+    permissions:
+      - item1
+      - item2
+      - item3

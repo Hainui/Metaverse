@@ -1,13 +1,9 @@
 package com.metaverse.common.Utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.metaverse.permission.domain.MetaversePermission;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class PermissionComparator {
 
@@ -15,6 +11,13 @@ public class PermissionComparator {
         List<String> list1 = Arrays.asList("*.*.*");
         List<String> list2 = Arrays.asList("dd.wqe.dsad", "dd.wwwww.dsad");
         System.out.println(compareLists(list1, list2));
+
+
+//        String permissionStr = "dd.wqe.dsad";
+//        List<String> permissions = Arrays.asList("dd.wqe.*", "dd.wwwww.dsad");
+//
+//        boolean isMatched = PermissionComparator.isPermissionMatched(permissionStr, permissions);
+//        System.out.println("是否存在匹配的权限: " + isMatched); // 输出：是否存在匹配的权限: true
     }
 
     /**
@@ -28,41 +31,122 @@ public class PermissionComparator {
      * 2 - 第二个列表包含且不等于第一个列表
      * 3 - 两个列表互不包含但是有交集
      */
+    /**
+     * 比较两个字符串列表的关系，考虑通配符 * 的逻辑。
+     *
+     * @param permissionList1 第一个列表
+     * @param permissionList2 第二个列表
+     * @return 返回值说明：
+     * 0 - 两个列表互不包含且没有交集
+     * 1 - 第一个列表包含或等于第二个列表
+     * 2 - 第二个列表包含且不等于第一个列表
+     * 3 - 两个列表互不包含但是有交集
+     */
     public static int compareLists(List<String> permissionList1, List<String> permissionList2) {
-        Set<Pattern> patterns1 = permissionList1.stream().map(PermissionComparator::toPattern).collect(Collectors.toSet());
-        Set<Pattern> patterns2 = permissionList2.stream().map(PermissionComparator::toPattern).collect(Collectors.toSet());
+        Set<String> set1 = new HashSet<>();
+        Set<String> set2 = new HashSet<>();
 
-        if (patterns1.contains(Pattern.compile("^.*\\..*\\..*$"))) {
-            return 1;
+        for (String permission : permissionList1) {
+            set1.addAll(expandWithWildcard(permission));
         }
 
-        if (patterns2.contains(Pattern.compile("^.*\\..*\\..*$"))) {
-            return 2;
+        for (String permission : permissionList2) {
+            set2.addAll(expandWithWildcard(permission));
         }
 
-        boolean list1ContainsList2 = patterns2.stream().allMatch(pattern -> patterns1.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
-        boolean list2ContainsList1 = patterns1.stream().allMatch(pattern -> patterns2.stream().anyMatch(p -> p.matcher(pattern.pattern()).matches()));
+        Set<String> intersection = new HashSet<>(set1);
+        intersection.retainAll(set2);
+        boolean hasIntersection = !intersection.isEmpty();
 
-        if (list1ContainsList2 && patterns1.size() >= patterns2.size()) {
-            return 1;
-        } else if (list2ContainsList1 && patterns2.size() > patterns1.size()) {
-            return 2;
-        } else if (list1ContainsList2 || list2ContainsList1) {
-            return 3;
+        boolean list1ContainsList2 = set2.size() <= set1.size() && set1.containsAll(set2);
+
+        boolean list2ContainsList1 = set1.size() <= set2.size() && set2.containsAll(set1);
+
+        if (hasIntersection) {
+            if (list1ContainsList2) {
+                return 1;
+            } else if (list2ContainsList1 && set2.size() > set1.size()) {
+                return 2;
+            } else {
+                return 3;
+            }
         } else {
             return 0;
         }
     }
 
     /**
-     * 将权限字符串转换为正则表达式模式。
+     * 展开包含通配符 * 的权限字符串。
      *
      * @param permission 权限字符串
-     * @return 正则表达式模式
+     * @return 展开后的权限字符串集合
      */
-    private static Pattern toPattern(String permission) {
-        String regex = "^" + permission.replace(".", "\\.").replace("*", "[^.]*(?:[^.]*)?") + "$";
-        return Pattern.compile(regex);
+    private static Set<String> expandWithWildcard(String permission) {
+        Set<String> expandedPermissions = new HashSet<>();
+        String[] parts = permission.split("\\.");
+
+        generateCombinations(parts, 0, new String[parts.length], expandedPermissions);
+        return expandedPermissions;
+    }
+
+    /**
+     * 递归生成包含通配符 * 的所有组合。
+     *
+     * @param parts              权限字符串的部分
+     * @param index              当前处理的索引
+     * @param currentCombination 当前组合
+     * @param results            结果集合
+     */
+    private static void generateCombinations(String[] parts, int index, String[] currentCombination, Set<String> results) {
+        if (index == parts.length) {
+            results.add(String.join(".", currentCombination));
+            return;
+        }
+
+        if (parts[index].equals("*")) {
+            // 生成所有可能的字符序列
+            for (int i = 0; i < parts.length; i++) {
+                currentCombination[index] = parts[i];
+                generateCombinations(parts, index + 1, currentCombination, results);
+            }
+        } else {
+            // 复制当前部分
+            currentCombination[index] = parts[index];
+            generateCombinations(parts, index + 1, currentCombination, results);
+        }
+    }
+
+    public static boolean isPermissionMatched(String permissionStr, List<String> permissions) {
+        // 分割权限字符串
+        String[] parts = permissionStr.split("\\.");
+
+        // 遍历权限列表
+        for (String permission : permissions) {
+            // 分割当前权限字符串
+            String[] permissionParts = permission.split("\\.");
+
+            // 检查每个部分是否符合条件
+            boolean matches = true;
+            for (int i = 0; i < parts.length && i < permissionParts.length; i++) {
+                // 如果 permissionStr 的部分为空字符串或星号，则这部分可以匹配任何内容
+                if (!parts[i].isEmpty() && !permissionEquals(parts[i], permissionParts[i])) {
+                    matches = false;
+                    break;
+                }
+            }
+
+            // 如果所有部分都符合条件，则返回 true
+            if (matches) {
+                return true;
+            }
+        }
+
+        // 如果没有找到符合条件的权限，则返回 false
+        return false;
+    }
+
+    public static boolean permissionEquals(String permissionStr1, String permissionStr2) {
+        return StrUtil.equals(permissionStr1, permissionStr2) || "*".equals(permissionStr2) || "*".equals(permissionStr1);
     }
 
     /**

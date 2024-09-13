@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.metaverse.common.Utils.PermissionComparator;
+import com.metaverse.common.config.PermissionProperties;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.permission.MetaverseUserPermissionRelationshipIdGen;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
@@ -24,7 +25,6 @@ import com.metaverse.region.db.entity.MetaverseRegionDO;
 import com.metaverse.region.db.service.IMetaverseRegionService;
 import com.metaverse.region.resp.MetaverseRegionResp;
 import com.metaverse.user.db.entity.MetaverseUserDO;
-import com.metaverse.user.db.mapper.MetaverseUserMapper;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,7 +49,7 @@ public class MetaverseUserPermissionRelationshipService {
     private final IMetaversePermissionService metaversePermissionService;
     private final MetaverseUserPermissionRelationshipIdGen metaverseUserPermissionRelationshipIdGen;
     private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;//备份 上面删除的信息下面要留作备份
-    private final MetaverseUserMapper metaverseUserMapper;
+    private final PermissionProperties permissionProperties;
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean authoritiesImpowerUsers(AuthoritiesForUsersReq req, Long currentUserId) {
@@ -190,6 +193,7 @@ public class MetaverseUserPermissionRelationshipService {
         return true;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean authoritiesRevokeForUser(AuthoritiesForUserReq req, Long currentUserId) {
         List<Long> deletePermissionIds = req.getPermissionIds();
         List<MetaverseUserPermissionRelationshipDO> relationshipDOs = permissionRelationshipService.lambdaQuery()
@@ -212,6 +216,7 @@ public class MetaverseUserPermissionRelationshipService {
         return true;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean authoritiesImpowerUser(AuthoritiesForUserReq req, Long currentUserId) {
         MetaverseUser metaverseUser = MetaverseUser.readLoadAndAssertNotExist(req.getUserId());
         List<MetaversePermission> newMetaversePermissions = PermissionComparator.filterIncludedPermissions(MetaversePermission.readLoadAndAssertNotExist(req.getPermissionIds()));
@@ -298,7 +303,18 @@ public class MetaverseUserPermissionRelationshipService {
      * @return 结果向下取整保留两位小数 如：78.34%
      */
     private String calculateAuthorizationLevel(List<String> permissions) {
-        return "55.65%";
+        List<String> systemPermissions = permissionProperties.getSystemPermissions();
+        int successfulAccessCount = 0;
+        for (String systemPermission : systemPermissions) {
+            if (PermissionComparator.isPermissionMatched(systemPermission, permissions)) {
+                successfulAccessCount++;
+            }
+        }
+        BigDecimal result = BigDecimal.valueOf(successfulAccessCount)
+                .divide(BigDecimal.valueOf(successfulAccessCount), 2, RoundingMode.DOWN)
+                .multiply(BigDecimal.valueOf(100));
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(result);
     }
 
     private MetaversePermissionResp convertPermissionResp(MetaversePermissionDO metaversePermissionDO) {

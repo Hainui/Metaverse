@@ -2,7 +2,7 @@ package com.metaverse.common.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import com.metaverse.common.Utils.JwtUtils;
-import com.metaverse.common.Utils.RedisServer;
+import com.metaverse.common.config.RedisServer;
 import com.metaverse.common.constant.UserConstant;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.dto.MetaverseUserInfo;

@@ -1,4 +1,4 @@
-package com.metaverse.common.Utils;
+package com.metaverse.common.config;
 
 
 import lombok.RequiredArgsConstructor;

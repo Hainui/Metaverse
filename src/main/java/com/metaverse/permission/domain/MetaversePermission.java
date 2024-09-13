@@ -2,7 +2,7 @@ package com.metaverse.permission.domain;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
-import com.metaverse.common.Utils.BeanManager;
+import com.metaverse.common.config.BeanManager;
 import com.metaverse.common.model.IEntity;
 import com.metaverse.permission.MetaversePermissionIdGen;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;

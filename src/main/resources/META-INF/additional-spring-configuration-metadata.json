@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "metaverse.config.permissions",
+      "type": "java.lang.String",
+      "description": "Description for metaverse.config.permissions."
+    },
+    {
+      "name": "mybatis.configuration.map-underscore-to-camel-case",
+      "type": "java.lang.String",
+      "description": "Description for mybatis.configuration.map-underscore-to-camel-case."
+    },
+    {
+      "name": "mybatis.configuration.log-impl",
+      "type": "java.lang.String",
+      "description": "Description for mybatis.configuration.log-impl."
+    }
+  ]
+}

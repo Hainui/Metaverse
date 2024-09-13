@@ -2,7 +2,7 @@ package com.metaverse.user.domain;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.metaverse.common.Utils.BCryptUtil;
-import com.metaverse.common.Utils.BeanManager;
+import com.metaverse.common.config.BeanManager;
 import com.metaverse.common.model.IAggregateRoot;
 import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.dto.MetaverseUserPermissionInfo;
