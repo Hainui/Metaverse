@@ -1,16 +1,25 @@
 package com.metaverse.common.Utils;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.metaverse.common.model.Permission;
 import com.metaverse.permission.domain.MetaversePermission;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PermissionComparator {
 
     public static void main(String[] args) {
-        List<String> list1 = Arrays.asList("*.*.*");
-        List<String> list2 = Arrays.asList("dd.wqe.dsad", "dd.wwwww.dsad");
+        List<String> list1 = Arrays.asList("*.*.a", "dd.wwwww.dsdddad");
+        List<String> list2 = Arrays.asList("*.*.d", "dd.wwwww.dsad");
         System.out.println(compareLists(list1, list2));
+
+        List<String> list3 = Arrays.asList("a", "b", "c");
+        List<String> list4 = Arrays.asList("b", "c", "a", "d");
 
 
 //        String permissionStr = "dd.wqe.dsad";
@@ -21,18 +30,7 @@ public class PermissionComparator {
     }
 
     /**
-     * 比较两个字符串列表的关系，考虑通配符 * 的逻辑。
-     *
-     * @param permissionList1 第一个列表
-     * @param permissionList2 第二个列表
-     * @return 返回值说明：
-     * 0 - 两个列表互不包含且没有交集
-     * 1 - 第一个列表包含或等于第二个列表
-     * 2 - 第二个列表包含且不等于第一个列表
-     * 3 - 两个列表互不包含但是有交集
-     */
-    /**
-     * 比较两个字符串列表的关系，考虑通配符 * 的逻辑。
+     * 比较两个字符串列表的关系。
      *
      * @param permissionList1 第一个列表
      * @param permissionList2 第二个列表
@@ -43,76 +41,40 @@ public class PermissionComparator {
      * 3 - 两个列表互不包含但是有交集
      */
     public static int compareLists(List<String> permissionList1, List<String> permissionList2) {
-        Set<String> set1 = new HashSet<>();
-        Set<String> set2 = new HashSet<>();
-
-        for (String permission : permissionList1) {
-            set1.addAll(expandWithWildcard(permission));
+        if (CollectionUtil.isNotEmpty(permissionList1) && CollectionUtil.isEmpty(permissionList2) || CollectionUtil.isEmpty(permissionList1) && CollectionUtil.isEmpty(permissionList2)) {
+            return 1;
         }
-
-        for (String permission : permissionList2) {
-            set2.addAll(expandWithWildcard(permission));
+        if (CollectionUtil.isEmpty(permissionList1) && CollectionUtil.isNotEmpty(permissionList2)) {
+            return 2;
         }
+        Set<Permission> permissionSet1 = permissionList1.stream().map(Permission::new).collect(Collectors.toSet());
+        Set<Permission> permissionSet2 = permissionList2.stream().map(Permission::new).collect(Collectors.toSet());
 
-        Set<String> intersection = new HashSet<>(set1);
-        intersection.retainAll(set2);
-        boolean hasIntersection = !intersection.isEmpty();
+        // 检查set1是否包含set2
+        boolean set1ContainsSet2 = permissionSet1.containsAll(permissionSet2);
 
-        boolean list1ContainsList2 = set2.size() <= set1.size() && set1.containsAll(set2);
+        // 检查set2是否包含set1
+        boolean set2ContainsSet1 = permissionSet2.containsAll(permissionSet1);
 
-        boolean list2ContainsList1 = set1.size() <= set2.size() && set2.containsAll(set1);
+        // 检查是否有交集
+        permissionSet1.retainAll(permissionSet2);
+        boolean hasIntersection = CollectionUtil.isNotEmpty(permissionSet1);
+//        boolean hasIntersection = new HashSet<>(permissionSet1).retainAll(permissionSet2);
 
         if (hasIntersection) {
-            if (list1ContainsList2) {
-                return 1;
-            } else if (list2ContainsList1 && set2.size() > set1.size()) {
-                return 2;
+            if (set1ContainsSet2 || set2ContainsSet1) {
+                return 1; // 包含关系成立
             } else {
-                return 3;
+                return 3; // 有交集但不包含
             }
         } else {
-            return 0;
-        }
-    }
-
-    /**
-     * 展开包含通配符 * 的权限字符串。
-     *
-     * @param permission 权限字符串
-     * @return 展开后的权限字符串集合
-     */
-    private static Set<String> expandWithWildcard(String permission) {
-        Set<String> expandedPermissions = new HashSet<>();
-        String[] parts = permission.split("\\.");
-
-        generateCombinations(parts, 0, new String[parts.length], expandedPermissions);
-        return expandedPermissions;
-    }
-
-    /**
-     * 递归生成包含通配符 * 的所有组合。
-     *
-     * @param parts              权限字符串的部分
-     * @param index              当前处理的索引
-     * @param currentCombination 当前组合
-     * @param results            结果集合
-     */
-    private static void generateCombinations(String[] parts, int index, String[] currentCombination, Set<String> results) {
-        if (index == parts.length) {
-            results.add(String.join(".", currentCombination));
-            return;
-        }
-
-        if (parts[index].equals("*")) {
-            // 生成所有可能的字符序列
-            for (int i = 0; i < parts.length; i++) {
-                currentCombination[index] = parts[i];
-                generateCombinations(parts, index + 1, currentCombination, results);
+            if (set1ContainsSet2) {
+                return 1; // set1包含set2
+            } else if (set2ContainsSet1) {
+                return 2; // set2包含set1
+            } else {
+                return 0; // 没有交集
             }
-        } else {
-            // 复制当前部分
-            currentCombination[index] = parts[index];
-            generateCombinations(parts, index + 1, currentCombination, results);
         }
     }
 
