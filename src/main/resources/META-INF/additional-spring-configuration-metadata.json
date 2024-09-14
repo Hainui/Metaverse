@@ -1,7 +1,7 @@
 {
   "properties": [
     {
-      "name": "metaverse.config.permissions",
+      "name": "metaverse.config.system-permissions",
       "type": "java.lang.String",
       "description": "Description for metaverse.config.permissions."
     },

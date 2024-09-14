@@ -52,7 +52,7 @@ public class MetaverseUserPermissionRelationshipService {
     private final PermissionProperties permissionProperties;
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean authoritiesImpowerUsers(AuthoritiesForUsersReq req, Long currentUserId) {
+    public Boolean authoritiesImpowerUsers(AuthoritiesForUsersReq req, Long currentUserId) {// todo 不要测试
         List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(req.getUserIds());
         List<MetaversePermission> newMetaversePermissions = PermissionComparator.filterIncludedPermissions(MetaversePermission.readLoadAndAssertNotExist(req.getPermissionIds()));
         for (MetaverseUser metaverseUser : metaverseUsers) {
@@ -85,7 +85,7 @@ public class MetaverseUserPermissionRelationshipService {
         permissionRelationshipDOs.forEach(permissionRelationshipDO -> permissionRelationshipDeleteService.save(convertToRelationshipDeleteDo(permissionRelationshipDO, currentUserId, LocalDateTime.now())));
         newMetaversePermissions.forEach(newMetaversePermission -> permissionRelationshipService.save(new MetaverseUserPermissionRelationshipDO()
                 .setId(metaverseUserPermissionRelationshipIdGen.nextId())
-                .setUserId(newMetaversePermission.getId())
+                .setUserId(newMetaversePermission.getId())//todo 两个都是newMetaversePermission.getId()
                 .setPermissionId(newMetaversePermission.getId())
                 .setImpowerAt(LocalDateTime.now())
                 .setImpowerBy(currentUserId)));
@@ -130,8 +130,8 @@ public class MetaverseUserPermissionRelationshipService {
         }
         return new MetaverseUserPermissionRelationshipDeleteDO()
                 .setId(permissionRelationshipDO.getId())
-                .setUserId(permissionRelationshipDO.getId())
-                .setPermissionId(permissionRelationshipDO.getId())
+                .setUserId(permissionRelationshipDO.getUserId())
+                .setPermissionId(permissionRelationshipDO.getPermissionId())
                 .setImpowerAt(permissionRelationshipDO.getImpowerAt())
                 .setImpowerBy(permissionRelationshipDO.getImpowerBy())
                 .setDeleteBy(currentUserId)

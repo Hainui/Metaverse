@@ -92,7 +92,7 @@ public class MetaversePermission implements IEntity {
     public static List<MetaversePermission> readLoadAndAssertNotExist(List<Long> ids) {//读锁
         MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         List<MetaversePermission> permissions = repository.findByIdsWithReadLock(ids);
-        if (CollectionUtil.isNotEmpty(permissions)) {
+        if (CollectionUtil.isEmpty(permissions)) {
             throw new IllegalArgumentException("未找到该权限信息");
         }
         return permissions;

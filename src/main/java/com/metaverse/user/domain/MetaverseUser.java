@@ -106,7 +106,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     public static List<MetaverseUser> readLoadAndAssertNotExist(List<Long> userIds) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         List<MetaverseUser> users = repository.findByIdsWithReadLock(userIds);
-        if (CollectionUtil.isNotEmpty(users)) {
+        if (CollectionUtil.isEmpty(users)) {
             throw new IllegalArgumentException("未找到该用户信息");
         }
         return users;

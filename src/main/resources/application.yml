@@ -61,7 +61,7 @@ snowflake:
 
 metaverse:
   config:
-    permissions:
-      - item1
+    system-permissions:
+      - USER.DOMAIN.LOCAK
       - item2
       - item3
