@@ -83,12 +83,17 @@ public class MetaverseUserPermissionRelationshipService {
                 .list();
         permissionRelationshipService.remove(new LambdaQueryWrapper<MetaverseUserPermissionRelationshipDO>().in(MetaverseUserPermissionRelationshipDO::getUserId, userIds));
         permissionRelationshipDOs.forEach(permissionRelationshipDO -> permissionRelationshipDeleteService.save(convertToRelationshipDeleteDo(permissionRelationshipDO, currentUserId, LocalDateTime.now())));
-        newMetaversePermissions.forEach(newMetaversePermission -> permissionRelationshipService.save(new MetaverseUserPermissionRelationshipDO()
-                .setId(metaverseUserPermissionRelationshipIdGen.nextId())
-                .setUserId(newMetaversePermission.getId())//todo 两个都是newMetaversePermission.getId()
-                .setPermissionId(newMetaversePermission.getId())
-                .setImpowerAt(LocalDateTime.now())
-                .setImpowerBy(currentUserId)));
+        // 挨个为每个用户添加权限
+        userIds.forEach(userId ->
+                newMetaversePermissions.forEach(newMetaversePermission -> permissionRelationshipService.save(new MetaverseUserPermissionRelationshipDO()
+                        .setId(metaverseUserPermissionRelationshipIdGen.nextId())
+                        .setUserId(userId)
+                        .setPermissionId(newMetaversePermission.getId())
+                        .setImpowerAt(LocalDateTime.now())
+                        .setImpowerBy(currentUserId)))
+        );
+
+
         return true;
 
 //        MetaversePermission permission = new MetaversePermission();
