@@ -16,7 +16,7 @@ public class PermissionProperties {
         return ImmutableList.copyOf(systemPermissions);
     }
 
-    public void setStringList(List<String> systemPermissions) {
+    public void setSystemPermissions(List<String> systemPermissions) {
         this.systemPermissions = systemPermissions;
     }
 }

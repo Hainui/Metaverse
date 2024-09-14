@@ -62,6 +62,7 @@ snowflake:
 metaverse:
   config:
     system-permissions:
-      - USER.DOMAIN.LOCAK
-      - item2
-      - item3
+      - UPDATE.USER.PERMISSION
+      - VIEW.USER.PERMISSION
+      - DELETE.USER.PERMISSION
+      - DELETE.REGION.PERMISSION
