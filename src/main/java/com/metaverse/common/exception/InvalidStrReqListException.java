@@ -9,9 +9,9 @@ public class InvalidStrReqListException extends RuntimeException {
 
     private final List<String> invalidLocations;
 
-    public InvalidStrReqListException(List<String> invalidLocations) {
-        super("The following server locations are invalid: " + invalidLocations);
-        this.invalidLocations = invalidLocations;
+    public InvalidStrReqListException(List<String> invalidReqList) {
+        super("The following request parameters are abnormal: " + invalidReqList);
+        this.invalidLocations = invalidReqList;
     }
 
 }

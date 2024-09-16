@@ -1,6 +1,6 @@
 package com.metaverse.user.service;
 
-import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.config.RedisServer;
 import com.metaverse.common.constant.UserConstant;
 import com.metaverse.user.db.entity.MetaverseUserDO;
@@ -35,7 +35,7 @@ public class UserService {
         Map<String, Object> claims = new HashMap<>();
         claims.put(UserConstant.METAVERSE_USER, userInfo);
         claims.put(UserConstant.IP_ADDRESS, ipAddress);
-        String token = JwtUtils.generateJwt(claims);
+        String token = MetaverseContextUtil.generateJwt(claims);
         redisServer.storeToken(userInfo.getId(), token);
         return token;
     }

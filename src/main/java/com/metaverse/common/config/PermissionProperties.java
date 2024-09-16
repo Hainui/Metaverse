@@ -1,11 +1,13 @@
 package com.metaverse.common.config;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Setter
 @Component
 @ConfigurationProperties(prefix = "metaverse.config")
 public class PermissionProperties {
@@ -16,7 +18,4 @@ public class PermissionProperties {
         return ImmutableList.copyOf(systemPermissions);
     }
 
-    public void setSystemPermissions(List<String> systemPermissions) {
-        this.systemPermissions = systemPermissions;
-    }
 }

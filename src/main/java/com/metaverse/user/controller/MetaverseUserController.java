@@ -1,7 +1,7 @@
 package com.metaverse.user.controller;
 
 import com.metaverse.common.Utils.HttpUtils;
-import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.Utils.VerificationCodeUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.MetaverseUserLoginReq;
@@ -43,13 +43,13 @@ public class MetaverseUserController {
     @GetMapping("/signOut")
     @ApiOperation(value = "用户退出登录", tags = "1.0.0")
     public Result<Boolean> signOut() {
-        return Result.success(userService.signOut(JwtUtils.getCurrentUserId()));
+        return Result.success(userService.signOut(MetaverseContextUtil.getCurrentUserId()));
     }
 
     @GetMapping("/searchUser")
     @ApiOperation(value = "根据用户名精确查找用户", tags = "1.0.0")
     public Result<SearchUserByNameResp> searchUser(@ApiParam(name = "用户搜索参数", required = true) @RequestParam(value = "userName") @NotBlank(message = "用户名不能为空") String userName) {
-        return Result.success(userService.searchUserByName(userName, JwtUtils.getCurrentUserRegion().getId()));
+        return Result.success(userService.searchUserByName(userName, MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
     @PostMapping("/registration")
@@ -72,14 +72,14 @@ public class MetaverseUserController {
     @PostMapping("/modifyUserName")
     @ApiOperation(value = "修改用户名", tags = "1.0.0")
     public Result<Boolean> modifyUserName(@ApiParam(name = "用户名修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
-        return Result.success(userService.modifyUserName(req, JwtUtils.getCurrentUserId(), JwtUtils.getCurrentUserRegion().getId()));
+        return Result.success(userService.modifyUserName(req, MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
 
     @PostMapping("/metaverseUserModifyPassword")
     @ApiOperation(value = "用户修改密码", tags = "1.0.0")
     public Result<Boolean> metaverseUserModifyPassword(@ApiParam(name = "用户修改密码请求参数", required = true) @RequestBody @Valid MetaverseUserModifyPasswordReq req) {
-        return Result.success(userService.metaverseUserModifyPassword(req, JwtUtils.getCurrentUserId(), JwtUtils.getCurrentUserRegion().getId()));
+        return Result.success(userService.metaverseUserModifyPassword(req, MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
 

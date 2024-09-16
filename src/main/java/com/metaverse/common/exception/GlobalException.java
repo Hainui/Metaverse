@@ -35,9 +35,27 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Result.error(errorMessages));
     }
 
+    /**
+     * 请求参数异常
+     *
+     * @param ex
+     * @return
+     */
     @ExceptionHandler(InvalidStrReqListException.class)
     public ResponseEntity<Result<List<String>>> handleInvalidServerLocationException(InvalidStrReqListException ex) {
         List<String> invalidLocations = ex.getInvalidLocations();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Result.error(invalidLocations));
+    }
+
+    /**
+     * 权限控制异常
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(AccessControlPermissionListException.class)
+    public ResponseEntity<Result<List<String>>> handleInvalidServerLocationException(AccessControlPermissionListException ex) {
+        List<String> permissions = ex.getPermissions();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.error(permissions));
     }
 }

@@ -1,7 +1,7 @@
 package com.metaverse.common.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
-import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.config.RedisServer;
 import com.metaverse.common.constant.UserConstant;
 import com.metaverse.common.model.Result;
@@ -55,7 +55,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         try {
 //            MetaverseUserInfo userInfo = (MetaverseUserInfo) JwtUtils.parseJWT(jwt).get(UserConstant.METAVERSE_USER);
 
-            MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(jwt, UserConstant.METAVERSE_USER);
+            MetaverseUserInfo userInfo = MetaverseContextUtil.parseJwtToUserInfo(jwt, UserConstant.METAVERSE_USER);
             Long userId = userInfo.getId();
             if (!redisServer.validateToken(userId, jwt)) {
                 log.error("token已经过期或被销毁");

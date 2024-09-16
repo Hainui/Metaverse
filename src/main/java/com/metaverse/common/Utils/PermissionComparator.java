@@ -78,6 +78,13 @@ public class PermissionComparator {
         }
     }
 
+    /**
+     * 验证用户是否能通过接口的限制权限串
+     *
+     * @param permissionStr 接口限制的权限串
+     * @param permissions   用户具备的权限串
+     * @return
+     */
     public static boolean isPermissionMatched(String permissionStr, List<String> permissions) {
         // 分割权限字符串
         String[] parts = permissionStr.split("\\.");

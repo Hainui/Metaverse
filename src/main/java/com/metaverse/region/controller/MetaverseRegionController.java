@@ -1,6 +1,6 @@
 package com.metaverse.region.controller;
 
-import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.region.req.ModifyRegionNameReq;
 import com.metaverse.region.req.ModifyRegionServerLocationReq;
@@ -45,21 +45,21 @@ public class MetaverseRegionController {
         // *.update.*
         // shuixing.*.*
         // *.*.*
-        return Result.success(regionService.create(req, JwtUtils.getCurrentUserId()));
+        return Result.success(regionService.create(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/modifyRegionName")
     @ApiOperation(value = "修改区服名", tags = "1.0.0")
     public Result<Boolean> modifyRegionName(@ApiParam(name = "修改区域名称请求参数", required = true) @RequestBody @Valid ModifyRegionNameReq req) {
         // todo 权限校验
-        return Result.success(regionService.modifyRegionName(req, JwtUtils.getCurrentUserId()));
+        return Result.success(regionService.modifyRegionName(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/modifyRegionLocationList")
     @ApiOperation(value = "修改区服地址", tags = "1.0.0")
     public Result<Boolean> modifyRegionLocationList(@ApiParam(name = "修改区域地址请求参数", required = true) @RequestBody @Valid ModifyRegionServerLocationReq req) {
         // todo 权限校验
-        return Result.success(regionService.modifyRegionLocationList(req, JwtUtils.getCurrentUserId()));
+        return Result.success(regionService.modifyRegionLocationList(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
 }

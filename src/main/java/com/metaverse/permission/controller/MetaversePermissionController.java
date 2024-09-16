@@ -1,6 +1,6 @@
 package com.metaverse.permission.controller;
 
-import com.metaverse.common.Utils.JwtUtils;
+import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.permission.req.ModifyPermissionNameReq;
 import com.metaverse.permission.req.ModifyPermissionReq;
@@ -41,21 +41,21 @@ public class MetaversePermissionController {
     @ApiOperation(value = "定义新权限", tags = "1.0.0")
     public Result<Long> create(@ApiParam(name = "新权限请求参数", required = true) @RequestBody @Valid PermissionCreateReq req) {
         // todo 权限校验
-        return Result.success(permissionService.create(req, JwtUtils.getCurrentUserId()));
+        return Result.success(permissionService.create(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/modifyPermissionName")
     @ApiOperation(value = "修改权限名称", tags = "1.0.0")
     public Result<Boolean> modifyPermissionName(@ApiParam(name = "修改权限名称请求参数", required = true) @RequestBody @Valid ModifyPermissionNameReq req) {
         // todo 权限校验
-        return Result.success(permissionService.modifyPermissionName(req, JwtUtils.getCurrentUserId()));
+        return Result.success(permissionService.modifyPermissionName(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/modifyPermissions")
     @ApiOperation(value = "修改权限的权限串集合", tags = "1.0.0")
     public Result<Boolean> modifyPermissions(@ApiParam(name = "修改权限串请求参数", required = true) @RequestBody @Valid ModifyPermissionReq req) {
         // todo 权限校验
-        return Result.success(permissionService.modifyPermissions(req, JwtUtils.getCurrentUserId()));
+        return Result.success(permissionService.modifyPermissions(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
 }

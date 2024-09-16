@@ -1,30 +1,19 @@
 package com.metaverse.common.permission;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@Data
-@Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
-public class Permission {
-    
-    // resourceTypeElements[].action.locator
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Permission {
+    // 资源类型集合
+    String[] resourceTypeElements() default {};
 
-    /**
-     * 资源类型集合
-     */
-    private String[] resourceTypeElements;
-    /**
-     * 动作
-     */
-    private String action;
-    /**
-     * 定位符
-     */
-    private String locator;
+    // 动作
+    String action() default "";
 
-
+    // 定位符
+    String locator() default "";
 }

@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class JwtUtils {
+public class MetaverseContextUtil {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static MetaverseUserInfo parseJwtToUserInfo(String jwt, String claimName) {
-        Map<String, Object> jwtClaims = JwtUtils.parseJWT(jwt);
+        Map<String, Object> jwtClaims = MetaverseContextUtil.parseJWT(jwt);
         Object metaverseUserClaim = jwtClaims.get(claimName);
 
         // 如果 claim 是 LinkedHashMap，尝试转换为 MetaverseUserInfo
@@ -55,7 +55,7 @@ public class JwtUtils {
     }
 
     public static Long getCurrentUserId() {
-        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        MetaverseUserInfo userInfo = MetaverseContextUtil.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
         if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
@@ -63,7 +63,7 @@ public class JwtUtils {
     }
 
     public static String getCurrentUserEmail() {
-        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        MetaverseUserInfo userInfo = MetaverseContextUtil.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
         if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
@@ -71,7 +71,7 @@ public class JwtUtils {
     }
 
     public static MetaverseRegionInfo getCurrentUserRegion() {
-        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        MetaverseUserInfo userInfo = MetaverseContextUtil.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
         if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
@@ -79,7 +79,7 @@ public class JwtUtils {
     }
 
     public static List<MetaverseUserPermissionInfo> getCurrentUserPermission() {
-        MetaverseUserInfo userInfo = JwtUtils.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        MetaverseUserInfo userInfo = MetaverseContextUtil.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
         if (Objects.isNull(userInfo)) {
             throw new IllegalArgumentException("登录信息异常");
         }
