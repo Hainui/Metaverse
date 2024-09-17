@@ -1,7 +1,9 @@
 package com.metaverse.region.controller;
 
 import com.metaverse.common.Utils.MetaverseContextUtil;
+import com.metaverse.common.constant.PermissionConstant;
 import com.metaverse.common.model.Result;
+import com.metaverse.common.permission.Permission;
 import com.metaverse.region.req.ModifyRegionNameReq;
 import com.metaverse.region.req.ModifyRegionServerLocationReq;
 import com.metaverse.region.req.RegionCreateReq;
@@ -31,25 +33,21 @@ public class MetaverseRegionController {
 
     @GetMapping("/getAllMetaverseRegion")
     @ApiOperation(value = "获取所有开放的区服", tags = "1.0.0")
+    @Permission(resourceTypeElements = {PermissionConstant.ResourceType.REGION}, action = PermissionConstant.Action.READ)
     public Result<List<MetaverseRegionResp>> getAllMetaverseRegion() {
         return Result.success(regionService.getAllMetaverseRegion());
     }
 
     @PostMapping("/create")
     @ApiOperation(value = "新建区服", tags = "1.0.0")
+    @Permission(resourceTypeElements = {PermissionConstant.ResourceType.REGION}, action = PermissionConstant.Action.CREATE)
     public Result<Long> create(@ApiParam(name = "新建区服请求参数", required = true) @RequestBody @Valid RegionCreateReq req) {
-        // todo 权限校验
-        // {huoxing.shuixing}
-        // huoxing.update.*
-        // shuixing.update.*
-        // *.update.*
-        // shuixing.*.*
-        // *.*.*
         return Result.success(regionService.create(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/modifyRegionName")
     @ApiOperation(value = "修改区服名", tags = "1.0.0")
+    @Permission(resourceTypeElements = {PermissionConstant.ResourceType.REGION}, action = PermissionConstant.Action.UPDATE)
     public Result<Boolean> modifyRegionName(@ApiParam(name = "修改区域名称请求参数", required = true) @RequestBody @Valid ModifyRegionNameReq req) {
         // todo 权限校验
         return Result.success(regionService.modifyRegionName(req, MetaverseContextUtil.getCurrentUserId()));
@@ -57,6 +55,7 @@ public class MetaverseRegionController {
 
     @PostMapping("/modifyRegionLocationList")
     @ApiOperation(value = "修改区服地址", tags = "1.0.0")
+    @Permission(resourceTypeElements = {PermissionConstant.ResourceType.REGION}, action = PermissionConstant.Action.UPDATE)
     public Result<Boolean> modifyRegionLocationList(@ApiParam(name = "修改区域地址请求参数", required = true) @RequestBody @Valid ModifyRegionServerLocationReq req) {
         // todo 权限校验
         return Result.success(regionService.modifyRegionLocationList(req, MetaverseContextUtil.getCurrentUserId()));

@@ -1,5 +1,6 @@
 package com.metaverse.common.permission;
 
+import cn.hutool.core.util.StrUtil;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.Utils.PermissionComparator;
 import com.metaverse.common.exception.AccessControlPermissionListException;
@@ -46,7 +47,7 @@ public class PermissionAspect {
         List<String> errorInfoList = new ArrayList<>();
         for (String resourceTypeElement : resourceTypeElements) {
             StringBuilder sb = new StringBuilder();
-            sb.append(resourceTypeElement).append(".").append(action).append(".").append(locator);
+            sb.append(resourceTypeElement).append(".").append(action).append(".").append(StrUtil.isBlank(locator) ? "" : locator);
             boolean permissionMatched = PermissionComparator.isPermissionMatched(sb.toString(), permissions);
             if (!permissionMatched) {
                 if (errorInfoList.isEmpty()) {
