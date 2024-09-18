@@ -22,7 +22,7 @@ public class PermissionConstant {
     }
 
     public interface Locator {
-
+        String ACTIVATE = "ACTIVATE";//用户的状态,登陆的时候自动加入令牌中,如果封禁用户则只需要将该权限关掉就可以
 
     }
 
