@@ -7,6 +7,7 @@ public class PermissionConstant {
         String PERMISSION = "PERMISSION";
         String PERMISSION_RELATIONSHIP = "PERMISSION_RELATIONSHIP";
         String REGION = "REGION";
+        String USER = "USER";
     }
 
     public interface Action {
@@ -17,6 +18,7 @@ public class PermissionConstant {
         String GRANT_PERMISSION = "GRANT_PERMISSION";
         String RESET_PERMISSION = "RESET_PERMISSION";
         String REVOKE_PERMISSION = "REVOKE_PERMISSION";
+
     }
 
     public interface Locator {

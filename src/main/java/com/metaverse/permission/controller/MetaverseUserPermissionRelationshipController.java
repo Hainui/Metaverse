@@ -39,6 +39,8 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "多个权限同时授予多个用户", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION_RELATIONSHIP}, action = PermissionConstant.Action.GRANT_PERMISSION)
     public Result<Boolean> authoritiesImpowerUsers(@ApiParam(name = "多个权限同时授予多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
+        //todo 想加上一个区服判断,如果是一个区的管理员只能授予该区的人员权限
+        permissionRelationshipService.regionIdsCompare(req, MetaverseContextUtil.getCurrentUserRegion().getId());
         return Result.success(permissionRelationshipService.authoritiesImpowerUsers(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
@@ -46,6 +48,7 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "多个权限同时重置多个用户", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION_RELATIONSHIP}, action = PermissionConstant.Action.RESET_PERMISSION)
     public Result<Boolean> authoritiesResetUsers(@ApiParam(name = "多个权限同时重置多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
+        permissionRelationshipService.regionIdsCompare(req, MetaverseContextUtil.getCurrentUserRegion().getId());
         return Result.success(permissionRelationshipService.authoritiesResetUsers(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
@@ -53,6 +56,7 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "为多个用户批量删除选中的这些权限", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION_RELATIONSHIP}, action = PermissionConstant.Action.REVOKE_PERMISSION)
     public Result<Boolean> authoritiesRevokeUsers(@ApiParam(name = "为多个用户批量删除选中的这些权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
+        permissionRelationshipService.regionIdsCompare(req, MetaverseContextUtil.getCurrentUserRegion().getId());
         return Result.success(permissionRelationshipService.authoritiesRevokeForUsers(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
@@ -60,6 +64,7 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "精准剔除单个用户一个或者多个权限", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION_RELATIONSHIP}, action = PermissionConstant.Action.REVOKE_PERMISSION)
     public Result<Boolean> authoritiesRevokeForUser(@ApiParam(name = "精准剔除单个用户的一个或者多个权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUserReq req) {
+        permissionRelationshipService.regionIdCompare(req, MetaverseContextUtil.getCurrentUserRegion().getId());
         return Result.success(permissionRelationshipService.authoritiesRevokeForUser(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
@@ -67,6 +72,7 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "为单个用户添加一个或多个权限", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION_RELATIONSHIP}, action = PermissionConstant.Action.GRANT_PERMISSION)
     public Result<Boolean> authoritiesImpowerUser(@ApiParam(name = "为单个用户添加一个或多个权限请求参数", required = true) @RequestBody @Valid AuthoritiesForUserReq req) {
+        permissionRelationshipService.regionIdCompare(req, MetaverseContextUtil.getCurrentUserRegion().getId());
         return Result.success(permissionRelationshipService.authoritiesImpowerUser(req, MetaverseContextUtil.getCurrentUserId()));
     }
 

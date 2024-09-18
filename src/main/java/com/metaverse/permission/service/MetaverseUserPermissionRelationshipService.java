@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -355,4 +356,37 @@ public class MetaverseUserPermissionRelationshipService {
                 .setName(regionDO.getName());
     }
 
+    public void regionIdsCompare(@Valid AuthoritiesForUsersReq req, Long manageRegionId) {
+        // todo缺少一个管理员判断,我认为可以将管理员放在独立的区服id然后如果是这个区服就不用校验
+        final Long ADMIN_REGION_ID = 1833047328504811520L;//管理员所在的区服
+        if (ADMIN_REGION_ID.equals(manageRegionId)) {
+            return;
+        }
+        List<Long> userIds = req.getUserIds();
+        List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(userIds);
+        for (MetaverseUser metaverseUser : metaverseUsers) {
+            Long regionId = metaverseUser.getRegion().getId();
+            if (!regionId.equals(manageRegionId)) {
+                throw new IllegalArgumentException("无法管理本区服之外的用户");
+            }
+        }
+    }
+
+    public void regionIdCompare(@Valid AuthoritiesForUserReq req, Long manageRegionId) {
+        final Long ADMIN_REGION_ID = 1833047328504811520L;//管理员所在的区服
+        if (ADMIN_REGION_ID.equals(manageRegionId)) {
+            return;
+        }
+        Long regionId = req.getUserId();
+        if (!regionId.equals(manageRegionId)) {
+            throw new IllegalArgumentException("无法管理本区服之外的用户");
+        }
+
+    }
+//    List<Long> userIds = req.getUserIds();
+//        List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(userIds);
+//        List<MetaversePermission> newMetaversePermissions = PermissionComparator.filterIncludedPermissions(MetaversePermission.readLoadAndAssertNotExist(req.getPermissionIds()));
+//        for (MetaverseUser metaverseUser : metaverseUsers) {
+//            List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
+//            for (MetaversePermission newMetaversePermission : newMetaversePermissions) {
 }
