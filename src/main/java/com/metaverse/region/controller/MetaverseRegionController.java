@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * <p>
- * 区服 前端控制器
+ * 区服 前端控制器 超级管理员 运营人员
  * </p>
  *
  * @author Hainui

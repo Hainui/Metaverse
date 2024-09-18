@@ -59,6 +59,9 @@ public class MetaversePermission implements IEntity {
     public static Long create(String name, List<String> permissions, Long currentUserId) {
         MetaversePermissionIdGen idGen = BeanManager.getBean(MetaversePermissionIdGen.class);
         MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
+        if (repository.existByName(name)) {
+            throw new IllegalArgumentException("该权限名称已存在");
+        }
         MetaversePermissionDO metaversePermissionDO = new MetaversePermissionDO()
                 .setId(idGen.nextId())
                 .setPermissionGroupName(name)

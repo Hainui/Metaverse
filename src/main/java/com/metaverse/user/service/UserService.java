@@ -1,5 +1,6 @@
 package com.metaverse.user.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.config.RedisServer;
 import com.metaverse.common.constant.UserConstant;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -42,6 +44,13 @@ public class UserService {
 
     public Boolean signOut(Long userId) {
         redisServer.removeToken(userId);
+        return Boolean.TRUE;
+    }
+
+    public Boolean signOut(List<Long> userIds) {
+        if (CollectionUtil.isNotEmpty(userIds)) {
+            userIds.forEach(redisServer::removeToken);
+        }
         return Boolean.TRUE;
     }
 

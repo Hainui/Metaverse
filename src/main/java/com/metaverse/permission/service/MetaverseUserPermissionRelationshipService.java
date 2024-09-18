@@ -1,5 +1,6 @@
 package com.metaverse.permission.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -27,6 +28,7 @@ import com.metaverse.region.resp.MetaverseRegionResp;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,16 +52,21 @@ public class MetaverseUserPermissionRelationshipService {
     private final MetaverseUserPermissionRelationshipIdGen metaverseUserPermissionRelationshipIdGen;
     private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;//备份 上面删除的信息下面要留作备份
     private final PermissionProperties permissionProperties;
+    private final UserService userService;
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean authoritiesImpowerUsers(AuthoritiesForUsersReq req, Long currentUserId) {// todo 不要测试
-        List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(req.getUserIds());
+    public Boolean authoritiesImpowerUsers(AuthoritiesForUsersReq req, Long currentUserId) {
+        List<Long> userIds = req.getUserIds();
+        List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(userIds);
         List<MetaversePermission> newMetaversePermissions = PermissionComparator.filterIncludedPermissions(MetaversePermission.readLoadAndAssertNotExist(req.getPermissionIds()));
         for (MetaverseUser metaverseUser : metaverseUsers) {
+            List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
             for (MetaversePermission newMetaversePermission : newMetaversePermissions) {
-                List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
+                //todo 这个老的权限串获取有问题获取到的是全部权限,并且应该放在第一个for循环之后
+//                List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
                 int code = PermissionComparator.compareLists(userOldPermissions, newMetaversePermission.getPermissions());
                 if (code != 1) {
+                    userService.signOut(metaverseUser.getId());
                     permissionRelationshipService
                             .save(new MetaverseUserPermissionRelationshipDO()
                                     .setId(metaverseUserPermissionRelationshipIdGen.nextId())
@@ -83,6 +90,7 @@ public class MetaverseUserPermissionRelationshipService {
                 .list();
         permissionRelationshipService.remove(new LambdaQueryWrapper<MetaverseUserPermissionRelationshipDO>().in(MetaverseUserPermissionRelationshipDO::getUserId, userIds));
         permissionRelationshipDOs.forEach(permissionRelationshipDO -> permissionRelationshipDeleteService.save(convertToRelationshipDeleteDo(permissionRelationshipDO, currentUserId, LocalDateTime.now())));
+
         // 挨个为每个用户添加权限
         userIds.forEach(userId ->
                 newMetaversePermissions.forEach(newMetaversePermission -> permissionRelationshipService.save(new MetaverseUserPermissionRelationshipDO()
@@ -273,21 +281,25 @@ public class MetaverseUserPermissionRelationshipService {
         queryWrapper.ge(req.getBirthTime() != null, "birth_time", req.getBirthTime());
         queryWrapper.eq(req.getGender() != null, "gender", req.getGender());
         Page<MetaverseUserDO> metaverseUserDOPage = metaverseUserService.getBaseMapper().selectPage(new Page<>(req.getCurrentPage(), req.getPageSize()), queryWrapper);
+
         return metaverseUserDOPage.getRecords().stream().map(this::convertToPageResp).collect(Collectors.toList());
     }
 
     private UserAuthoritiesPageResp convertToPageResp(MetaverseUserDO metaverseUserDO) {
         Long userId = metaverseUserDO.getId();
-        List<MetaversePermissionDO> permissionDOList = metaversePermissionService.listByIds(permissionRelationshipService.lambdaQuery()
+
+        List<Long> permissionIds = permissionRelationshipService.lambdaQuery()
                 .select(MetaverseUserPermissionRelationshipDO::getPermissionId)
                 .eq(MetaverseUserPermissionRelationshipDO::getUserId, userId)
                 .list()
                 .stream()
                 .map(MetaverseUserPermissionRelationshipDO::getPermissionId)
-                .collect(Collectors.toList()));
-
+                .collect(Collectors.toList());
+        List<MetaversePermissionDO> permissionDOList = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(permissionIds)) {
+            permissionDOList = metaversePermissionService.listByIds(permissionIds);
+        }
         List<String> permission = permissionDOList.stream().flatMap(permissionDO -> JSONArray.parseArray(permissionDO.getPermissions(), String.class).stream()).collect(Collectors.toList());
-
         return new UserAuthoritiesPageResp()
                 .setUserId(userId)
                 .setUsername(metaverseUserDO.getUsername())
@@ -309,6 +321,9 @@ public class MetaverseUserPermissionRelationshipService {
      */
     private String calculateAuthorizationLevel(List<String> permissions) {
         List<String> systemPermissions = permissionProperties.getSystemPermissions();
+        if (permissions == null || permissions.isEmpty()) {
+            return "0.00%";
+        }
         int successfulAccessCount = 0;
         for (String systemPermission : systemPermissions) {
             if (PermissionComparator.isPermissionMatched(systemPermission, permissions)) {
@@ -316,10 +331,10 @@ public class MetaverseUserPermissionRelationshipService {
             }
         }
         BigDecimal result = BigDecimal.valueOf(successfulAccessCount)
-                .divide(BigDecimal.valueOf(successfulAccessCount), 2, RoundingMode.DOWN)
+                .divide(BigDecimal.valueOf(systemPermissions.size()), 4, RoundingMode.DOWN)
                 .multiply(BigDecimal.valueOf(100));
         DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(result);
+        return df.format(result) + "%";
     }
 
     private MetaversePermissionResp convertPermissionResp(MetaversePermissionDO metaversePermissionDO) {

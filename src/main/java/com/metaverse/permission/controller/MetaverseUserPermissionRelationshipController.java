@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * <p>
- * 用户权限关联信息 前端控制器
+ * 用户权限关联信息 前端控制器 超级管理员 运营人员
  * </p>
  *
  * @author Hainui

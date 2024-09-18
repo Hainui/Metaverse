@@ -9,10 +9,16 @@ import java.util.regex.Pattern;
 public class PermissionStrValidator {
 
     private static final Pattern PERMISSION_CODE_PATTERN = Pattern.compile(
-            "^\\*\\.\\*\\.\\*|" + // 匹配通配符模式
-                    "([A-Z][A-Z_]*[A-Z])\\." + // 第一层，必须以大写字母开始和结束，并允许中间包含下划线
-                    "([A-Z][A-Z_]*[A-Z])\\." + // 第二层，同上
-                    "([A-Z][A-Z_]*[A-Z])$" // 第三层，同上
+//            "^\\*\\.\\*\\.\\*|" + // 匹配通配符模式
+//                    "([A-Z][A-Z_]*[A-Z])\\." + // 第一层，必须以大写字母开始和结束，并允许中间包含下划线
+//                    "([A-Z][A-Z_]*[A-Z])\\." + // 第二层，同上
+//                    "([A-Z][A-Z_]*[A-Z])$" // 第三层，同上
+            // todo 包含一种两* 和 一* 的情况
+
+            "^([A-Z][A-Z_]*[A-Z])\\.(?:([A-Z][A-Z_]*[A-Z])\\.|\\*\\.)([A-Z][A-Z_]*[A-Z]|\\*)$"
+            // 结束非捕获组
+
+
     );
 
     /**

@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class PermissionComparator {
 
     public static void main(String[] args) {
-        List<String> list1 = Arrays.asList("*.*.a", "dd.wwwww.dsdddad");
-        List<String> list2 = Arrays.asList("*.*.d", "dd.wwwww.dsad");
-        System.out.println(compareLists(list1, list2));
+        List<String> list1 = Arrays.asList("*.*.a", "dd.wwwww.d");
+        List<String> list2 = Arrays.asList("*.*.d", "dd.wwwww.dsdd");
+        System.out.println(compareLists(new ArrayList<>(), list2));
 
         List<String> list3 = Arrays.asList("a", "b", "c");
         List<String> list4 = Arrays.asList("b", "c", "a", "d");
