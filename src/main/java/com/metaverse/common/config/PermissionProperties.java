@@ -1,5 +1,6 @@
 package com.metaverse.common.config;
 
+import com.google.common.collect.ImmutableList;
 import com.metaverse.common.permission.Permission;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -61,10 +62,7 @@ public class PermissionProperties {
 
 
     public List<String> getSystemPermissions() {
-        if (systemPermissions == null) {
-            return new ArrayList<>();
-        }
-        return systemPermissions;
+        return ImmutableList.copyOf(Optional.of(systemPermissions).orElse(ImmutableList.of()));
     }
 
 }
