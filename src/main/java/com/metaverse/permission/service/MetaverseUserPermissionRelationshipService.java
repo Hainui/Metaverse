@@ -271,9 +271,9 @@ public class MetaverseUserPermissionRelationshipService {
     private String calculateAuthorizationLevel(List<String> permissions) {
         int unrestrictedAccessSize = PermissionProperties.UNRESTRICTED_ACCESS_SIZE;
         List<String> systemPermissions = permissionProperties.getSystemPermissions();
-        if (permissions == null || permissions.isEmpty()) {
-            return "0.00%";
-        }
+//        if (permissions == null || permissions.isEmpty()) {
+//            return "0.00%";
+//        }
         int successfulAccessCount = 0;
         for (String systemPermission : systemPermissions) {
             if (PermissionComparator.isPermissionMatched(systemPermission, permissions)) {

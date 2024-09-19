@@ -43,6 +43,12 @@
             <artifactId>spring-boot-starter</artifactId>
             <version>2.7.12</version>
         </dependency>
+        <!--   扫描组件-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.13</version> <!-- 根据你的 Spring 版本进行调整 -->
+        </dependency>
 
         <!-- Lombok 支持 -->
         <dependency>
