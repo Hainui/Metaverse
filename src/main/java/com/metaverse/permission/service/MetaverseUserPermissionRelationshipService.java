@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -102,40 +101,7 @@ public class MetaverseUserPermissionRelationshipService {
                         .setImpowerBy(currentUserId)))
         );
 
-
-        return true;
-
-//        MetaversePermission permission = new MetaversePermission();
-//        List<MetaverseUser> metaverseUsers = req.getUserIds().stream().map(MetaverseUser::readLoadAndAssertNotExist).collect(Collectors.toList());
-//        List<MetaversePermission> newMetaversePermissions = PermissionComparator
-//                .filterIncludedPermissions(req//todo filterIncludedPermissions用于过滤权限?
-//                        .getPermissionIds()
-//                        .stream()
-//                        // TODO 目前只是一个查询所以用读锁?
-//                        .map(MetaversePermission::readLoadAndAssertNotExist)
-//                        .collect(Collectors.toList()));
-//        for (MetaverseUser metaverseUser : metaverseUsers) {
-//            //删除用户权限
-//            permission.deleteUserPermission(metaverseUser);
-//            for (MetaversePermission metaversePermission : newMetaversePermissions) {
-//                //备份用户权限
-//                permissionRelationshipDeleteService.save(new MetaverseUserPermissionRelationshipDeleteDO()
-//                        .setUserId(metaverseUser.getId())
-//                        .setPermissionId(metaversePermission.getId())
-//                        .setId(metaverseUserPermissionRelationshipIdGen.nextId())
-//                        .setImpowerBy(currentUserId)
-//                        .setImpowerAt(LocalDateTime.now()));
-//                //插入权限
-//                permissionRelationshipService
-//                        .save(new MetaverseUserPermissionRelationshipDO()
-//                                .setUserId(metaverseUser.getId())
-//                                .setPermissionId(metaversePermission.getId())
-//                                .setId(metaverseUserPermissionRelationshipIdGen.nextId())
-//                                .setImpowerBy(currentUserId)
-//                                .setImpowerAt(LocalDateTime.now()));
-//            }
-//        }
-//        return true;
+        return userService.signOut(userIds);
     }
 
     private MetaverseUserPermissionRelationshipDeleteDO convertToRelationshipDeleteDo(MetaverseUserPermissionRelationshipDO permissionRelationshipDO, Long currentUserId, LocalDateTime now) {
@@ -173,68 +139,45 @@ public class MetaverseUserPermissionRelationshipService {
                             .eq(MetaverseUserPermissionRelationshipDO::getUserId, userId)
                             .eq(MetaverseUserPermissionRelationshipDO::getPermissionId, oldPermissionId));
                     permissionRelationshipDeleteService.save(convertToRelationshipDeleteDo(oldPermissionRelationshipDO, currentUserId, LocalDateTime.now()));
+                    userService.signOut(userId);
                 }
             }
         }
-
-
-//        MetaversePermission permission = new MetaversePermission();
-//        List<MetaverseUser> metaverseUsers = req.getUserIds().stream().map(MetaverseUser::readLoadAndAssertNotExist).collect(Collectors.toList());
-//        List<MetaversePermission> newMetaversePermissions = PermissionComparator
-//                .filterIncludedPermissions(req
-//                        .getPermissionIds()
-//                        .stream()
-//                        .map(MetaversePermission::readLoadAndAssertNotExist)
-//                        .collect(Collectors.toList()));
-//        for (MetaverseUser metaverseUser : metaverseUsers) {
-//            for (MetaversePermission newMetaversePermission : newMetaversePermissions) {
-//                //删除选中的权限
-//                List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
-//                int code = PermissionComparator.compareLists(userOldPermissions, newMetaversePermission.getPermissions());
-//                if (code != 0) {
-//                    permission.deleteUserPermissionId(metaverseUser.getId(), newMetaversePermission.getId());
-//                    permissionRelationshipDeleteService.save(new MetaverseUserPermissionRelationshipDeleteDO()
-//                            .setUserId(metaverseUser.getId())
-//                            .setPermissionId(newMetaversePermission.getId())
-//                            .setId(metaverseUserPermissionRelationshipIdGen.nextId())
-//                            .setImpowerBy(currentUserId)
-//                            .setImpowerAt(LocalDateTime.now()));
-//                }
-//            }
-//        }
-//
-
         return true;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean authoritiesRevokeForUser(AuthoritiesForUserReq req, Long currentUserId) {
+        Long userId = req.getUserId();
         List<Long> deletePermissionIds = req.getPermissionIds();
         List<MetaverseUserPermissionRelationshipDO> relationshipDOs = permissionRelationshipService.lambdaQuery()
-                .eq(MetaverseUserPermissionRelationshipDO::getUserId, req.getUserId())
+                .eq(MetaverseUserPermissionRelationshipDO::getUserId, userId)
                 .last(RepositoryConstant.FOR_UPDATE)
                 .list();
+        boolean isChanged = false;
         for (MetaverseUserPermissionRelationshipDO relationshipDO : relationshipDOs) {
             Long oldPermissionId = relationshipDO.getPermissionId();
             if (deletePermissionIds.contains(oldPermissionId)) {
                 permissionRelationshipService.remove(new LambdaQueryWrapper<MetaverseUserPermissionRelationshipDO>()
-                        .eq(MetaverseUserPermissionRelationshipDO::getUserId, req.getUserId())
+                        .eq(MetaverseUserPermissionRelationshipDO::getUserId, userId)
                         .eq(MetaverseUserPermissionRelationshipDO::getPermissionId, oldPermissionId));
                 permissionRelationshipDeleteService.save(convertToRelationshipDeleteDo(relationshipDO, currentUserId, LocalDateTime.now()));
+                isChanged = true;
             }
         }
-
-//        MetaversePermission permission = new MetaversePermission();
-//        MetaversePermission.writeLoadAndAssertNotExist(req.getUserId());
-//        return permission.authoritiesRevokeForUser(req.getUserId(), req.getPermissionIds(), currentUserId);
+        if (isChanged) {
+            return userService.signOut(userId);
+        }
         return true;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean authoritiesImpowerUser(AuthoritiesForUserReq req, Long currentUserId) {
-        MetaverseUser metaverseUser = MetaverseUser.readLoadAndAssertNotExist(req.getUserId());
+        Long userId = req.getUserId();
+        MetaverseUser metaverseUser = MetaverseUser.readLoadAndAssertNotExist(userId);
         List<MetaversePermission> newMetaversePermissions = PermissionComparator.filterIncludedPermissions(MetaversePermission.readLoadAndAssertNotExist(req.getPermissionIds()));
         List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
+        boolean isChanged = false;
         for (MetaversePermission newMetaversePermission : newMetaversePermissions) {
             int code = PermissionComparator.compareLists(userOldPermissions, newMetaversePermission.getPermissions());
             if (code != 1) {
@@ -245,9 +188,14 @@ public class MetaverseUserPermissionRelationshipService {
                                 .setPermissionId(newMetaversePermission.getId())
                                 .setImpowerBy(currentUserId)
                                 .setImpowerAt(LocalDateTime.now()));
+                userService.signOut(userId);
+                isChanged = true;
             }
         }
-        return null;
+        if (isChanged) {
+            return userService.signOut(userId);
+        }
+        return true;
     }
 
 
@@ -321,6 +269,7 @@ public class MetaverseUserPermissionRelationshipService {
      * @return 结果向下取整保留两位小数 如：78.34%
      */
     private String calculateAuthorizationLevel(List<String> permissions) {
+        int unrestrictedAccessSize = PermissionProperties.UNRESTRICTED_ACCESS_SIZE;
         List<String> systemPermissions = permissionProperties.getSystemPermissions();
         if (permissions == null || permissions.isEmpty()) {
             return "0.00%";
@@ -331,8 +280,8 @@ public class MetaverseUserPermissionRelationshipService {
                 successfulAccessCount++;
             }
         }
-        BigDecimal result = BigDecimal.valueOf(successfulAccessCount)
-                .divide(BigDecimal.valueOf(systemPermissions.size()), 4, RoundingMode.DOWN)
+        BigDecimal result = BigDecimal.valueOf(successfulAccessCount + unrestrictedAccessSize)
+                .divide(BigDecimal.valueOf(systemPermissions.size() + unrestrictedAccessSize), 4, RoundingMode.DOWN)
                 .multiply(BigDecimal.valueOf(100));
         DecimalFormat df = new DecimalFormat("#.00");
         return df.format(result) + "%";
@@ -356,37 +305,19 @@ public class MetaverseUserPermissionRelationshipService {
                 .setName(regionDO.getName());
     }
 
-    public void regionIdsCompare(@Valid AuthoritiesForUsersReq req, Long manageRegionId) {
-        // todo缺少一个管理员判断,我认为可以将管理员放在独立的区服id然后如果是这个区服就不用校验
-        final Long ADMIN_REGION_ID = 1833047328504811520L;//管理员所在的区服
-        if (ADMIN_REGION_ID.equals(manageRegionId)) {
-            return;
-        }
-        List<Long> userIds = req.getUserIds();
-        List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(userIds);
-        for (MetaverseUser metaverseUser : metaverseUsers) {
-            Long regionId = metaverseUser.getRegion().getId();
-            if (!regionId.equals(manageRegionId)) {
-                throw new IllegalArgumentException("无法管理本区服之外的用户");
-            }
-        }
-    }
-
-    public void regionIdCompare(@Valid AuthoritiesForUserReq req, Long manageRegionId) {
-        final Long ADMIN_REGION_ID = 1833047328504811520L;//管理员所在的区服
-        if (ADMIN_REGION_ID.equals(manageRegionId)) {
-            return;
-        }
-        Long regionId = req.getUserId();
-        if (!regionId.equals(manageRegionId)) {
-            throw new IllegalArgumentException("无法管理本区服之外的用户");
-        }
-
-    }
-//    List<Long> userIds = req.getUserIds();
+//    public void regionIdsCompare(AuthoritiesForUsersReq req, Long manageRegionId) {
+//        // todo缺少一个管理员判断,我认为可以将管理员放在独立的区服id然后如果是这个区服就不用校验
+//        final Long ADMIN_REGION_ID = 1833047328504811520L;//管理员所在的区服
+//        if (ADMIN_REGION_ID.equals(manageRegionId)) {
+//            return;
+//        }
+//        List<Long> userIds = req.getUserIds();
 //        List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(userIds);
-//        List<MetaversePermission> newMetaversePermissions = PermissionComparator.filterIncludedPermissions(MetaversePermission.readLoadAndAssertNotExist(req.getPermissionIds()));
 //        for (MetaverseUser metaverseUser : metaverseUsers) {
-//            List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
-//            for (MetaversePermission newMetaversePermission : newMetaversePermissions) {
+//            Long regionId = metaverseUser.getRegion().getId();
+//            if (!regionId.equals(manageRegionId)) {
+//                throw new IllegalArgumentException("无法管理本区服之外的用户");
+//            }
+//        }
+//    }
 }
