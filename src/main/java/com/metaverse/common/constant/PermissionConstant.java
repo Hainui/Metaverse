@@ -2,6 +2,9 @@ package com.metaverse.common.constant;
 
 public class PermissionConstant {
 
+    public final static String SUPER_ADMINISTRATOR_PERMISSION = "*.*.*";
+
+
     public interface ResourceType {
 
         String PERMISSION = "PERMISSION";

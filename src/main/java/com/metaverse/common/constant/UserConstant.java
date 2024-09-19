@@ -7,6 +7,12 @@ public interface UserConstant {
 
     String TOKEN = "token";
 
+    Long SUPER_ADMINISTRATOR_USER_ID = 1L;
+
+    Long SUPER_ADMINISTRATOR_REGION_ID = 1L;
+
+    Long SYSTEM_ID = 0L;
+
 
     String SIGN_KEY = "UNIVERSE_METAVERSE";
 

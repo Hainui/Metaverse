@@ -3,6 +3,7 @@ package com.metaverse.user.domain;
 import cn.hutool.core.collection.CollectionUtil;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.config.BeanManager;
+import com.metaverse.common.constant.UserConstant;
 import com.metaverse.common.model.IAggregateRoot;
 import com.metaverse.permission.domain.MetaversePermission;
 import com.metaverse.permission.dto.MetaverseUserPermissionInfo;
@@ -155,7 +156,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     public static MetaverseUserInfo login(String email, String password, Long regionId) {
         MetaverseRegionRepository regionRepository = BeanManager.getBean(MetaverseRegionRepository.class);
-        if (!regionRepository.existByRegionId(regionId)) {
+        if (!regionRepository.existByRegionId(regionId) && !UserConstant.SUPER_ADMINISTRATOR_REGION_ID.equals(regionId)) {
             throw new IllegalArgumentException("非法的区服！");
         }
         MetaverseUserRepository userRepository = BeanManager.getBean(MetaverseUserRepository.class);

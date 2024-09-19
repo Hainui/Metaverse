@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.metaverse.common.Utils.BCryptUtil;
 import com.metaverse.common.constant.RepositoryConstant;
+import com.metaverse.common.constant.UserConstant;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO;
 import com.metaverse.permission.db.service.IMetaversePermissionService;
@@ -63,6 +64,9 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .list();
         Optional<MetaverseUserDO> userOptional = list.stream().filter(userDO -> StringUtils.equals(email, userDO.getEmail())).findAny();
         if (!userOptional.isPresent()) {
+            if (UserConstant.SUPER_ADMINISTRATOR_REGION_ID.equals(regionId)) {
+                throw new IllegalArgumentException("管理员登录通道，您的邮箱不正确！");
+            }
             MetaverseRegionDO regionDO = regionService.lambdaQuery().eq(MetaverseRegionDO::getId, regionId).select(MetaverseRegionDO::getName).one();
             String regionName = regionDO.getName();
             throw new IllegalArgumentException(regionName + "没有此用户信息，请先在" + regionName + "注册");
@@ -109,6 +113,9 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
             return null;
         }
         MetaverseRegionDO regionDO = regionService.lambdaQuery().eq(MetaverseRegionDO::getId, metaverseUserDO.getRegionId()).one();
+        if (UserConstant.SUPER_ADMINISTRATOR_REGION_ID.equals(metaverseUserDO.getRegionId())) {
+            regionDO = new MetaverseRegionDO().setId(UserConstant.SUPER_ADMINISTRATOR_REGION_ID);
+        }
         List<Long> permissionIds = permissionRelationshipService
                 .lambdaQuery()
                 .select(MetaverseUserPermissionRelationshipDO::getPermissionId)

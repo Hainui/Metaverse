@@ -62,6 +62,14 @@ public class MetaverseContextUtil {
         return userInfo.getId();
     }
 
+    public static String getCurrentUserName() {
+        MetaverseUserInfo userInfo = MetaverseContextUtil.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
+        if (Objects.isNull(userInfo)) {
+            throw new IllegalArgumentException("登录信息异常");
+        }
+        return userInfo.getName();
+    }
+
     public static String getCurrentUserEmail() {
         MetaverseUserInfo userInfo = MetaverseContextUtil.parseJwtToUserInfo(getToken(), UserConstant.METAVERSE_USER);
         if (Objects.isNull(userInfo)) {

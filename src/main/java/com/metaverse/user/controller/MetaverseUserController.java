@@ -8,6 +8,7 @@ import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
+import com.metaverse.user.resp.CurrentUserInfo;
 import com.metaverse.user.resp.SearchUserByNameResp;
 import com.metaverse.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -85,6 +86,14 @@ public class MetaverseUserController {
 //    @Permission(locator = PermissionConstant.Locator.ACTIVATE)
     public Result<Boolean> metaverseUserModifyPassword(@ApiParam(name = "用户修改密码请求参数", required = true) @RequestBody @Valid MetaverseUserModifyPasswordReq req) {
         return Result.success(userService.metaverseUserModifyPassword(req, MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
+    }
+
+    @GetMapping("/getCurrentUserInfo")
+    @ApiOperation(value = "获取当前登录用户信息", tags = "1.0.0")
+    public Result<CurrentUserInfo> getCurrentUserInfo() {
+        return Result.success(new CurrentUserInfo()
+                .setUserId(MetaverseContextUtil.getCurrentUserId())
+                .setRegionId(MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
 
