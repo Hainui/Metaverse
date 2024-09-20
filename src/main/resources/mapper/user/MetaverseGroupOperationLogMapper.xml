@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.metaverse.user.db.mapper.MetaverseGroupOperationLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseGroupOperationLogDO">
+        <id column="id" property="id" />
+        <result column="group_id" property="groupId" />
+        <result column="operator_id" property="operatorId" />
+        <result column="target_id" property="targetId" />
+        <result column="operation_type" property="operationType" />
+        <result column="saved_at" property="savedAt" />
+        <result column="operation_time" property="operationTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, group_id, operator_id, target_id, operation_type, saved_at, operation_time
+    </sql>
+
+</mapper>
