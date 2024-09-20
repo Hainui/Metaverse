@@ -4,15 +4,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -51,10 +50,10 @@ public class MetaverseChatRecordDO implements Serializable {
     private String filePath;
 
     @ApiModelProperty("落库时间")
-    private Date savedAt;
+    private LocalDateTime savedAt;
 
     @ApiModelProperty("发送时间")
-    private Date timestamp;
+    private LocalDateTime timestamp;
 
     @ApiModelProperty("消息是否被撤回，0表示未撤回，1表示已撤回")
     @TableField("is_withdrawn")

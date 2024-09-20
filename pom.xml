@@ -44,11 +44,11 @@
             <version>2.7.12</version>
         </dependency>
         <!--   扫描组件-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.3.13</version> <!-- 根据你的 Spring 版本进行调整 -->
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework</groupId>-->
+        <!--            <artifactId>spring-context</artifactId>-->
+        <!--            <version>5.3.13</version> &lt;!&ndash; 根据你的 Spring 版本进行调整 &ndash;&gt;-->
+        <!--        </dependency>-->
 
         <!-- Lombok 支持 -->
         <dependency>
@@ -210,6 +210,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.28</version> <!-- 根据你的MySQL版本选择合适的版本 -->
+        </dependency>
+
+        <!--   阿里云oSS       -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.17.4</version>
         </dependency>
 
         <!-- Freemarker 模板引擎 -->

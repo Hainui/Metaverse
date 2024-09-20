@@ -37,7 +37,6 @@ public class UserService {
         Map<String, Object> claims = new HashMap<>();
         claims.put(UserConstant.METAVERSE_USER, userInfo);
         claims.put(UserConstant.IP_ADDRESS, ipAddress);
-//        claims.put(PermissionConstant.Locator.ACTIVATE, "ACTIVATE");//导入默认权限
         String token = MetaverseContextUtil.generateJwt(claims);
         redisServer.storeToken(userInfo.getId(), token);
         return token;
