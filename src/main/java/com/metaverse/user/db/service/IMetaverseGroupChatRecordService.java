@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-20 10:34:07
+ * @since 2024-09-21 13:34:07
  */
 public interface IMetaverseGroupChatRecordService extends IService<MetaverseGroupChatRecordDO> {
 

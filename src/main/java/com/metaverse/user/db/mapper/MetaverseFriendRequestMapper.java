@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-20 10:34:07
+ * @since 2024-09-21 13:34:07
  */
 @Mapper
 public interface MetaverseFriendRequestMapper extends BaseMapper<MetaverseFriendRequestDO> {
