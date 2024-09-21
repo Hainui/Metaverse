@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 
 
 
+
 /**
  * <p>
  * 聊天记录表
