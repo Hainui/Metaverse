@@ -43,15 +43,13 @@ public class MetaverseUserController {
 
     @GetMapping("/signOut")
     @ApiOperation(value = "用户退出登录", tags = "1.0.0")
-    //todo 用户登录就有的默认权限
-//    @Permission(locator = PermissionConstant.Locator.ACTIVATE)
+
     public Result<Boolean> signOut() {
         return Result.success(userService.signOut(MetaverseContextUtil.getCurrentUserId()));
     }
 
     @GetMapping("/searchUser")
     @ApiOperation(value = "根据用户名精确查找用户", tags = "1.0.0")
-//    @Permission(locator = PermissionConstant.Locator.ACTIVATE)
     public Result<SearchUserByNameResp> searchUser(@ApiParam(name = "用户搜索参数", required = true) @RequestParam(value = "userName") @NotBlank(message = "用户名不能为空") String userName) {
         return Result.success(userService.searchUserByName(userName, MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
