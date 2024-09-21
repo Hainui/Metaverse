@@ -21,8 +21,9 @@ public class CodeGenerator {
                 .globalConfig(builder -> {
                     builder.author("Hainui") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
+                            .fileOverride() // 覆盖已生成文件
                             .outputDir("src/main/java") // 指定输出目录
-                            .dateType(DateType.TIME_PACK) // 设置日期类型为 LocalDateTime
+                            .dateType(DateType.ONLY_DATE) // 设置日期类型
                             .disableOpenDir() // 不打开输出目录
                             .commentDate("yyyy-MM-dd HH:mm:ss"); // 设置注释日期格式
                 })

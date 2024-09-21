@@ -2,12 +2,17 @@ package com.metaverse.user.db.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+
+
 
 /**
  * <p>
@@ -21,6 +26,7 @@ import lombok.Setter;
 @Setter
 @TableName("metaverse_chat_record")
 @ApiModel(value = "MetaverseChatRecordDO对象", description = "聊天记录表")
+@Accessors(chain = true)
 public class MetaverseChatRecordDO implements Serializable {
 
     private static final long serialVersionUID = 1L;

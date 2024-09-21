@@ -1,12 +1,17 @@
 package com.metaverse.user.db.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * <p>
@@ -14,17 +19,19 @@ import lombok.Setter;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-21 13:34:07
+ * @since 2024-09-20 10:34:07
  */
 @Getter
 @Setter
 @TableName("metaverse_friend_request")
 @ApiModel(value = "MetaverseFriendRequestDO对象", description = "好友请求表")
+@Accessors(chain = true)
 public class MetaverseFriendRequestDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     @ApiModelProperty("发起请求的用户ID")
@@ -40,11 +47,11 @@ public class MetaverseFriendRequestDO implements Serializable {
     private String message;
 
     @ApiModelProperty("请求创建时间")
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     @ApiModelProperty("落库时间")
-    private LocalDateTime savedAt;
+    private Date savedAt;
 
     @ApiModelProperty("请求更新时间")
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
 }

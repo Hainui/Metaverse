@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-21 13:34:07
+ * @since 2024-09-20 10:34:07
  */
 @Service
 public class MetaverseUserFriendQuestionServiceImpl extends ServiceImpl<MetaverseUserFriendQuestionMapper, MetaverseUserFriendQuestionDO> implements IMetaverseUserFriendQuestionService {
