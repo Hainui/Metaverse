@@ -65,14 +65,9 @@ public class MetaverseFileController {
     public Result<String> accessResource(@RequestParam(value = "id", required = false) @ApiParam(name = "文件id", required = true) @NotNull(message = "文件id不能为空") Long id) {
         MetaverseMultimediaFilesDO file = metaverseMultimediaFilesService.lambdaQuery().eq(MetaverseMultimediaFilesDO::getId, id).one();
         String encryptedUrl = file.getUrl();
-        if (UserConstant.SUPER_ADMINISTRATOR_USER_ID.equals(MetaverseContextUtil.getCurrentUserId())) {
-            Long uploaderRegionId = userService.findRegionIdByUserId(file.getUploaderId());
-            String originalUrl = UrlEncryptorDecryptor.decryptUrl(encryptedUrl, uploaderRegionId);
-            return Result.success(SignatureGenerator.generateSignedUrl(originalUrl, UserConstant.SUPER_ADMINISTRATOR_REGION_ID));
-        } else {
-            Long currentUserRegionId = MetaverseContextUtil.getCurrentUserRegion().getId();
-            String originalUrl = UrlEncryptorDecryptor.decryptUrl(encryptedUrl, currentUserRegionId);
-            return Result.success(SignatureGenerator.generateSignedUrl(originalUrl, currentUserRegionId));
-        }
+        Long currentUserRegionId = MetaverseContextUtil.getCurrentUserRegion().getId();
+        Long regionId = UserConstant.SUPER_ADMINISTRATOR_USER_ID.equals(MetaverseContextUtil.getCurrentUserId()) ? userService.findRegionIdByUserId(file.getUploaderId()) : currentUserRegionId;
+        String originalUrl = UrlEncryptorDecryptor.decryptUrl(encryptedUrl, regionId);
+        return Result.success(SignatureGenerator.generateSignedUrl(originalUrl, currentUserRegionId));
     }
 }
