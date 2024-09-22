@@ -10,6 +10,7 @@ import com.metaverse.file.db.entity.MetaverseMultimediaFilesDO;
 import com.metaverse.file.db.service.IMetaverseMultimediaFilesService;
 import com.metaverse.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
@@ -34,7 +37,8 @@ public class MetaverseFileController {
     private final AliOSSUtils aliOSSUtils;
 
     @GetMapping("/proxy/accessResource")
-    public Mono<ResponseEntity<byte[]>> getResource(@RequestParam("signedUrl") String signedUrl) {
+    @ApiOperation(value = "代理访问资源", tags = "1.0.0")
+    public Mono<ResponseEntity<byte[]>> getResource(@RequestParam(value = "signedUrl", required = false) @ApiParam(name = "加签后的路由地址") @NotBlank(message = "路由地址不能为空") String signedUrl) {
         return WebClient.create()
                 .get()
                 .uri(SignatureValidator.validateSignedUrl(signedUrl, MetaverseContextUtil.getCurrentUserRegion().getId()))
@@ -42,10 +46,10 @@ public class MetaverseFileController {
                 .bodyToMono(byte[].class)
                 .map(ResponseEntity::ok);
     }
-    
+
     @PostMapping("/upload")
     @ApiOperation(value = "文件上传", tags = "1.0.0")
-    public Result<Long> uploadFile(@RequestParam("file") MultipartFile file) throws IOException, ClientException {
+    public Result<Long> uploadFile(@RequestParam("file") @ApiParam(name = "文件", required = true) MultipartFile file) throws IOException, ClientException {
         String url = aliOSSUtils.upload(file);
         Long fileId = BeanManager.getBean(FileIdGen.class).nextId();
         metaverseMultimediaFilesService.save(new MetaverseMultimediaFilesDO()
@@ -58,7 +62,7 @@ public class MetaverseFileController {
 
     @GetMapping("/accessResource")
     @ApiOperation(value = "访问资源", tags = "1.0.0")
-    public Result<String> accessResource(@RequestParam("id") Long id) {
+    public Result<String> accessResource(@RequestParam(value = "id", required = false) @ApiParam(name = "文件id", required = true) @NotNull(message = "文件id不能为空") Long id) {
         MetaverseMultimediaFilesDO file = metaverseMultimediaFilesService.lambdaQuery().eq(MetaverseMultimediaFilesDO::getId, id).one();
         String encryptedUrl = file.getUrl();
         if (UserConstant.SUPER_ADMINISTRATOR_USER_ID.equals(MetaverseContextUtil.getCurrentUserId())) {
