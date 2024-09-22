@@ -91,4 +91,11 @@ public class UserService {
         return metaverseUser.modifyPassword(req, currentUserId);
     }
 
+    public Long findRegionIdByUserId(Long userId) {
+        MetaverseUserDO userInfo = userService.getById(userId);
+        if (Objects.isNull(userInfo)) {
+            return null;
+        }
+        return userInfo.getRegionId();
+    }
 }

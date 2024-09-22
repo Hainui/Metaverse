@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -32,7 +33,7 @@ public class AliOSSUtils {
 
         InputStream inputStream = file.getInputStream();
         String originalFilename = file.getOriginalFilename();
-        String fileName = UUID.randomUUID() + originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileName = UUID.randomUUID() + Objects.requireNonNull(originalFilename).substring(originalFilename.lastIndexOf("."));
 
 
         //上传文件到 OSS

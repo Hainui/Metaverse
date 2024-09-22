@@ -21,16 +21,15 @@ public class CodeGenerator {
                 .globalConfig(builder -> {
                     builder.author("Hainui") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
-                            .fileOverride() // 覆盖已生成文件
                             .outputDir("src/main/java") // 指定输出目录
-                            .dateType(DateType.ONLY_DATE) // 设置日期类型
+                            .dateType(DateType.TIME_PACK) // 设置日期类型 LOCAL-DATETIME
                             .disableOpenDir() // 不打开输出目录
                             .commentDate("yyyy-MM-dd HH:mm:ss"); // 设置注释日期格式
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.metaverse.user") // 设置父包名
+                    builder.parent("com.metaverse.file") // 设置父包名
                             .moduleName("db") // 设置父包模块名
-                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/user")); // 设置 XML 生成路径
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/file")); // 设置 XML 生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.entityBuilder()
@@ -39,7 +38,7 @@ public class CodeGenerator {
                             .naming(NamingStrategy.underline_to_camel) // 设置命名策略
                             .formatFileName("%sDO"); // 设置实体类的文件名格式
                     builder.controllerBuilder().enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
-                    builder.addInclude("metaverse_user_friend,metaverse_user_friend_operation_log,metaverse_friend_request,metaverse_user_friend_question,metaverse_user_group,metaverse_user_group_member,metaverse_group_operation_log,metaverse_group_question,metaverse_group_join_request,metaverse_group_invitation,metaverse_chat_record,metaverse_group_chat_record") // 设置表前缀
+                    builder.addInclude("metaverse_multimedia_files") // 设置表前缀
                             .mapperBuilder()
                             .enableBaseResultMap() // 启用基本的结果映射
                             .enableBaseColumnList() // 启用基本的列列表
