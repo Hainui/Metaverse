@@ -39,9 +39,10 @@ public class MetaverseFileController {
     @GetMapping("/proxy/accessResource")
     @ApiOperation(value = "代理访问资源", tags = "1.0.0")
     public Mono<ResponseEntity<byte[]>> getResource(@RequestParam(value = "signedUrl", required = false) @ApiParam(name = "加签后的路由地址") @NotBlank(message = "路由地址不能为空") String signedUrl) {
+        Long currentUserRegionId = MetaverseContextUtil.getCurrentUserRegion().getId();
         return WebClient.create()
                 .get()
-                .uri(SignatureValidator.validateSignedUrl(signedUrl, MetaverseContextUtil.getCurrentUserRegion().getId()))
+                .uri(UrlEncryptorDecryptor.decryptUrl(SignatureValidator.validateSignedUrl(signedUrl, currentUserRegionId), currentUserRegionId))
                 .retrieve()
                 .bodyToMono(byte[].class)
                 .map(ResponseEntity::ok);
@@ -68,6 +69,6 @@ public class MetaverseFileController {
         Long currentUserRegionId = MetaverseContextUtil.getCurrentUserRegion().getId();
         Long regionId = UserConstant.SUPER_ADMINISTRATOR_USER_ID.equals(MetaverseContextUtil.getCurrentUserId()) ? userService.findRegionIdByUserId(file.getUploaderId()) : currentUserRegionId;
         String originalUrl = UrlEncryptorDecryptor.decryptUrl(encryptedUrl, regionId);
-        return Result.success(SignatureGenerator.generateSignedUrl(originalUrl, currentUserRegionId));
+        return Result.success(SignatureGenerator.generateSignedUrl(encryptedUrl, currentUserRegionId));
     }
 }
