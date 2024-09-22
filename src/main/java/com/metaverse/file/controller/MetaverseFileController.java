@@ -42,8 +42,7 @@ public class MetaverseFileController {
                 .bodyToMono(byte[].class)
                 .map(ResponseEntity::ok);
     }
-
-
+    
     @PostMapping("/upload")
     @ApiOperation(value = "文件上传", tags = "1.0.0")
     public Result<Long> uploadFile(@RequestParam("file") MultipartFile file) throws IOException, ClientException {
