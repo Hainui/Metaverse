@@ -2,14 +2,8 @@ package com.metaverse.user.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.metaverse.common.constant.RepositoryConstant;
-import com.metaverse.user.db.entity.MetaverseFriendRequestDO;
-import com.metaverse.user.db.entity.MetaverseUserDO;
-import com.metaverse.user.db.entity.MetaverseUserFriendDO;
-import com.metaverse.user.db.entity.MetaverseUserFriendQuestionDO;
-import com.metaverse.user.db.service.IMetaverseFriendRequestService;
-import com.metaverse.user.db.service.IMetaverseUserFriendQuestionService;
-import com.metaverse.user.db.service.IMetaverseUserFriendService;
-import com.metaverse.user.db.service.IMetaverseUserService;
+import com.metaverse.user.db.entity.*;
+import com.metaverse.user.db.service.*;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.AddFriendReq;
 import com.metaverse.user.req.AnswerUserQuestionReq;
@@ -20,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +29,7 @@ public class UserFriendService {
     private final IMetaverseUserFriendService userFriendService;
     private final IMetaverseUserService userService;
     private final IMetaverseUserFriendQuestionService userFriendQuestionService;
+    private final IMetaverseUserFriendOperationLogService userFriendOperationLogService;
 
     @Transactional(rollbackFor = Exception.class)
     public UserFriendQuestionResp addFriend(AddFriendReq req, Long senderId) {
@@ -103,12 +99,43 @@ public class UserFriendService {
                 .setCreatedAt(metaverseFriendRequestDO.getCreatedAt());
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean agreeFriendRequest(Long currentUserId, Long senderId) {
+        MetaverseFriendRequestDO one = friendRequestService.lambdaQuery()
+                .eq(MetaverseFriendRequestDO::getReceiverId, currentUserId)
+                .eq(MetaverseFriendRequestDO::getSenderId, senderId)
+                .eq(MetaverseFriendRequestDO::getStatus, 0)
+                .last(RepositoryConstant.FOR_UPDATE)
+                .one();
 
+        friendRequestService.lambdaUpdate()
+                .eq(MetaverseFriendRequestDO::getReceiverId, currentUserId)
+                .eq(MetaverseFriendRequestDO::getSenderId, senderId)
+                .eq(MetaverseFriendRequestDO::getStatus, 0)
+                .set(MetaverseFriendRequestDO::getStatus, 1)
+                .set(MetaverseFriendRequestDO::getUpdateBy, currentUserId)
+                .set(MetaverseFriendRequestDO::getVersion, one.getVersion() + 1);
 
+        LocalDateTime now = LocalDateTime.now();
+        userFriendService.save(new MetaverseUserFriendDO()
+                .setUserId(currentUserId)
+                .setFriendId(senderId)
+                .setVersion(0L)
+                .setCreatedAt(now)
+                .setIntimacyLevel(new BigDecimal(0))
+                .setStatus(1)
+                .setRelation(1));
+
+        userFriendOperationLogService.save(new MetaverseUserFriendOperationLogDO()
+                .setUserId(currentUserId)
+                .setVersion(0L)
+                .setOperationTime(now)
+                .setTargetId(senderId)
+                .setOperationType(1));
         return true;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean answerUserQuestion(AnswerUserQuestionReq req, Long currentUserId) {
         Long receiverId = req.getReceiverId();
         MetaverseUserFriendQuestionDO userQuestion = userFriendQuestionService.getById(receiverId);

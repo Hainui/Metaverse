@@ -34,7 +34,7 @@ public class MetaverseUserFriendOperationLogDO implements Serializable {
     private Long targetId;
 
     @ApiModelProperty("操作类型，1表示添加好友，2表示删除好友，3表示拉黑好友")
-    private Boolean operationType;
+    private Integer operationType;
 
     @ApiModelProperty("操作时间")
     private LocalDateTime operationTime;

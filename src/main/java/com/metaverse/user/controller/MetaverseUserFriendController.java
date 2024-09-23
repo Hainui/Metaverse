@@ -41,7 +41,7 @@ public class MetaverseUserFriendController {
 
     @PostMapping("/answerUserQuestion")
     @ApiOperation(value = "回答问题", tags = "1.0.0")
-    public Result<Boolean> answerUserQuestion(@RequestBody @Valid @ApiParam(name = "添加好友请求参数", required = true) AnswerUserQuestionReq req) {
+    public Result<Boolean> answerUserQuestion(@RequestBody @Valid @ApiParam(name = "回答用户问题请求参数", required = true) AnswerUserQuestionReq req) {
         return Result.success(userFriendService.answerUserQuestion(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
