@@ -231,6 +231,13 @@
             <version>8.0.28</version> <!-- 根据你的MySQL版本选择合适的版本 -->
         </dependency>
 
+        <!-- 添加 OkHttp 依赖 -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.11.0</version> <!-- 使用最新版本 -->
+        </dependency>
+
         <!--   阿里云oSS       -->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
