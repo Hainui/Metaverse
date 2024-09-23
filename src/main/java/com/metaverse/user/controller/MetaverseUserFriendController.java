@@ -58,7 +58,7 @@ public class MetaverseUserFriendController {
     }
 
     @GetMapping("/agreeFriendRequest")
-    @ApiOperation(value = "同意该好友请求(所有)", tags = "1.0.0")
+    @ApiOperation(value = "同意该好友请求", tags = "1.0.0")
     public Result<Boolean> agreeFriendRequest(@RequestParam(value = "senderId", required = false) @ApiParam(name = "请求方用户ID", required = true) @NotNull(message = "请求方用户ID不能为空") Long senderId) {
         return Result.success(userFriendService.agreeFriendRequest(MetaverseContextUtil.getCurrentUserId(), senderId));
     }
