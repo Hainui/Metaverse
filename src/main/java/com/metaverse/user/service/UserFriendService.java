@@ -140,7 +140,7 @@ public class UserFriendService {
         Long receiverId = req.getReceiverId();
         MetaverseUserFriendQuestionDO userQuestion = userFriendQuestionService.getById(receiverId);
         if (userQuestion.getEnabled() && StrUtil.equals(req.getQuestionAnswer(), userQuestion.getCorrectAnswer())) {
-            return agreeFriendRequest(currentUserId, receiverId);
+            return agreeFriendRequest(receiverId, currentUserId);
         }
         return false;
     }
