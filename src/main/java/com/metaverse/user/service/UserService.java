@@ -82,6 +82,7 @@ public class UserService {
                 .setName(userDO.getUsername())
                 .setUserId(userDO.getId())
                 .setGender(MetaverseUser.Gender.convertGender(userDO.getGender()))
+                .setAvatarFileId(userDO.getAvatarFileId())
                 .setBirthTime(userDO.getBirthTime());
     }
 

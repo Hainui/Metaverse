@@ -34,7 +34,7 @@ public class MetaverseFriendRequestDO implements Serializable {
     private Long receiverId;
 
     @ApiModelProperty("请求状态，0表示待处理，1表示同意，2表示拒绝")
-    private Boolean status;
+    private Integer status;
 
     @ApiModelProperty("附带的消息")
     private String message;

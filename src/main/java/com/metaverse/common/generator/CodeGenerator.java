@@ -41,7 +41,17 @@ public class CodeGenerator {
                     builder.controllerBuilder()
                             .enableFileOverride() // 开启覆盖策略
                             .enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
-                    builder.addInclude("metaverse_user_friend,metaverse_user_friend_operation_log,metaverse_friend_request,metaverse_user_friend_question,metaverse_user_group,metaverse_user_group_member,metaverse_group_operation_log,metaverse_group_question,metaverse_group_join_request,metaverse_group_invitation,metaverse_chat_record,metaverse_group_chat_record") // 设置表前缀
+                    builder.addInclude(/*"metaverse_user_friend," +
+                                    "metaverse_user_friend_operation_log," +
+                                    "metaverse_friend_request,metaverse_user_friend_question," +
+                                    "metaverse_user_group" +
+                                    ",metaverse_user_group_member" +
+                                    ",metaverse_group_operation_log," +
+                                    "metaverse_group_question," +
+                                    "metaverse_group_join_request," +
+                                    "metaverse_group_invitation," +
+                                    "metaverse_chat_record," +
+                                    "metaverse_group_chat_record"*/"metaverse_user") // 设置表前缀
                             .mapperBuilder()
                             .enableFileOverride() // 开启覆盖策略
                             .enableBaseResultMap() // 启用基本的结果映射

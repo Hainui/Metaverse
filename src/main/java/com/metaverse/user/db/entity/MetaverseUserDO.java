@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-04
+ * @since 2024-09-23 17:02:30
  */
 @Getter
 @Setter
@@ -38,6 +38,9 @@ public class MetaverseUserDO implements Serializable {
 
     @ApiModelProperty("电子邮件地址，唯一")
     private String email;
+
+    @ApiModelProperty("头像文件id")
+    private Long avatarFileId;
 
     @ApiModelProperty("性别，0表示女，1表示男")
     private Boolean gender;

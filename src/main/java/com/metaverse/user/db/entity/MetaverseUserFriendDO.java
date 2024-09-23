@@ -35,10 +35,10 @@ public class MetaverseUserFriendDO implements Serializable {
     private Long friendId;
 
     @ApiModelProperty("关系类型，1表示好友，2表示黑名单")
-    private Boolean relation;
+    private Integer relation;
 
     @ApiModelProperty("状态，1表示正常，2表示删除")
-    private Boolean status;
+    private Integer status;
 
     @ApiModelProperty("亲密度等级，默认为0%")
     private BigDecimal intimacyLevel;
