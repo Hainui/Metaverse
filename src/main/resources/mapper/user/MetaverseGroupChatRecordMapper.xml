@@ -4,20 +4,20 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseGroupChatRecordDO">
-        <id column="id" property="id" />
         <result column="group_id" property="groupId" />
         <result column="sender_id" property="senderId" />
         <result column="message_type" property="messageType" />
         <result column="saved_at" property="savedAt" />
         <result column="content" property="content" />
-        <result column="media_url" property="mediaUrl" />
+        <result column="file_id" property="fileId" />
         <result column="is_withdrawn" property="withdrawn" />
+        <result column="withdrawn_time" property="withdrawnTime" />
         <result column="timestamp" property="timestamp" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, group_id, sender_id, message_type, saved_at, content, media_url, is_withdrawn, timestamp
+        group_id, sender_id, message_type, saved_at, content, file_id, is_withdrawn, withdrawn_time, timestamp
     </sql>
 
 </mapper>

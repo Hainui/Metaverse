@@ -4,7 +4,6 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseGroupInvitationDO">
-        <id column="id" property="id" />
         <result column="group_id" property="groupId" />
         <result column="inviter_id" property="inviterId" />
         <result column="saved_at" property="savedAt" />
@@ -12,11 +11,14 @@
         <result column="invitation_message" property="invitationMessage" />
         <result column="invitation_time" property="invitationTime" />
         <result column="status" property="status" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="update_by" property="updateBy" />
+        <result column="version" property="version" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, group_id, inviter_id, saved_at, invitee_id, invitation_message, invitation_time, status
+        group_id, inviter_id, saved_at, invitee_id, invitation_message, invitation_time, status, updated_at, update_by, version
     </sql>
 
 </mapper>

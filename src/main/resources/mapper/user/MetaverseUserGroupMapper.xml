@@ -10,11 +10,14 @@
         <result column="description" property="description" />
         <result column="saved_at" property="savedAt" />
         <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="update_by" property="updateBy" />
+        <result column="version" property="version" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, group_name, creator_id, description, saved_at, created_at
+        id, group_name, creator_id, description, saved_at, created_at, updated_at, update_by, version
     </sql>
 
 </mapper>

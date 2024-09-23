@@ -27,19 +27,23 @@ public class CodeGenerator {
                             .commentDate("yyyy-MM-dd HH:mm:ss"); // 设置注释日期格式
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.metaverse.file") // 设置父包名
+                    builder.parent("com.metaverse.user") // 设置父包名
                             .moduleName("db") // 设置父包模块名
-                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/file")); // 设置 XML 生成路径
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/user")); // 设置 XML 生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.entityBuilder()
+                            .enableFileOverride() // 开启覆盖策略
                             .enableLombok() // 开启 Lombok
                             .enableRemoveIsPrefix() // 开启驼峰转下划线字段名
                             .naming(NamingStrategy.underline_to_camel) // 设置命名策略
                             .formatFileName("%sDO"); // 设置实体类的文件名格式
-                    builder.controllerBuilder().enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
-                    builder.addInclude("metaverse_multimedia_files") // 设置表前缀
+                    builder.controllerBuilder()
+                            .enableFileOverride() // 开启覆盖策略
+                            .enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
+                    builder.addInclude("metaverse_user_friend,metaverse_user_friend_operation_log,metaverse_friend_request,metaverse_user_friend_question,metaverse_user_group,metaverse_user_group_member,metaverse_group_operation_log,metaverse_group_question,metaverse_group_join_request,metaverse_group_invitation,metaverse_chat_record,metaverse_group_chat_record") // 设置表前缀
                             .mapperBuilder()
+                            .enableFileOverride() // 开启覆盖策略
                             .enableBaseResultMap() // 启用基本的结果映射
                             .enableBaseColumnList() // 启用基本的列列表
                             .enableMapperAnnotation(); // 启用 Mapper 注解

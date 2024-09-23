@@ -13,11 +13,9 @@ import com.metaverse.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -39,15 +37,10 @@ public class MetaverseFileController {
     private final AliOSSUtils aliOSSUtils;
 
     @PostMapping("/proxy/accessResource")
-    @ApiOperation(value = "代理访问资源", tags = "1.0.0")
+    @ApiOperation(value = "检验url资源访问权限和时间", tags = "1.0.0")
     public Result<String> getResource(@RequestBody @ApiParam(name = "加签后的路由地址", required = true) @Valid SignedEncryptedUrlReq req) {
         Long currentUserRegionId = MetaverseContextUtil.getCurrentUserRegion().getId();
-        return WebClient.create()
-                .get()
-                .uri(UrlEncryptorDecryptor.decryptUrl(SignatureValidator.validateSignedUrl(req.getSignedEncryptedUrl(), currentUserRegionId), currentUserRegionId))
-                .retrieve()
-                .bodyToMono(byte[].class)
-                .map(ResponseEntity::ok);
+        return Result.success(UrlEncryptorDecryptor.decryptUrl(SignatureValidator.validateSignedUrl(req.getSignedEncryptedUrl(), currentUserRegionId), currentUserRegionId));
     }
 
     @PostMapping("/upload")

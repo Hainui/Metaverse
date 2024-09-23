@@ -1,17 +1,14 @@
 package com.metaverse.user.db.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -19,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-20 10:34:07
+ * @since 2024-09-23 12:09:41
  */
 @Getter
 @Setter
@@ -30,10 +27,6 @@ public class MetaverseGroupInvitationDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("主键ID")
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
-
     @ApiModelProperty("群组ID")
     private Long groupId;
 
@@ -41,7 +34,7 @@ public class MetaverseGroupInvitationDO implements Serializable {
     private Long inviterId;
 
     @ApiModelProperty("落库时间")
-    private Date savedAt;
+    private LocalDateTime savedAt;
 
     @ApiModelProperty("被邀请入群的用户ID")
     private Long inviteeId;
@@ -50,8 +43,17 @@ public class MetaverseGroupInvitationDO implements Serializable {
     private String invitationMessage;
 
     @ApiModelProperty("邀请时间")
-    private Date invitationTime;
+    private LocalDateTime invitationTime;
 
     @ApiModelProperty("邀请状态，0表示待接受，1表示已接受，2表示拒绝")
     private Boolean status;
+
+    @ApiModelProperty("更新时间")
+    private LocalDateTime updatedAt;
+
+    @ApiModelProperty("修改人 ID")
+    private Long updateBy;
+
+    @ApiModelProperty("版本号")
+    private Long version;
 }

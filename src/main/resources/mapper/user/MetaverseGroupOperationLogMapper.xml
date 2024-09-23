@@ -4,7 +4,6 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseGroupOperationLogDO">
-        <id column="id" property="id" />
         <result column="group_id" property="groupId" />
         <result column="operator_id" property="operatorId" />
         <result column="target_id" property="targetId" />
@@ -15,7 +14,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, group_id, operator_id, target_id, operation_type, saved_at, operation_time
+        group_id, operator_id, target_id, operation_type, saved_at, operation_time
     </sql>
 
 </mapper>

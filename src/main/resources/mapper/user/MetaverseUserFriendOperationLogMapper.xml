@@ -4,17 +4,17 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseUserFriendOperationLogDO">
-        <id column="id" property="id" />
         <result column="user_id" property="userId" />
         <result column="target_id" property="targetId" />
         <result column="operation_type" property="operationType" />
         <result column="operation_time" property="operationTime" />
+        <result column="version" property="version" />
         <result column="saved_at" property="savedAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, target_id, operation_type, operation_time, saved_at
+        user_id, target_id, operation_type, operation_time, version, saved_at
     </sql>
 
 </mapper>

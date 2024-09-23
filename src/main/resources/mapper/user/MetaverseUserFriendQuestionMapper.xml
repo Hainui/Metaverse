@@ -4,17 +4,21 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseUserFriendQuestionDO">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
+        <id column="user_id" property="userId" />
         <result column="question" property="question" />
         <result column="correct_answer" property="correctAnswer" />
         <result column="enabled" property="enabled" />
+        <result column="created_at" property="createdAt" />
+        <result column="create_by" property="createBy" />
         <result column="saved_at" property="savedAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="update_by" property="updateBy" />
+        <result column="version" property="version" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, question, correct_answer, enabled, saved_at
+        user_id, question, correct_answer, enabled, created_at, create_by, saved_at, updated_at, update_by, version
     </sql>
 
 </mapper>

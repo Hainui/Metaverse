@@ -4,7 +4,6 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseUserFriendDO">
-        <id column="id" property="id" />
         <result column="user_id" property="userId" />
         <result column="friend_id" property="friendId" />
         <result column="relation" property="relation" />
@@ -12,11 +11,14 @@
         <result column="intimacy_level" property="intimacyLevel" />
         <result column="created_at" property="createdAt" />
         <result column="saved_at" property="savedAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="update_by" property="updateBy" />
+        <result column="version" property="version" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, friend_id, relation, status, intimacy_level, created_at, saved_at
+        user_id, friend_id, relation, status, intimacy_level, created_at, saved_at, updated_at, update_by, version
     </sql>
 
 </mapper>

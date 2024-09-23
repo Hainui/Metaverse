@@ -11,17 +11,13 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-
-
-
-
 /**
  * <p>
  * 聊天记录表
  * </p>
  *
  * @author Hainui
- * @since 2024-09-21 13:34:07
+ * @since 2024-09-23 12:09:41
  */
 @Getter
 @Setter
@@ -31,9 +27,6 @@ import java.time.LocalDateTime;
 public class MetaverseChatRecordDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty("主键ID")
-    private Long id;
 
     @ApiModelProperty("发送消息的用户ID")
     private Long senderId;
@@ -59,4 +52,7 @@ public class MetaverseChatRecordDO implements Serializable {
     @ApiModelProperty("消息是否被撤回，0表示未撤回，1表示已撤回")
     @TableField("is_withdrawn")
     private Boolean withdrawn;
+
+    @ApiModelProperty("消息撤回时间")
+    private LocalDateTime withdrawnTime;
 }

@@ -1,17 +1,14 @@
 package com.metaverse.user.db.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -19,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-20 10:34:07
+ * @since 2024-09-23 12:09:41
  */
 @Getter
 @Setter
@@ -29,10 +26,6 @@ import lombok.experimental.Accessors;
 public class MetaverseUserFriendOperationLogDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty("主键ID")
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
 
     @ApiModelProperty("执行操作的用户ID")
     private Long userId;
@@ -44,8 +37,11 @@ public class MetaverseUserFriendOperationLogDO implements Serializable {
     private Boolean operationType;
 
     @ApiModelProperty("操作时间")
-    private Date operationTime;
+    private LocalDateTime operationTime;
+
+    @ApiModelProperty("版本号")
+    private Long version;
 
     @ApiModelProperty("落库时间")
-    private Date savedAt;
+    private LocalDateTime savedAt;
 }
