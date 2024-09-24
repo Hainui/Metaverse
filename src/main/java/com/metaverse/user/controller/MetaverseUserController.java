@@ -1,9 +1,12 @@
 package com.metaverse.user.controller;
 
-import com.metaverse.common.Utils.HttpUtils;
-import com.metaverse.common.Utils.MetaverseContextUtil;
-import com.metaverse.common.Utils.VerificationCodeUtil;
+import com.aliyuncs.exceptions.ClientException;
+import com.metaverse.common.Utils.*;
+import com.metaverse.common.config.BeanManager;
 import com.metaverse.common.model.Result;
+import com.metaverse.file.FileIdGen;
+import com.metaverse.file.db.entity.MetaverseMultimediaFilesDO;
+import com.metaverse.file.db.service.IMetaverseMultimediaFilesService;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
@@ -16,10 +19,13 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -36,6 +42,8 @@ import javax.validation.constraints.NotBlank;
 public class MetaverseUserController {
 
     private final UserService userService;
+    private final AliOSSUtils aliOSSUtils;
+    private final IMetaverseMultimediaFilesService metaverseMultimediaFilesService;
 
     @PostMapping("/login")
     @ApiOperation(value = "用户登录", tags = "1.0.0")
@@ -93,6 +101,19 @@ public class MetaverseUserController {
         return Result.success(new CurrentUserInfo()
                 .setUserId(MetaverseContextUtil.getCurrentUserId())
                 .setRegionId(MetaverseContextUtil.getCurrentUserRegion().getId()));
+    }
+
+    @PostMapping("/setAvatarImage")
+    @ApiOperation(value = "上传头像", tags = "1.0.0")
+    public Result<Boolean> setAvatarImage(@RequestParam("image") @ApiParam(name = "头像图片", required = true) MultipartFile image) throws IOException, ClientException {
+        String url = aliOSSUtils.upload(image);
+        Long fileId = BeanManager.getBean(FileIdGen.class).nextId();
+        metaverseMultimediaFilesService.save(new MetaverseMultimediaFilesDO()
+                .setUploaderId(MetaverseContextUtil.getCurrentUserId())
+                .setUploadTime(LocalDateTime.now())
+                .setId(fileId)
+                .setUrl(UrlEncryptorDecryptor.encryptUrl(url, MetaverseContextUtil.getCurrentUserRegion().getId())));
+        return Result.success(userService.setAvatarImage(MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId(), fileId));
     }
 
 

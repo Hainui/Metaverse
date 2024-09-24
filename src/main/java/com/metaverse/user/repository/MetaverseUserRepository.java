@@ -21,5 +21,8 @@ public interface MetaverseUserRepository {
 
     boolean modifyUserName(Long userId, String name, Long updateBy, Long newVersion);
 
+
     boolean modifyPassword(String newPassword, Long userId, Long currentUserId, Long newVersion);
+
+    boolean setAvatarImage(Long currentUserId, Long fileId);
 }

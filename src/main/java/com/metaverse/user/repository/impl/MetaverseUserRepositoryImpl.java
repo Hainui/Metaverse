@@ -108,7 +108,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
         return userDOs.stream().map(this::userDOConvertToUser).collect(Collectors.toList());
     }
 
-    public MetaverseUser userDOConvertToUser(MetaverseUserDO metaverseUserDO) {
+    private MetaverseUser userDOConvertToUser(MetaverseUserDO metaverseUserDO) {
         if (Objects.isNull(metaverseUserDO)) {
             return null;
         }
@@ -185,6 +185,7 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .update();
     }
 
+
     @Override
     public boolean modifyPassword(String newPassword, Long userId, Long updateBy, Long newVersion) {
         return userService.lambdaUpdate()
@@ -192,6 +193,14 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
                 .set(MetaverseUserDO::getPassword, BCryptUtil.hashPassword(newPassword))
                 .set(MetaverseUserDO::getUpdateBy, updateBy)
                 .set(MetaverseUserDO::getVersion, newVersion)
+                .update();
+    }
+
+    @Override
+    public boolean setAvatarImage(Long currentUserId, Long fileId) {
+        return userService.lambdaUpdate()
+                .eq(MetaverseUserDO::getId, currentUserId)
+                .set(MetaverseUserDO::getAvatarFileId, fileId)
                 .update();
     }
 

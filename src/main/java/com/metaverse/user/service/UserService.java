@@ -99,4 +99,11 @@ public class UserService {
         }
         return userInfo.getRegionId();
     }
+
+    public Boolean setAvatarImage(Long currentUserId, Long currentRegion, Long fileId) {
+        //判断用户是否存在
+        MetaverseUser metaverseUser = MetaverseUser.writeLoadAndAssertNotExist(currentUserId, currentRegion);
+        return metaverseUser.setAvatarImage(currentUserId, fileId);
+
+    }
 }

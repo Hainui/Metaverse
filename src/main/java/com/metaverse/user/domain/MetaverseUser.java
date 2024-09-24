@@ -60,6 +60,10 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      */
     private LocalDateTime birthTime;
     /**
+     * 头像文件ID
+     */
+    private Long avatarFileId;
+    /**
      * 性别
      */
     private Gender gender;
@@ -82,6 +86,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         }
         return user;
     }
+
 
     /**
      * 读锁加载用户信息，提供管理员使用，暂时无需对分区加限制
@@ -148,7 +153,6 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
                 .setRegionId(regionId).setUsername(name)
                 .setUsername(name)
                 .setBirthTime(LocalDateTime.now())
-                .setUpdateBy(-1L)
                 .setVersion(0L);
         return userRepository.save(entity);
     }
@@ -231,6 +235,11 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         }
         Long newVersion = changeVersion();
         return repository.modifyPassword(req.getNewPassword(), req.getUserId(), currentUserId, newVersion);
+    }
+
+    public Boolean setAvatarImage(Long currentUserId, Long fileId) {
+        MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
+        return repository.setAvatarImage(currentUserId, fileId);
     }
 
 

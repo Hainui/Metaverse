@@ -4,6 +4,7 @@ import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.AddFriendReq;
 import com.metaverse.user.req.AnswerUserQuestionReq;
+import com.metaverse.user.resp.MetaverseFriendListResp;
 import com.metaverse.user.resp.MetaverseFriendRequestResp;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import com.metaverse.user.service.UserFriendService;
@@ -81,4 +82,15 @@ public class MetaverseUserFriendController {
         return Result.success(userFriendService.agreeFriendRequest(MetaverseContextUtil.getCurrentUserId(), senderId));
     }
 
+    @GetMapping("isFriend")
+    @ApiOperation(value = "判断用户是否是好友", tags = "1.0.0")
+    public Result<Boolean> isFriend(@RequestParam(value = "senderId", required = false) @ApiParam(name = "用户ID", required = true) @NotNull(message = "用户ID不能为空") Long senderId) {
+        return Result.success(userFriendService.isFriend(MetaverseContextUtil.getCurrentUserId(), senderId));
+    }
+
+    @GetMapping("/getAllFriend")
+    @ApiOperation(value = "获取所有好友列表", tags = "1.0.0")
+    public Result<List<MetaverseFriendListResp>> getAllFriend() {
+        return Result.success(userFriendService.getAllFriend(MetaverseContextUtil.getCurrentUserId()));
+    }
 }
