@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-23 12:09:41
+ * @since 2024-09-24 12:20:37
  */
 @Getter
 @Setter
@@ -33,7 +33,7 @@ public class MetaverseUserFriendOperationLogDO implements Serializable {
     @ApiModelProperty("目标用户ID（被添加、删除或拉黑的好友ID）")
     private Long targetId;
 
-    @ApiModelProperty("操作类型，1表示添加好友，2表示删除好友，3表示拉黑好友")
+    @ApiModelProperty("操作类型，1表示添加好友，2表示删除好友，3表示拉黑好友，4表示解除拉黑好友")
     private Integer operationType;
 
     @ApiModelProperty("操作时间")

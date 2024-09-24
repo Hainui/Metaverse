@@ -11,6 +11,7 @@ import com.metaverse.user.resp.MetaverseFriendRequestResp;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +21,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserFriendService {
 
     private final IMetaverseFriendRequestService friendRequestService;
@@ -61,7 +62,7 @@ public class UserFriendService {
                 .setCreatedAt(LocalDateTime.now())
                 .setStatus(0)
                 .setVersion(0L));
-        return convertToQuestionResp(userFriendQuestionService.getById(receiverId));
+        return convertToQuestionResp(userFriendQuestionService.lambdaQuery().eq(MetaverseUserFriendQuestionDO::getUserId, receiverId).one());
     }
 
     private UserFriendQuestionResp convertToQuestionResp(MetaverseUserFriendQuestionDO questionDO) {
@@ -101,38 +102,69 @@ public class UserFriendService {
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean agreeFriendRequest(Long currentUserId, Long senderId) {
-        MetaverseFriendRequestDO one = friendRequestService.lambdaQuery()
-                .eq(MetaverseFriendRequestDO::getReceiverId, currentUserId)
-                .eq(MetaverseFriendRequestDO::getSenderId, senderId)
-                .eq(MetaverseFriendRequestDO::getStatus, 0)
-                .last(RepositoryConstant.FOR_UPDATE)
-                .one();
-
+        MetaverseFriendRequestDO one = assertNotExistWriteLoadFriendRequest(currentUserId, senderId);
         friendRequestService.lambdaUpdate()
-                .eq(MetaverseFriendRequestDO::getReceiverId, currentUserId)
                 .eq(MetaverseFriendRequestDO::getSenderId, senderId)
+                .eq(MetaverseFriendRequestDO::getReceiverId, currentUserId)
                 .eq(MetaverseFriendRequestDO::getStatus, 0)
                 .set(MetaverseFriendRequestDO::getStatus, 1)
                 .set(MetaverseFriendRequestDO::getUpdateBy, currentUserId)
-                .set(MetaverseFriendRequestDO::getVersion, one.getVersion() + 1);
+                .set(MetaverseFriendRequestDO::getVersion, one.getVersion() + 1)
+                .update();
 
         LocalDateTime now = LocalDateTime.now();
-        userFriendService.save(new MetaverseUserFriendDO()
-                .setUserId(currentUserId)
-                .setFriendId(senderId)
-                .setVersion(0L)
-                .setCreatedAt(now)
-                .setIntimacyLevel(new BigDecimal(0))
-                .setStatus(1)
-                .setRelation(1));
 
+        MetaverseUserFriendDO userFriendDO = userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getFriendId, senderId)
+                .last(RepositoryConstant.FOR_UPDATE)
+                .one();
+
+        if (userFriendDO == null) {
+            userFriendService.save(new MetaverseUserFriendDO()
+                    .setUserId(currentUserId)
+                    .setFriendId(senderId)
+                    .setVersion(0L)
+                    .setCreatedAt(now)
+                    .setIntimacyLevel(new BigDecimal(0))
+                    .setStatus(1)
+                    .setRelation(1));
+        } else {
+            userFriendService.lambdaUpdate()
+                    .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                    .eq(MetaverseUserFriendDO::getFriendId, senderId)
+                    .set(MetaverseUserFriendDO::getStatus, 1)
+                    .set(MetaverseUserFriendDO::getRelation, 1)
+                    .set(MetaverseUserFriendDO::getUpdateBy, currentUserId)
+                    .set(MetaverseUserFriendDO::getVersion, userFriendDO.getVersion() + 1)
+                    .set(MetaverseUserFriendDO::getIntimacyLevel, new BigDecimal(0))
+                    .update();
+        }
+        saveUserFriendOperationLog(currentUserId, senderId, now, 1);
+        return true;
+    }
+
+    @NotNull
+    private MetaverseFriendRequestDO assertNotExistWriteLoadFriendRequest(Long currentUserId, Long senderId) {
+        MetaverseFriendRequestDO one = friendRequestService.lambdaQuery()
+                .eq(MetaverseFriendRequestDO::getSenderId, senderId)
+                .eq(MetaverseFriendRequestDO::getReceiverId, currentUserId)
+                .eq(MetaverseFriendRequestDO::getStatus, 0)
+                .last(RepositoryConstant.FOR_UPDATE)
+                .one();
+        if (one == null) {
+            throw new IllegalArgumentException("未找到该用户的好友请求记录");
+        }
+        return one;
+    }
+
+    private void saveUserFriendOperationLog(Long currentUserId, Long targetId, LocalDateTime now, Integer operationType) {
         userFriendOperationLogService.save(new MetaverseUserFriendOperationLogDO()
                 .setUserId(currentUserId)
                 .setVersion(0L)
                 .setOperationTime(now)
-                .setTargetId(senderId)
-                .setOperationType(1));
-        return true;
+                .setTargetId(targetId)
+                .setOperationType(operationType));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -143,5 +175,75 @@ public class UserFriendService {
             return agreeFriendRequest(receiverId, currentUserId);
         }
         return false;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean delFriend(Long targetId, Long currentUserId) {
+        MetaverseUserFriendDO userFriendDO = assertNotExistAndWriteLoadUserFriend(currentUserId, targetId);
+        boolean noChange = userFriendDO.getStatus().equals(2);
+        if (noChange) {
+            return false;
+        }
+        userFriendService.lambdaUpdate()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getFriendId, targetId)
+                .set(MetaverseUserFriendDO::getStatus, 2)
+                .set(MetaverseUserFriendDO::getUpdateBy, currentUserId)
+                .set(MetaverseUserFriendDO::getVersion, userFriendDO.getVersion() + 1)
+                .set(MetaverseUserFriendDO::getIntimacyLevel, new BigDecimal(0))
+                .update();
+        saveUserFriendOperationLog(currentUserId, targetId, LocalDateTime.now(), 2);
+        return true;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean blockFriend(Long targetId, Long currentUserId) {
+        MetaverseUserFriendDO userFriendDO = assertNotExistAndWriteLoadUserFriend(currentUserId, targetId);
+        boolean noChange = userFriendDO.getRelation().equals(2);
+        if (noChange) {
+            return false;
+        }
+        userFriendService.lambdaUpdate()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getFriendId, targetId)
+                .set(MetaverseUserFriendDO::getRelation, 2)
+                .set(MetaverseUserFriendDO::getUpdateBy, currentUserId)
+                .set(MetaverseUserFriendDO::getVersion, userFriendDO.getVersion() + 1)
+                .set(MetaverseUserFriendDO::getIntimacyLevel, new BigDecimal(0))
+                .update();
+        saveUserFriendOperationLog(currentUserId, targetId, LocalDateTime.now(), 3);
+        return true;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean unblockFriends(Long targetId, Long currentUserId) {
+        MetaverseUserFriendDO userFriendDO = assertNotExistAndWriteLoadUserFriend(currentUserId, targetId);
+        boolean noChange = userFriendDO.getRelation().equals(1);
+        if (noChange) {
+            return false;
+        }
+        userFriendService.lambdaUpdate()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getFriendId, targetId)
+                .set(MetaverseUserFriendDO::getRelation, 1)
+                .set(MetaverseUserFriendDO::getUpdateBy, currentUserId)
+                .set(MetaverseUserFriendDO::getVersion, userFriendDO.getVersion() + 1)
+                .set(MetaverseUserFriendDO::getIntimacyLevel, new BigDecimal(0))
+                .update();
+        saveUserFriendOperationLog(currentUserId, targetId, LocalDateTime.now(), 4);
+        return true;
+    }
+
+    @NotNull
+    public MetaverseUserFriendDO assertNotExistAndWriteLoadUserFriend(Long currentUserId, Long targetId) {
+        MetaverseUserFriendDO userFriendDO = userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getFriendId, targetId)
+                .last(RepositoryConstant.FOR_UPDATE)
+                .one();
+        if (userFriendDO == null) {
+            throw new IllegalArgumentException("未找到该好友");
+        }
+        return userFriendDO;
     }
 }

@@ -39,6 +39,24 @@ public class MetaverseUserFriendController {
         return Result.success(userFriendService.addFriend(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
+    @GetMapping("/delFriend")
+    @ApiOperation(value = "删除好友", tags = "1.0.0")
+    public Result<Boolean> delFriend(@RequestParam("targetId") @ApiParam(name = "被删除好友ID", required = true) @NotNull(message = "被删除好友ID不能为空") Long targetId) {
+        return Result.success(userFriendService.delFriend(targetId, MetaverseContextUtil.getCurrentUserId()));
+    }
+
+    @GetMapping("/blockFriend")
+    @ApiOperation(value = "拉黑好友", tags = "1.0.0")
+    public Result<Boolean> blockFriend(@RequestParam("targetId") @ApiParam(name = "被拉黑好友ID", required = true) @NotNull(message = "被拉黑好友ID不能为空") Long targetId) {
+        return Result.success(userFriendService.blockFriend(targetId, MetaverseContextUtil.getCurrentUserId()));
+    }
+
+    @GetMapping("/unblockFriends")
+    @ApiOperation(value = "解除拉黑的好友", tags = "1.0.0")
+    public Result<Boolean> unblockFriends(@RequestParam("targetId") @ApiParam(name = "被解除拉黑好友ID", required = true) @NotNull(message = "被解除拉黑好友ID不能为空") Long targetId) {
+        return Result.success(userFriendService.unblockFriends(targetId, MetaverseContextUtil.getCurrentUserId()));
+    }
+
     @PostMapping("/answerUserQuestion")
     @ApiOperation(value = "回答问题", tags = "1.0.0")
     public Result<Boolean> answerUserQuestion(@RequestBody @Valid @ApiParam(name = "回答用户问题请求参数", required = true) AnswerUserQuestionReq req) {
