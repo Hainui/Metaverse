@@ -280,9 +280,7 @@ public class UserFriendService {
         resp.setFriendName(user.getUsername());
         resp.setFriendAvatarFileId(user.getAvatarFileId());
         resp.setGender(MetaverseUser.Gender.convertGender(user.getGender()));
-        resp.setRelation(userFriend.getRelation());
         resp.setIntimacyLevel(userFriend.getIntimacyLevel());
-        resp.setStatus(userFriend.getStatus());
         return resp;
     }
 }

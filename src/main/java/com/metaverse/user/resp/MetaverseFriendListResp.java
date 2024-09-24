@@ -24,14 +24,9 @@ public class MetaverseFriendListResp {
     @ApiModelProperty(value = "性别")
     private MetaverseUser.Gender gender;
 
-    @ApiModelProperty(value = "关系类型，1表示好友，2表示黑名单")
-    private Integer relation;
 
     @ApiModelProperty(value = "亲密度等级")
     private BigDecimal intimacyLevel;
-
-    @ApiModelProperty(value = "好友状态，1表示正常，2表示删除")
-    private Integer status;
 
 
 }
