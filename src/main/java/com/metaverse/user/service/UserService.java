@@ -12,16 +12,15 @@ import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
+import com.metaverse.user.resp.MetaverseUserAbstractInfo;
 import com.metaverse.user.resp.SearchUserByNameResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -100,10 +99,26 @@ public class UserService {
         return userInfo.getRegionId();
     }
 
-    public Boolean setAvatarImage(Long currentUserId, Long currentRegion, Long fileId) {
-        //判断用户是否存在
+    public List<MetaverseUserAbstractInfo> findUserInfoByUserIds(List<Long> userIds) {
+        if (CollectionUtil.isEmpty(userIds)) {
+            return Collections.emptyList();
+        }
+
+        return userService.lambdaQuery().in(MetaverseUserDO::getId, userIds).list().stream().map(this::convertToUserAbstractInfo).collect(Collectors.toList());
+    }
+
+    private MetaverseUserAbstractInfo convertToUserAbstractInfo(MetaverseUserDO metaverseUserDO) {
+        if (metaverseUserDO == null) {
+            return null;
+        }
+        return null;
+
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean uploadAvatarImage(Long currentUserId, Long currentRegion, Long avatarFileId) {
         MetaverseUser metaverseUser = MetaverseUser.writeLoadAndAssertNotExist(currentUserId, currentRegion);
-        return metaverseUser.setAvatarImage(currentUserId, fileId);
+        return metaverseUser.uploadAvatarImage(currentUserId, avatarFileId);
 
     }
 }

@@ -237,9 +237,9 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         return repository.modifyPassword(req.getNewPassword(), req.getUserId(), currentUserId, newVersion);
     }
 
-    public Boolean setAvatarImage(Long currentUserId, Long fileId) {
+    public Boolean uploadAvatarImage(Long currentUserId, Long avatarFileId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        return repository.setAvatarImage(currentUserId, fileId);
+        return repository.uploadAvatarImage(currentUserId, avatarFileId);
     }
 
 

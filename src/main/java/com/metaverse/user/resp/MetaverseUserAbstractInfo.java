@@ -9,21 +9,19 @@ import java.math.BigDecimal;
 
 @Data
 @Accessors(chain = true)
-public class MetaverseFriendListResp {
+public class MetaverseUserAbstractInfo {
 
-
-    @ApiModelProperty(value = "好友ID")
-    private Long friendId;
+    @ApiModelProperty(value = "用户ID")
+    private Long userId;
 
     @ApiModelProperty(value = "好友姓名")
-    private String friendName;
+    private String name;
 
-    @ApiModelProperty(value = "好友头像文件ID")
-    private Long friendAvatarFileId;
+    @ApiModelProperty(value = "用户头像文件ID")
+    private Long avatarImageId;
 
     @ApiModelProperty(value = "性别")
     private MetaverseUser.Gender gender;
-
 
     @ApiModelProperty(value = "亲密度等级")
     private BigDecimal intimacyLevel;

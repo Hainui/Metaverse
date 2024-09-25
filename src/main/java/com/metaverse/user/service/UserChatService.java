@@ -58,7 +58,7 @@ public class UserChatService {
         MetaverseChatRecordDO chatRecord = new MetaverseChatRecordDO();
         chatRecord.setSenderId(currentUserId);
         chatRecord.setReceiverId(req.getReceiverId());
-        chatRecord.setMessageType(messageType);
+        chatRecord.setMessageType(false);
         chatRecord.setTimestamp(LocalDateTime.now());
         String content = req.getContent();
         if (content == null || content.trim().isEmpty()) {
@@ -96,7 +96,7 @@ public class UserChatService {
         MetaverseChatRecordDO chatRecord = new MetaverseChatRecordDO();
         chatRecord.setSenderId(currentUserId);
         chatRecord.setReceiverId(receiverId);
-        chatRecord.setMessageType(Type);
+        chatRecord.setMessageType(true);
         chatRecord.setTimestamp(LocalDateTime.now());
         if (messageType == 2 || messageType == 3) {
             String url = aliOSSUtils.upload(file);

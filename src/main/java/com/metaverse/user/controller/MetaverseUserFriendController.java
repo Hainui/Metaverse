@@ -4,8 +4,8 @@ import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.AddFriendReq;
 import com.metaverse.user.req.AnswerUserQuestionReq;
-import com.metaverse.user.resp.MetaverseFriendListResp;
 import com.metaverse.user.resp.MetaverseFriendRequestResp;
+import com.metaverse.user.resp.MetaverseUserAbstractInfo;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import com.metaverse.user.service.UserFriendService;
 import io.swagger.annotations.ApiOperation;
@@ -82,21 +82,21 @@ public class MetaverseUserFriendController {
         return Result.success(userFriendService.agreeFriendRequest(MetaverseContextUtil.getCurrentUserId(), senderId));
     }
 
-    @GetMapping("isFriend")
-    @ApiOperation(value = "判断用户是否是好友", tags = "1.0.0")
-    public Result<Boolean> isFriend(@RequestParam(value = "senderId", required = false) @ApiParam(name = "用户ID", required = true) @NotNull(message = "用户ID不能为空") Long senderId) {
-        return Result.success(userFriendService.isFriend(MetaverseContextUtil.getCurrentUserId(), senderId));
+    @GetMapping("targetUserIsFriend")
+    @ApiOperation(value = "判断当前登录用户和目标用户是否是好友", tags = "1.0.0")
+    public Result<Boolean> targetUserIsFriend(@RequestParam(value = "targetId", required = false) @ApiParam(name = "目标用户ID", required = true) @NotNull(message = "目标用户ID不能为空") Long targetId) {
+        return Result.success(userFriendService.targetUserIsFriend(MetaverseContextUtil.getCurrentUserId(), targetId));
     }
 
     @GetMapping("/getAllFriend")
     @ApiOperation(value = "获取所有好友列表", tags = "1.0.0")
-    public Result<List<MetaverseFriendListResp>> getAllFriend() {
+    public Result<List<MetaverseUserAbstractInfo>> getAllFriend() {
         return Result.success(userFriendService.getAllFriend(MetaverseContextUtil.getCurrentUserId()));
     }
 
-    @GetMapping("/getAllBlockFriend")
-    @ApiOperation(value = "获取所有黑名单的列表", tags = "1.0.0")
-    public Result<List<MetaverseFriendListResp>> getAllBlockFriend() {
-        return Result.success(userFriendService.getAllBlockFriend(MetaverseContextUtil.getCurrentUserId()));
-    }
+//    @GetMapping("/getAllBlockFriend")
+//    @ApiOperation(value = "获取所有黑名单的列表", tags = "1.0.0")
+//    public Result<List<MetaverseFriendListResp>> getAllBlockFriend() {
+//        return Result.success(userFriendService.getAllBlockFriend(MetaverseContextUtil.getCurrentUserId()));
+//    }
 }

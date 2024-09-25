@@ -34,7 +34,7 @@ public class MetaverseChatRecordController {
     private final UserChatService userChatService;
 
     @PostMapping("/sendChatMessages")
-    @ApiOperation(value = "发送聊天信息", tags = "1.0.0")
+    @ApiOperation(value = "发送聊天信息(文本或图片)", tags = "1.0.0")
     public Result<Boolean> sendChatMessages(@RequestBody @Valid @ApiParam(name = "添加好友请求参数", required = true) SendChatRecordReq req) {
         return Result.success(userChatService.sendChatMessages(req, MetaverseContextUtil.getCurrentUserId(), 1));
     }

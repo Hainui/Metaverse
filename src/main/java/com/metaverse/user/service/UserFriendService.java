@@ -7,8 +7,8 @@ import com.metaverse.user.db.service.*;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.AddFriendReq;
 import com.metaverse.user.req.AnswerUserQuestionReq;
-import com.metaverse.user.resp.MetaverseFriendListResp;
 import com.metaverse.user.resp.MetaverseFriendRequestResp;
+import com.metaverse.user.resp.MetaverseUserAbstractInfo;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -249,6 +248,15 @@ public class UserFriendService {
         return userFriendDO;
     }
 
+    public Boolean targetUserIsFriend(Long currentUserId, Long targetId) {
+        return userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getFriendId, targetId)
+                .eq(MetaverseUserFriendDO::getStatus, 1)
+                .eq(MetaverseUserFriendDO::getRelation, 1)
+                .exists();
+    }
+
 
     public static class UserFriendRelation {
         public static final int FRIEND = 1;
@@ -260,56 +268,28 @@ public class UserFriendService {
         public static final int DELETED = 2;
     }
 
-    public Boolean isFriend(Long currentUserId, Long senderId) {
-        MetaverseUserFriendDO userFriendDO = assertNotExistAndWriteLoadUserFriend(currentUserId, senderId);
-        return userFriendDO.getRelation() == UserFriendRelation.FRIEND &&
-                userFriendDO.getStatus() == UserFriendStatus.NORMAL;
-    }
-
-    public List<MetaverseFriendListResp> getAllFriend(Long currentUserId) {
-        List<MetaverseUserFriendDO> userFriendList = userFriendService.lambdaQuery()
+    public List<MetaverseUserAbstractInfo> getAllFriend(Long currentUserId) {
+        List<Long> friendIds = userFriendService.lambdaQuery()
                 .eq(MetaverseUserFriendDO::getUserId, currentUserId)
                 .eq(MetaverseUserFriendDO::getStatus, 1)
                 .eq(MetaverseUserFriendDO::getRelation, 1)
-                .list();
-        List<MetaverseFriendListResp> friendListResp = new ArrayList<>();
-        for (MetaverseUserFriendDO userFriend : userFriendList) {
-            MetaverseUserDO user = userService.getById(userFriend.getFriendId());
-            if (user != null) {
-                MetaverseFriendListResp resp = getMetaverseFriendListResp(userFriend, user);
-                friendListResp.add(resp);
-            }
-        }
-        return friendListResp;
-    }
-
-    public List<MetaverseFriendListResp> getAllBlockFriend(Long currentUserId) {
-        List<MetaverseUserFriendDO> userFriendList = userFriendService.lambdaQuery()
-                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
-                .eq(MetaverseUserFriendDO::getStatus, 1)
-                .eq(MetaverseUserFriendDO::getRelation, 2)
-                .list();
-        List<MetaverseFriendListResp> friendListResp = new ArrayList<>();
-        for (MetaverseUserFriendDO userFriend : userFriendList) {
-            MetaverseUserDO user = userService.getById(userFriend.getFriendId());
-            if (user != null) {
-                MetaverseFriendListResp resp = getMetaverseFriendListResp(userFriend, user);
-                friendListResp.add(resp);
-            }
-        }
-        return friendListResp;
-    }
+                .list()
+                .stream()
+                .map(MetaverseUserFriendDO::getFriendId)
+                .collect(Collectors.toList());
+//        userService.lambdaUpdate().eq
 
 
-    @NotNull
-    private static MetaverseFriendListResp getMetaverseFriendListResp(MetaverseUserFriendDO userFriend, MetaverseUserDO user) {
-        MetaverseFriendListResp resp = new MetaverseFriendListResp();
-        resp.setFriendId(userFriend.getFriendId());
-        resp.setFriendName(user.getUsername());
-        resp.setFriendAvatarFileId(user.getAvatarFileId());
-        resp.setGender(MetaverseUser.Gender.convertGender(user.getGender()));
-        resp.setIntimacyLevel(userFriend.getIntimacyLevel());
-        return resp;
+//        List<MetaverseFriendListResp> friendListResp = new ArrayList<>();
+//        for (MetaverseUserFriendDO userFriend : userFriendList) {
+//            MetaverseUserDO user = userService.getById(userFriend.getFriendId());
+//            if (user != null) {
+//                MetaverseFriendListResp resp = getMetaverseFriendListResp(userFriend, user);
+//                friendListResp.add(resp);
+//            }
+//        }
+//        return friendListResp;
+        return null;
     }
 
 

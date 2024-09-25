@@ -3,6 +3,7 @@ package com.metaverse.user.req;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -15,6 +16,7 @@ public class SendChatRecordReq {
 
     @ApiModelProperty("消息内容")
     @Size(max = 65535, message = "消息内容不能超过65535个字符")
+    @NotBlank
     private String content;
 
 

@@ -51,7 +51,7 @@ public class CodeGenerator {
                                     "metaverse_group_join_request," +
                                     "metaverse_group_invitation," +
                                     "metaverse_chat_record," +
-                                    "metaverse_group_chat_record"*/"metaverse_user_friend_operation_log") // 设置表前缀
+                                    "metaverse_group_chat_record"*/"metaverse_chat_record") // 设置表前缀
                             .mapperBuilder()
                             .enableFileOverride() // 开启覆盖策略
                             .enableBaseResultMap() // 启用基本的结果映射
