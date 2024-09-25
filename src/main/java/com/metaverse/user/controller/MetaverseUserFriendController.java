@@ -93,4 +93,10 @@ public class MetaverseUserFriendController {
     public Result<List<MetaverseFriendListResp>> getAllFriend() {
         return Result.success(userFriendService.getAllFriend(MetaverseContextUtil.getCurrentUserId()));
     }
+
+    @GetMapping("/getAllBlockFriend")
+    @ApiOperation(value = "获取所有黑名单的列表", tags = "1.0.0")
+    public Result<List<MetaverseFriendListResp>> getAllBlockFriend() {
+        return Result.success(userFriendService.getAllBlockFriend(MetaverseContextUtil.getCurrentUserId()));
+    }
 }

@@ -249,18 +249,28 @@ public class UserFriendService {
         return userFriendDO;
     }
 
+
+    public static class UserFriendRelation {
+        public static final int FRIEND = 1;
+        public static final int BLACKLIST = 2;
+    }
+
+    public static class UserFriendStatus {
+        public static final int NORMAL = 1;
+        public static final int DELETED = 2;
+    }
+
     public Boolean isFriend(Long currentUserId, Long senderId) {
         MetaverseUserFriendDO userFriendDO = assertNotExistAndWriteLoadUserFriend(currentUserId, senderId);
-        if (userFriendDO.getRelation() == 2) {
-            return false;
-        }
-        return userFriendDO.getStatus() != 2;
+        return userFriendDO.getRelation() == UserFriendRelation.FRIEND &&
+                userFriendDO.getStatus() == UserFriendStatus.NORMAL;
     }
 
     public List<MetaverseFriendListResp> getAllFriend(Long currentUserId) {
         List<MetaverseUserFriendDO> userFriendList = userFriendService.lambdaQuery()
                 .eq(MetaverseUserFriendDO::getUserId, currentUserId)
                 .eq(MetaverseUserFriendDO::getStatus, 1)
+                .eq(MetaverseUserFriendDO::getRelation, 1)
                 .list();
         List<MetaverseFriendListResp> friendListResp = new ArrayList<>();
         for (MetaverseUserFriendDO userFriend : userFriendList) {
@@ -273,6 +283,24 @@ public class UserFriendService {
         return friendListResp;
     }
 
+    public List<MetaverseFriendListResp> getAllBlockFriend(Long currentUserId) {
+        List<MetaverseUserFriendDO> userFriendList = userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getStatus, 1)
+                .eq(MetaverseUserFriendDO::getRelation, 2)
+                .list();
+        List<MetaverseFriendListResp> friendListResp = new ArrayList<>();
+        for (MetaverseUserFriendDO userFriend : userFriendList) {
+            MetaverseUserDO user = userService.getById(userFriend.getFriendId());
+            if (user != null) {
+                MetaverseFriendListResp resp = getMetaverseFriendListResp(userFriend, user);
+                friendListResp.add(resp);
+            }
+        }
+        return friendListResp;
+    }
+
+
     @NotNull
     private static MetaverseFriendListResp getMetaverseFriendListResp(MetaverseUserFriendDO userFriend, MetaverseUserDO user) {
         MetaverseFriendListResp resp = new MetaverseFriendListResp();
@@ -283,4 +311,6 @@ public class UserFriendService {
         resp.setIntimacyLevel(userFriend.getIntimacyLevel());
         return resp;
     }
+
+
 }
