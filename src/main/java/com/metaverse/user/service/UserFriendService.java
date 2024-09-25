@@ -33,6 +33,30 @@ public class UserFriendService {
     private final IMetaverseUserFriendQuestionService userFriendQuestionService;
     private final IMetaverseUserFriendOperationLogService userFriendOperationLogService;
 
+    public boolean checkBlacklistAndStatusList(Long receiverId, Long currentUserId) {
+        Set<Long> blacklistId = userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getUserId, receiverId)
+                .eq(MetaverseUserFriendDO::getRelation, 2)
+                .list()
+                .stream()
+                .map(MetaverseUserFriendDO::getFriendId)
+                .collect(Collectors.toSet());
+        if (blacklistId.contains(currentUserId)) {
+            return false;
+        }
+        Set<Long> statusListId = userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getUserId, receiverId)
+                .eq(MetaverseUserFriendDO::getStatus, 2)
+                .list()
+                .stream()
+                .map(MetaverseUserFriendDO::getFriendId)
+                .collect(Collectors.toSet());
+        if (statusListId.contains(currentUserId)) {
+            return false;
+        }
+        return true;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public UserFriendQuestionResp addFriend(AddFriendReq req, Long senderId) {
         Long receiverId = req.getReceiverId();
