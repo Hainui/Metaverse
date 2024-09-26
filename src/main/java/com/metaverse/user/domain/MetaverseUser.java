@@ -20,6 +20,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -78,6 +79,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     private Long version;
 
+    @NotNull
     public static MetaverseUser writeLoadAndAssertNotExist(Long userId, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         MetaverseUser user = repository.findByIdWithWriteLock(userId);
@@ -94,6 +96,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      * @param userId 用户id
      * @return 用户信息
      */
+    @NotNull
     public static MetaverseUser readLoadAndAssertNotExist(Long userId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         MetaverseUser user = repository.findByIdWithReadLock(userId);
@@ -109,6 +112,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      * @param userIds 用户ids
      * @return 用户信息
      */
+    @NotNull
     public static List<MetaverseUser> readLoadAndAssertNotExist(List<Long> userIds) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         List<MetaverseUser> users = repository.findByIdsWithReadLock(userIds);
@@ -125,6 +129,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
      * @param regionId 分区id
      * @return 用户信息
      */
+    @NotNull
     public static MetaverseUser readLoadAndAssertNotExist(Long userId, Long regionId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         MetaverseUser user = repository.findByIdWithReadLock(userId);
@@ -213,21 +218,6 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         return repository.modifyUserName(req.getUserId(), req.getName(), currentUserId, newVersion);
     }
 
-    @Override
-    public Long pkVal() {
-        return id;
-    }
-
-    @Override
-    public Long modelVersion() {
-        return MODEL_VERSION;
-    }
-
-    @Override
-    public Long changeVersion() {
-        return ++version;
-    }
-
     public Boolean modifyPassword(MetaverseUserModifyPasswordReq req, Long currentUserId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
         if (BCryptUtil.checkPassword(req.getNewPassword(), this.password)) {
@@ -250,15 +240,16 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
         MALE(1, "男");
 
         private final int value;
-        private final String description;
 
+        private final String description;
         // 构造方法，传入性别的整数值和描述
+
         Gender(int value, String description) {
             this.value = value;
             this.description = description;
         }
-
         // 静态方法，根据整数值反查对应的枚举值
+
         public static Gender fromValue(int value) {
             for (Gender gender : values()) {
                 if (gender.getValue() == value) {
@@ -278,6 +269,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
 
         // 可选：重写toString方法，使得枚举常量可以直接被转换成字符串
+
         @Override
         public String toString() {
             return this.description;
@@ -285,4 +277,18 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
     }
 
 
+    @Override
+    public Long pkVal() {
+        return id;
+    }
+
+    @Override
+    public Long modelVersion() {
+        return MODEL_VERSION;
+    }
+
+    @Override
+    public Long changeVersion() {
+        return ++version;
+    }
 }

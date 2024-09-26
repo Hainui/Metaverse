@@ -1,4 +1,4 @@
-package com.metaverse.user.resp;
+package com.metaverse.user.dto;
 
 import com.metaverse.user.domain.MetaverseUser;
 import io.swagger.annotations.ApiModelProperty;

@@ -7,12 +7,12 @@ import com.metaverse.common.constant.UserConstant;
 import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.service.IMetaverseUserService;
 import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.dto.MetaverseUserAbstractInfo;
 import com.metaverse.user.dto.MetaverseUserInfo;
 import com.metaverse.user.req.MetaverseUserLoginReq;
 import com.metaverse.user.req.MetaverseUserModifyPasswordReq;
 import com.metaverse.user.req.MetaverseUserRegistrationReq;
 import com.metaverse.user.req.ModifyUserNameReq;
-import com.metaverse.user.resp.MetaverseUserAbstractInfo;
 import com.metaverse.user.resp.SearchUserByNameResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +70,14 @@ public class UserService {
                 .eq(MetaverseUserDO::getRegionId, regionId)
                 .one();
         return userDOConvertResp(userDO);
+    }
 
+    public SearchUserByNameResp searchUserByUserId(String userId, Long regionId) {
+        MetaverseUserDO userDO = userService.lambdaQuery()
+                .eq(MetaverseUserDO::getId, userId)
+                .eq(MetaverseUserDO::getRegionId, regionId)
+                .one();
+        return userDOConvertResp(userDO);
     }
 
     private SearchUserByNameResp userDOConvertResp(MetaverseUserDO userDO) {
@@ -117,13 +124,11 @@ public class UserService {
                 .setName(metaverseUserDO.getUsername())
                 .setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()))
                 .setBirthTime(metaverseUserDO.getBirthTime());
-
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean uploadAvatarImage(Long currentUserId, Long currentRegion, Long avatarFileId) {
+    public void uploadAvatarImage(Long currentUserId, Long currentRegion, Long avatarFileId) {
         MetaverseUser metaverseUser = MetaverseUser.writeLoadAndAssertNotExist(currentUserId, currentRegion);
-        return metaverseUser.uploadAvatarImage(currentUserId, avatarFileId);
-
+        metaverseUser.uploadAvatarImage(currentUserId, avatarFileId);
     }
 }

@@ -6,15 +6,13 @@ import com.metaverse.user.db.service.IMetaverseChatRecordService;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
-import com.metaverse.user.req.withdrawChatMessageReq;
+import com.metaverse.user.req.WithdrawChatMessageReq;
 import com.metaverse.user.resp.UserFriendChatMesagesResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -106,20 +104,15 @@ public class UserFriendChatService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean withdrawChatMessages(@Valid withdrawChatMessageReq req, Long currentUserId) {
-        LocalDateTime now = LocalDateTime.now();
-        Duration duration = Duration.between(req.getTimestamp(), now);
-        if (duration.toMinutes() > 2) {
-            throw new IllegalArgumentException("消息发送时间超过两分钟，无法撤回");
-        }
-
+    public Boolean withdrawChatMessages(WithdrawChatMessageReq req, Long currentUserId) {
         return metaverseChatRecordService.lambdaUpdate()
                 .eq(MetaverseChatRecordDO::getSenderId, currentUserId)
                 .eq(MetaverseChatRecordDO::getReceiverId, req.getReceiverId())
                 .eq(MetaverseChatRecordDO::getTimestamp, req.getTimestamp())
-                .set(MetaverseChatRecordDO::getWithdrawn, 1)
-                .set(MetaverseChatRecordDO::getWithdrawnTime, LocalDateTime.now())
+                .eq(MetaverseChatRecordDO::getWithdrawn, Boolean.FALSE)
                 .last(RepositoryConstant.FOR_UPDATE)
+                .set(MetaverseChatRecordDO::getWithdrawn, Boolean.TRUE)
+                .set(MetaverseChatRecordDO::getWithdrawnTime, LocalDateTime.now())
                 .update();
     }
 }

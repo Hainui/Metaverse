@@ -2,10 +2,10 @@ package com.metaverse.user.controller;
 
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
+import com.metaverse.user.dto.MetaverseUserAbstractInfo;
 import com.metaverse.user.req.AddFriendReq;
 import com.metaverse.user.req.AnswerUserQuestionReq;
 import com.metaverse.user.resp.MetaverseFriendRequestResp;
-import com.metaverse.user.resp.MetaverseUserAbstractInfo;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import com.metaverse.user.service.UserFriendService;
 import io.swagger.annotations.ApiOperation;

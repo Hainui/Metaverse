@@ -20,4 +20,6 @@ public class SearchUserByNameResp {
     private MetaverseUser.Gender gender;
     @ApiModelProperty(value = "头像文件ID")
     private Long avatarFileId;
+    @ApiModelProperty(value = "邮箱")
+    private String email;
 }

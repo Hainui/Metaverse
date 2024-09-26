@@ -10,7 +10,7 @@ public class SnowflakeIdWorker {
     @Value("${snowflake.workerId}")
     private long workerId; // 工作机器ID
     private long sequence = 0L;  // 毫秒内序列
-    private long twepoch = 1288834974657L;  // 起始时间戳
+    private long twepoch = 1262304000000L;  // 起始时间戳 2010年1月1日00:00:00 UTC时间
 
     // 机器ID所占的位数
     private final long workerIdBits = 5L;

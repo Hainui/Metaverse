@@ -5,7 +5,7 @@ import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
-import com.metaverse.user.req.withdrawChatMessageReq;
+import com.metaverse.user.req.WithdrawChatMessageReq;
 import com.metaverse.user.resp.UserFriendChatMesagesResp;
 import com.metaverse.user.service.UserFriendChatService;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +34,6 @@ public class MetaverseUserFriendChatRecordController {
 
     private final UserFriendChatService userFriendChatService;
 
-
     @PostMapping("/sendChatMessages")
     @ApiOperation(value = "发送聊天信息(文本或图片)", tags = "1.0.0")
     public Result<Boolean> sendChatMessages(@RequestBody @Valid @ApiParam(name = "发送聊天信息参数", required = true) SendChatRecordReq req) {
@@ -60,10 +59,9 @@ public class MetaverseUserFriendChatRecordController {
         return Result.success(userFriendChatService.getUserFriendChatMessages(friendId, MetaverseContextUtil.getCurrentUserId()));
     }
 
-    //todo 用户聊天信息撤回
     @PostMapping("/withdrawChatMessages")
     @ApiOperation(value = "撤回聊天信息", tags = "1.0.0")
-    public Result<Boolean> withdrawChatMessages(@RequestBody @Valid @ApiParam(name = "撤回信息请求参数", required = true) withdrawChatMessageReq req) {
+    public Result<Boolean> withdrawChatMessages(@RequestBody @Valid @ApiParam(name = "撤回信息请求参数", required = true) WithdrawChatMessageReq req) {
         return Result.success(userFriendChatService.withdrawChatMessages(req, MetaverseContextUtil.getCurrentUserId()));
     }
 

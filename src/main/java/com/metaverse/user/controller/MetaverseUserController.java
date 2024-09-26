@@ -55,6 +55,12 @@ public class MetaverseUserController {
         return Result.success(userService.searchUserByName(userName, MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
+    @GetMapping("/searchUserByUserId")
+    @ApiOperation(value = "根据用户ID查找用户", tags = "1.0.0")
+    public Result<SearchUserByNameResp> searchUserByUserId(@ApiParam(name = "用户ID", required = true) @RequestParam(value = "userId") @NotBlank(message = "用户ID不能为空") String userId) {
+        return Result.success(userService.searchUserByUserId(userId, MetaverseContextUtil.getCurrentUserRegion().getId()));
+    }
+
     @PostMapping("/registration")
     @ApiOperation(value = "用户注册", tags = "1.0.0")
     public Result<Boolean> registration(@ApiParam(name = "用户注册请求参数", required = true) @RequestBody @Valid MetaverseUserRegistrationReq req) {
