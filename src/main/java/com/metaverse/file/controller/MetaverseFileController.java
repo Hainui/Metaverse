@@ -27,13 +27,8 @@ import java.time.LocalDateTime;
 @RequestMapping("/file")
 @RequiredArgsConstructor
 public class MetaverseFileController {
-
-//    private static final String REAL_RESOURCE_URL = "https://example.com/real-resource-url";
-
     private final IMetaverseMultimediaFilesService metaverseMultimediaFilesService;
-
     private final UserService userService;
-
     private final AliOSSUtils aliOSSUtils;
 
     @PostMapping("/proxy/accessResource")
@@ -46,6 +41,7 @@ public class MetaverseFileController {
     @PostMapping("/upload")
     @ApiOperation(value = "文件上传", tags = "1.0.0")
     public Result<Long> uploadFile(@RequestParam("file") @ApiParam(name = "文件", required = true) MultipartFile file) throws IOException, ClientException {
+        // todo 只允许 图片 视频 音频
         String url = aliOSSUtils.upload(file);
         Long fileId = BeanManager.getBean(FileIdGen.class).nextId();
         metaverseMultimediaFilesService.save(new MetaverseMultimediaFilesDO()

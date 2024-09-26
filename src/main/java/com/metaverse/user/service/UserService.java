@@ -111,7 +111,12 @@ public class UserService {
         if (metaverseUserDO == null) {
             return null;
         }
-        return null;
+        return new MetaverseUserAbstractInfo()
+                .setUserId(metaverseUserDO.getId())
+                .setAvatarImageId(metaverseUserDO.getAvatarFileId())
+                .setName(metaverseUserDO.getUsername())
+                .setGender(MetaverseUser.Gender.convertGender(metaverseUserDO.getGender()))
+                .setBirthTime(metaverseUserDO.getBirthTime());
 
     }
 

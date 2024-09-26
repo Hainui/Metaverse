@@ -1,11 +1,7 @@
 package com.metaverse.user.service;
 
-import com.aliyuncs.exceptions.ClientException;
-import com.metaverse.common.Utils.AliOSSUtils;
-import com.metaverse.file.db.service.IMetaverseMultimediaFilesService;
 import com.metaverse.user.db.entity.MetaverseChatRecordDO;
 import com.metaverse.user.db.service.IMetaverseChatRecordService;
-import com.metaverse.user.db.service.IMetaverseUserFriendService;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
@@ -15,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -27,29 +21,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserChatService {
 
-    private final IMetaverseMultimediaFilesService metaverseMultimediaFilesService;//多媒体服务表
-    private final IMetaverseChatRecordService metaverseChatRecordService;//聊天记录表
-    private final IMetaverseUserFriendService MetaverseUserFriendService;//好友表
+    private final IMetaverseChatRecordService metaverseChatRecordService;
     private final UserFriendService userFriendService;
-    private final AliOSSUtils aliOSSUtils;
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean sendChatMessages(SendChatRecordReq req, Long currentUserId) {
-        if (!userFriendService.checkBlacklistAndStatusList(req.getReceiverId(), currentUserId)) {
+        if (!userFriendService.targetUserIsFriend(req.getReceiverId(), currentUserId)) {
             return false;
         }
-        MetaverseChatRecordDO chatRecord = new MetaverseChatRecordDO()
+        return metaverseChatRecordService.save(new MetaverseChatRecordDO()
                 .setSenderId(currentUserId)
                 .setReceiverId(req.getReceiverId())
-                .setMessageType(false)
+                .setMessageType(Boolean.FALSE)
                 .setTimestamp(LocalDateTime.now())
-                .setContent(req.getContent());
-        return metaverseChatRecordService.save(chatRecord);
+                .setContent(req.getContent()));
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean sendChatFile(Long receiverId, Boolean messageType, Long fileId, Long currentUserId) throws IOException, ClientException {
-        if (!userFriendService.checkBlacklistAndStatusList(receiverId, currentUserId)) {
+    public Boolean sendChatFile(Long receiverId, Long fileId, Long currentUserId) {
+        if (!userFriendService.targetUserIsFriend(receiverId, currentUserId)) {
             return false;
         }
         return metaverseChatRecordService.save(new MetaverseChatRecordDO()
@@ -58,21 +48,19 @@ public class UserChatService {
                 .setMessageType(true)
                 .setTimestamp(LocalDateTime.now())
                 .setFileId(fileId));
-
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean sendChatAudio(@Valid SendChatAudioReq req, Long currentUserId) {
-        if (!userFriendService.checkBlacklistAndStatusList(req.getReceiverId(), currentUserId)) {
+    public Boolean sendChatAudio(SendChatAudioReq req, Long currentUserId) {
+        if (!userFriendService.targetUserIsFriend(req.getReceiverId(), currentUserId)) {
             return false;
         }
-        MetaverseChatRecordDO chatRecord = new MetaverseChatRecordDO()
+        return metaverseChatRecordService.save(new MetaverseChatRecordDO()
                 .setSenderId(currentUserId)
                 .setReceiverId(req.getReceiverId())
-                .setMessageType(false)
+                .setMessageType(true)
                 .setTimestamp(LocalDateTime.now())
-                .setFileId(req.getFileId());
-        return metaverseChatRecordService.save(chatRecord);
+                .setFileId(req.getFileId()));
     }
 
     @Transactional(rollbackFor = Exception.class)

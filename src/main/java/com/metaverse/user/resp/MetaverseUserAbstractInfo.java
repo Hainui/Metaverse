@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
@@ -23,8 +23,6 @@ public class MetaverseUserAbstractInfo {
     @ApiModelProperty(value = "性别")
     private MetaverseUser.Gender gender;
 
-    @ApiModelProperty(value = "亲密度等级")
-    private BigDecimal intimacyLevel;
-
-
+    @ApiModelProperty("出生时间")
+    private LocalDateTime birthTime;
 }

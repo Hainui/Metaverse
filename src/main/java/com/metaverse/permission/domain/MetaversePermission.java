@@ -6,9 +6,7 @@ import com.metaverse.common.config.BeanManager;
 import com.metaverse.common.model.IEntity;
 import com.metaverse.permission.MetaversePermissionIdGen;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
-import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDeleteDO;
 import com.metaverse.permission.repository.MetaversePermissionRepository;
-import com.metaverse.user.domain.MetaverseUser;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
@@ -123,73 +121,6 @@ public class MetaversePermission implements IEntity {
         return repository.modifyPermissions(permissions, pkVal(), currentUserId, newVersion, this.permissions);
     }
 
-    public Boolean authoritiesResetUsers(List<Long> permissionIds, List<Long> userIds, Long currentUserId) {
-        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
-
-        // 删除现有权限关系
-        for (Long userId : userIds) {
-            repository.deleteAllUserIdPermission(userId);
-            //todo 备份
-            for (Long permissionId : permissionIds) {
-                MetaverseUserPermissionRelationshipDeleteDO metaverseUserPermissionRelationshipDeleteDO = new MetaverseUserPermissionRelationshipDeleteDO()
-                        .setUserId(userId)
-                        .setPermissionId(permissionId)
-                        .setDeleteBy(currentUserId)
-                        .setDeleteAt(LocalDateTime.now());
-                if (!repository.backupDeleteAllUserIdPermission(metaverseUserPermissionRelationshipDeleteDO)) {
-                    throw new IllegalArgumentException("权限备份失败");
-                }
-            }
-        }
-        // 插入新的权限关系
-        if (!repository.saveUserPermission(permissionIds, userIds, currentUserId)) {
-            throw new IllegalArgumentException("权限关系重置失败");
-        }
-        return true;
-    }
-
-    public Boolean authoritiesRevokeForUsers(List<Long> userIds, List<Long> permissionIds, Long currentUserId) {
-        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
-        if (!repository.deleteUserIdPermission(userIds, permissionIds)) {
-            throw new IllegalArgumentException("权限关系删除失败");
-        } else {
-            // todo 没有删除失败就需要备份
-            for (Long userId : userIds) {
-                for (Long permissionId : permissionIds) {
-                    MetaverseUserPermissionRelationshipDeleteDO metaverseUserPermissionRelationshipDeleteDO = new MetaverseUserPermissionRelationshipDeleteDO()
-                            .setUserId(userId)
-                            .setPermissionId(permissionId)
-                            .setDeleteBy(currentUserId)
-                            .setDeleteAt(LocalDateTime.now());
-                    if (!repository.backupDeleteAllUserIdPermission(metaverseUserPermissionRelationshipDeleteDO)) {
-                        throw new IllegalArgumentException("权限备份失败");
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public Boolean authoritiesRevokeForUser(Long userId, List<Long> permissionIds, Long currentUserId) {
-        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
-        if (!repository.deleteOneUserPermission(userId, permissionIds)) {
-            throw new IllegalArgumentException("权限删除失败");
-        } else {
-            for (Long permissionId : permissionIds) {
-                MetaverseUserPermissionRelationshipDeleteDO metaverseUserPermissionRelationshipDeleteDO = new MetaverseUserPermissionRelationshipDeleteDO()
-                        .setUserId(userId)
-                        .setPermissionId(permissionId)
-                        .setDeleteBy(currentUserId)
-                        .setDeleteAt(LocalDateTime.now());
-                if (!repository.backupDeleteAllUserIdPermission(metaverseUserPermissionRelationshipDeleteDO)) {
-                    throw new IllegalArgumentException("权限备份失败");
-                }
-            }
-        }
-
-        return true;
-    }
-
     @Override
     public Long pkVal() {
         return id;
@@ -203,21 +134,5 @@ public class MetaversePermission implements IEntity {
     @Override
     public Long changeVersion() {
         return ++version;
-    }
-
-
-    public void deleteUserPermission(MetaverseUser metaverseUser) {
-        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
-        if (!repository.deleteAllUserIdPermission(metaverseUser.getId())) {
-            throw new IllegalArgumentException("权限删除失败");
-        }
-    }
-
-
-    public void deleteUserPermissionId(Long UserId, Long permissionsId) {
-        MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
-        if (!repository.deleteUserPermissionId(UserId, permissionsId)) {
-            throw new IllegalArgumentException("权限删除失败");
-        }
     }
 }

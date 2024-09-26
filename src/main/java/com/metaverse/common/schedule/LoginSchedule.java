@@ -35,7 +35,7 @@ public class LoginSchedule {
 //            }
             // 删除所有过期的token，并且获取到当前最新的token
             Map<Long, String> tokenMap = redisServer.getAllTokens();
-            // todo tokenMap可以用于统计生成当前在线用户信息
+            // tokenMap可以用于统计生成当前在线用户信息
         } catch (Exception e) {
             log.error("定时删除过期token时发生异常", e);
 

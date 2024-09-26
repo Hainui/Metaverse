@@ -62,8 +62,6 @@ public class MetaverseUserPermissionRelationshipService {
         for (MetaverseUser metaverseUser : metaverseUsers) {
             List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
             for (MetaversePermission newMetaversePermission : newMetaversePermissions) {
-                //todo 这个老的权限串获取有问题获取到的是全部权限,并且应该放在第一个for循环之后
-//                List<String> userOldPermissions = metaverseUser.getPermissions().stream().flatMap(Permission -> Permission.getPermissions().stream()).collect(Collectors.toList());
                 int code = PermissionComparator.compareLists(userOldPermissions, newMetaversePermission.getPermissions());
                 if (code != 1) {
                     userService.signOut(metaverseUser.getId());
@@ -304,20 +302,4 @@ public class MetaverseUserPermissionRelationshipService {
                 .setId(regionDO.getId())
                 .setName(regionDO.getName());
     }
-
-//    public void regionIdsCompare(AuthoritiesForUsersReq req, Long manageRegionId) {
-//        // todo缺少一个管理员判断,我认为可以将管理员放在独立的区服id然后如果是这个区服就不用校验
-//        final Long ADMIN_REGION_ID = 1833047328504811520L;//管理员所在的区服
-//        if (ADMIN_REGION_ID.equals(manageRegionId)) {
-//            return;
-//        }
-//        List<Long> userIds = req.getUserIds();
-//        List<MetaverseUser> metaverseUsers = MetaverseUser.readLoadAndAssertNotExist(userIds);
-//        for (MetaverseUser metaverseUser : metaverseUsers) {
-//            Long regionId = metaverseUser.getRegion().getId();
-//            if (!regionId.equals(manageRegionId)) {
-//                throw new IllegalArgumentException("无法管理本区服之外的用户");
-//            }
-//        }
-//    }
 }

@@ -197,10 +197,11 @@ public class MetaverseUserRepositoryImpl implements MetaverseUserRepository {
     }
 
     @Override
-    public boolean uploadAvatarImage(Long currentUserId, Long avatarFileId) {
+    public boolean uploadAvatarImage(Long currentUserId, Long avatarFileId, Long newVersion) {
         return userService.lambdaUpdate()
                 .eq(MetaverseUserDO::getId, currentUserId)
                 .set(MetaverseUserDO::getAvatarFileId, avatarFileId)
+                .set(MetaverseUserDO::getVersion, newVersion)
                 .update();
     }
 

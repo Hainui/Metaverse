@@ -31,7 +31,7 @@ public class PermissionProperties {
             UNRESTRICTED_ACCESS_SIZE = countUnrestrictedAccessMethods();
         } catch (Exception e) {
             throw new RuntimeException("初始化(UNRESTRICTED_ACCESS_SIZE)失败", e);
-        }  //todo 计算普通用户能访问的接口 只要不带@Permission注解
+        }
     }
 
     private static int countUnrestrictedAccessMethods() {

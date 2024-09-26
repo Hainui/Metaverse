@@ -239,7 +239,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
 
     public Boolean uploadAvatarImage(Long currentUserId, Long avatarFileId) {
         MetaverseUserRepository repository = BeanManager.getBean(MetaverseUserRepository.class);
-        return repository.uploadAvatarImage(currentUserId, avatarFileId);
+        return repository.uploadAvatarImage(currentUserId, avatarFileId, changeVersion());
     }
 
 

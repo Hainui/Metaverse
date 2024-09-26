@@ -39,7 +39,6 @@ public class MetaverseUserPermissionRelationshipController {
     @ApiOperation(value = "多个权限同时授予多个用户", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION_RELATIONSHIP}, action = PermissionConstant.Action.GRANT_PERMISSION)
     public Result<Boolean> authoritiesImpowerUsers(@ApiParam(name = "多个权限同时授予多个用户请求参数", required = true) @RequestBody @Valid AuthoritiesForUsersReq req) {
-        //todo 想加上一个区服判断,如果是一个区的管理员只能授予该区的人员权限
         return Result.success(permissionRelationshipService.authoritiesImpowerUsers(req, MetaverseContextUtil.getCurrentUserId()));
     }
 

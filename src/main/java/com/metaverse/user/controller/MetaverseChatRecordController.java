@@ -1,7 +1,6 @@
 package com.metaverse.user.controller;
 
 
-import com.aliyuncs.exceptions.ClientException;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.SendChatAudioReq;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -51,14 +49,13 @@ public class MetaverseChatRecordController {
     @PostMapping("/sendChatFile")
     @ApiOperation(value = "发送聊天文件", tags = "1.0.0")
     public Result<Boolean> sendChatFile(@RequestParam("receiverId") @ApiParam(name = "接收信息的用户ID", required = true) @NotNull(message = "接收信息的用户ID不能为空") Long receiverId,
-                                        @RequestParam("messageType") @ApiParam(name = "信息的类型", required = true) @NotNull(message = "信息类型不能为空") Boolean messageType,
-                                        @RequestParam("file") @ApiParam(name = "信息文件Id", required = true) @NotNull(message = "信息文件Id不能为空") Long fileId) throws IOException, ClientException {
-        return Result.success(userChatService.sendChatFile(receiverId, messageType, fileId, MetaverseContextUtil.getCurrentUserId()));
+                                        @RequestParam("file") @ApiParam(name = "信息文件Id", required = true) @NotNull(message = "信息文件Id不能为空") Long fileId) {
+        return Result.success(userChatService.sendChatFile(receiverId, fileId, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @GetMapping("/getUserFriendChatMessages")
     @ApiOperation(value = "获取好友全部聊天信息", tags = "1.0.0")
-    public Result<List<UserFriendChatMesagesResp>> getUserFriendChatMessages(@RequestParam(value = "FriendId", required = false) @ApiParam(name = "好友用户ID", required = true) @NotNull(message = "好友ID不能为空") Long FriendId) {
-        return Result.success(userChatService.getUserFriendChatMessages(FriendId, MetaverseContextUtil.getCurrentUserId()));
+    public Result<List<UserFriendChatMesagesResp>> getUserFriendChatMessages(@RequestParam(value = "friendId", required = false) @ApiParam(name = "好友用户ID", required = true) @NotNull(message = "好友ID不能为空") Long friendId) {
+        return Result.success(userChatService.getUserFriendChatMessages(friendId, MetaverseContextUtil.getCurrentUserId()));
     }
 }
