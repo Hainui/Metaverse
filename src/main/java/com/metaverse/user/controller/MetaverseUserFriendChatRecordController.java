@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * <p>
- * 聊天记录表 文件上传和下载路径
+ * 用户好友聊天记录表
  * </p>
  *
  * @author Hainui
