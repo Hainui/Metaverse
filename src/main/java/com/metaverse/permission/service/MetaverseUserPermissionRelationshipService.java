@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.metaverse.common.Utils.PermissionComparator;
 import com.metaverse.common.config.PermissionProperties;
 import com.metaverse.common.constant.RepositoryConstant;
-import com.metaverse.permission.MetaverseUserPermissionRelationshipIdGen;
 import com.metaverse.permission.db.entity.MetaversePermissionDO;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDeleteDO;
@@ -49,7 +48,6 @@ public class MetaverseUserPermissionRelationshipService {
     private final IMetaverseUserPermissionRelationshipService permissionRelationshipService;
     private final IMetaverseRegionService regionService;
     private final IMetaversePermissionService metaversePermissionService;
-    private final MetaverseUserPermissionRelationshipIdGen metaverseUserPermissionRelationshipIdGen;
     private final IMetaverseUserPermissionRelationshipDeleteService permissionRelationshipDeleteService;//备份 上面删除的信息下面要留作备份
     private final PermissionProperties permissionProperties;
     private final UserService userService;
@@ -67,7 +65,6 @@ public class MetaverseUserPermissionRelationshipService {
                     userService.signOut(metaverseUser.getId());
                     permissionRelationshipService
                             .save(new MetaverseUserPermissionRelationshipDO()
-                                    .setId(metaverseUserPermissionRelationshipIdGen.nextId())
                                     .setUserId(metaverseUser.getId())
                                     .setPermissionId(newMetaversePermission.getId())
                                     .setImpowerBy(currentUserId)
@@ -92,7 +89,6 @@ public class MetaverseUserPermissionRelationshipService {
         // 挨个为每个用户添加权限
         userIds.forEach(userId ->
                 newMetaversePermissions.forEach(newMetaversePermission -> permissionRelationshipService.save(new MetaverseUserPermissionRelationshipDO()
-                        .setId(metaverseUserPermissionRelationshipIdGen.nextId())
                         .setUserId(userId)
                         .setPermissionId(newMetaversePermission.getId())
                         .setImpowerAt(LocalDateTime.now())
@@ -107,7 +103,6 @@ public class MetaverseUserPermissionRelationshipService {
             return null;
         }
         return new MetaverseUserPermissionRelationshipDeleteDO()
-                .setId(permissionRelationshipDO.getId())
                 .setUserId(permissionRelationshipDO.getUserId())
                 .setPermissionId(permissionRelationshipDO.getPermissionId())
                 .setImpowerAt(permissionRelationshipDO.getImpowerAt())
@@ -181,7 +176,6 @@ public class MetaverseUserPermissionRelationshipService {
             if (code != 1) {
                 permissionRelationshipService
                         .save(new MetaverseUserPermissionRelationshipDO()
-                                .setId(metaverseUserPermissionRelationshipIdGen.nextId())
                                 .setUserId(metaverseUser.getId())
                                 .setPermissionId(newMetaversePermission.getId())
                                 .setImpowerBy(currentUserId)
@@ -269,9 +263,6 @@ public class MetaverseUserPermissionRelationshipService {
     private String calculateAuthorizationLevel(List<String> permissions) {
         int unrestrictedAccessSize = PermissionProperties.UNRESTRICTED_ACCESS_SIZE;
         List<String> systemPermissions = permissionProperties.getSystemPermissions();
-//        if (permissions == null || permissions.isEmpty()) {
-//            return "0.00%";
-//        }
         int successfulAccessCount = 0;
         for (String systemPermission : systemPermissions) {
             if (PermissionComparator.isPermissionMatched(systemPermission, permissions)) {

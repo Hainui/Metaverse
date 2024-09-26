@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-09
+ * @since 2024-09-26 15:50:20
  */
 @Getter
 @Setter
@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 public class MetaverseUserPermissionRelationshipDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty("关联表主键ID，使用雪花算法生成")
-    private Long id;
 
     @ApiModelProperty("用户ID，关联用户表主键")
     private Long userId;

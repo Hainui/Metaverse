@@ -2,4 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.metaverse.permission.db.mapper.MetaverseUserPermissionRelationshipMapper">
 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO">
+        <result column="user_id" property="userId" />
+        <result column="permission_id" property="permissionId" />
+        <result column="impower_at" property="impowerAt" />
+        <result column="impower_by" property="impowerBy" />
+        <result column="saved_at" property="savedAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, permission_id, impower_at, impower_by, saved_at
+    </sql>
+
 </mapper>

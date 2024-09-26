@@ -1,7 +1,7 @@
 package com.metaverse.permission.db.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.metaverse.permission.db.entity.MetaverseUserPermissionRelationshipDO;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-09
+ * @since 2024-09-26 15:50:20
  */
 @Mapper
 public interface MetaverseUserPermissionRelationshipMapper extends BaseMapper<MetaverseUserPermissionRelationshipDO> {
