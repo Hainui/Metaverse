@@ -6,7 +6,7 @@ import com.metaverse.common.model.Result;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.resp.UserFriendChatMesagesResp;
-import com.metaverse.user.service.UserChatService;
+import com.metaverse.user.service.UserFriendChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -26,36 +26,36 @@ import java.util.List;
  * @since 2024-09-20 10:34:07
  */
 @RestController
-@RequestMapping("/messageHistory")
+@RequestMapping("/metaverseUserFriendChatRecord")
 @RequiredArgsConstructor
 @Validated
-public class MetaverseChatRecordController {
+public class MetaverseUserFriendChatRecordController {
 
-    private final UserChatService userChatService;
+    private final UserFriendChatService userFriendChatService;
 
 
     @PostMapping("/sendChatMessages")
     @ApiOperation(value = "发送聊天信息(文本或图片)", tags = "1.0.0")
     public Result<Boolean> sendChatMessages(@RequestBody @Valid @ApiParam(name = "发送聊天信息参数", required = true) SendChatRecordReq req) {
-        return Result.success(userChatService.sendChatMessages(req, MetaverseContextUtil.getCurrentUserId()));
+        return Result.success(userFriendChatService.sendChatMessages(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/sendChatAudio")
     @ApiOperation(value = "发送聊天音频", tags = "1.0.0")
     public Result<Boolean> sendChatAudio(@RequestBody @Valid @ApiParam(name = "发送音频请求参数", required = true) SendChatAudioReq req) {
-        return Result.success(userChatService.sendChatAudio(req, MetaverseContextUtil.getCurrentUserId()));
+        return Result.success(userFriendChatService.sendChatAudio(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/sendChatFile")
     @ApiOperation(value = "发送聊天文件", tags = "1.0.0")
     public Result<Boolean> sendChatFile(@RequestParam("receiverId") @ApiParam(name = "接收信息的用户ID", required = true) @NotNull(message = "接收信息的用户ID不能为空") Long receiverId,
                                         @RequestParam("file") @ApiParam(name = "信息文件Id", required = true) @NotNull(message = "信息文件Id不能为空") Long fileId) {
-        return Result.success(userChatService.sendChatFile(receiverId, fileId, MetaverseContextUtil.getCurrentUserId()));
+        return Result.success(userFriendChatService.sendChatFile(receiverId, fileId, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @GetMapping("/getUserFriendChatMessages")
     @ApiOperation(value = "获取好友全部聊天信息", tags = "1.0.0")
     public Result<List<UserFriendChatMesagesResp>> getUserFriendChatMessages(@RequestParam(value = "friendId", required = false) @ApiParam(name = "好友用户ID", required = true) @NotNull(message = "好友ID不能为空") Long friendId) {
-        return Result.success(userChatService.getUserFriendChatMessages(friendId, MetaverseContextUtil.getCurrentUserId()));
+        return Result.success(userFriendChatService.getUserFriendChatMessages(friendId, MetaverseContextUtil.getCurrentUserId()));
     }
 }

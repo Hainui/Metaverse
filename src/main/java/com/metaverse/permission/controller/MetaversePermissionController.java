@@ -49,15 +49,15 @@ public class MetaversePermissionController {
     @PostMapping("/modifyPermissionName")
     @ApiOperation(value = "修改权限名称", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION}, action = PermissionConstant.Action.UPDATE)
-    public Result<Boolean> modifyPermissionName(@ApiParam(name = "修改权限名称请求参数", required = true) @RequestBody @Valid ModifyPermissionNameReq req) {
-        return Result.success(permissionService.modifyPermissionName(req, MetaverseContextUtil.getCurrentUserId()));
+    public Result<Void> modifyPermissionName(@ApiParam(name = "修改权限名称请求参数", required = true) @RequestBody @Valid ModifyPermissionNameReq req) {
+        return Result.modify(permissionService.modifyPermissionName(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/modifyPermissions")
     @ApiOperation(value = "修改权限的权限串集合", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.PERMISSION}, action = PermissionConstant.Action.UPDATE)
-    public Result<Boolean> modifyPermissions(@ApiParam(name = "修改权限串请求参数", required = true) @RequestBody @Valid ModifyPermissionReq req) {
-        return Result.success(permissionService.modifyPermissions(req, MetaverseContextUtil.getCurrentUserId()));
+    public Result<Void> modifyPermissions(@ApiParam(name = "修改权限串请求参数", required = true) @RequestBody @Valid ModifyPermissionReq req) {
+        return Result.modify(permissionService.modifyPermissions(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
 }

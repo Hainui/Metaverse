@@ -34,10 +34,10 @@ public class MetaverseUserFriendController {
 
     private final UserFriendService userFriendService;
 
-    @PostMapping("/addFriend")
+    @PostMapping("/addFriendRequest")
     @ApiOperation(value = "加好友请求", tags = "1.0.0")
-    public Result<UserFriendQuestionResp> addFriend(@RequestBody @Valid @ApiParam(name = "添加好友请求参数", required = true) AddFriendReq req) {
-        return Result.success(userFriendService.addFriend(req, MetaverseContextUtil.getCurrentUserId()));
+    public Result<UserFriendQuestionResp> addFriendRequest(@RequestBody @Valid @ApiParam(name = "添加好友请求参数", required = true) AddFriendReq req) {
+        return Result.success(userFriendService.addFriendRequest(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @GetMapping("/delFriend")

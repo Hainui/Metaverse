@@ -102,7 +102,7 @@ public class MetaversePermission implements IEntity {
 
     public Boolean modifyPermissionName(String name, Long currentUserId) {
         if (StringUtils.equals(this.permissionGroupName, name)) {
-            throw new IllegalArgumentException("新的权限名称不能和旧权限名称相同");
+            return false;
         }
         MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         if (repository.existByName(name)) {
@@ -114,7 +114,7 @@ public class MetaversePermission implements IEntity {
 
     public Boolean modifyPermissions(List<String> permissions, Long currentUserId) {
         if (Objects.equals(this.permissions, permissions)) {
-            throw new IllegalArgumentException("新权限串集合和旧权限串集合相同,无需修改");
+            return false;
         }
         MetaversePermissionRepository repository = BeanManager.getBean(MetaversePermissionRepository.class);
         Long newVersion = changeVersion();

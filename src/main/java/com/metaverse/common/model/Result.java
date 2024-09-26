@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -24,6 +25,14 @@ public class Result<T> {
     public static <T> Result<T> success(T data) {
         return new Result<>(true, 1, data, null);
     }
+
+    public static <T> Result<T> modify(boolean data) {
+        if (data) {
+            return Result.success();
+        }
+        return new Result<>(false, 0, null, Collections.singletonList("No change required!"));
+    }
+
 
     // 失败响应
     public static <T> Result<T> error(List<String> msg) {

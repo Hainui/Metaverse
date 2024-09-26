@@ -48,15 +48,15 @@ public class MetaverseRegionController {
     @PostMapping("/modifyRegionName")
     @ApiOperation(value = "修改区服名", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.REGION}, action = PermissionConstant.Action.UPDATE)
-    public Result<Boolean> modifyRegionName(@ApiParam(name = "修改区域名称请求参数", required = true) @RequestBody @Valid ModifyRegionNameReq req) {
-        return Result.success(regionService.modifyRegionName(req, MetaverseContextUtil.getCurrentUserId()));
+    public Result<Void> modifyRegionName(@ApiParam(name = "修改区域名称请求参数", required = true) @RequestBody @Valid ModifyRegionNameReq req) {
+        return Result.modify(regionService.modifyRegionName(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
     @PostMapping("/modifyRegionLocationList")
     @ApiOperation(value = "修改区服地址", tags = "1.0.0")
     @Permission(resourceTypeElements = {PermissionConstant.ResourceType.REGION}, action = PermissionConstant.Action.UPDATE)
-    public Result<Boolean> modifyRegionLocationList(@ApiParam(name = "修改区域地址请求参数", required = true) @RequestBody @Valid ModifyRegionServerLocationReq req) {
-        return Result.success(regionService.modifyRegionLocationList(req, MetaverseContextUtil.getCurrentUserId()));
+    public Result<Void> modifyRegionLocationList(@ApiParam(name = "修改区域地址请求参数", required = true) @RequestBody @Valid ModifyRegionServerLocationReq req) {
+        return Result.modify(regionService.modifyRegionLocationList(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
 }

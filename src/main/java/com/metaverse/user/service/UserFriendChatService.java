@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserChatService {
+public class UserFriendChatService {
 
     private final IMetaverseChatRecordService metaverseChatRecordService;
     private final UserFriendService userFriendService;

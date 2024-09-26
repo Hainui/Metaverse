@@ -65,36 +65,15 @@ public class UserFriendService {
     private final IMetaverseUserFriendOperationLogService userFriendOperationLogService;
 
     public boolean targetUserIsBlacklist(Long currentUserId, Long targetId) {
-
         return userFriendService.lambdaQuery()
                 .eq(MetaverseUserFriendDO::getUserId, currentUserId)
                 .eq(MetaverseUserFriendDO::getFriendId, targetId)
                 .eq(MetaverseUserFriendDO::getRelation, UserFriendRelation.BLACKLIST)
                 .exists();
-
-
-//        Set<Long> blacklistId = userFriendService.lambdaQuery()
-//                .eq(MetaverseUserFriendDO::getUserId, receiverId)
-//                .eq(MetaverseUserFriendDO::getRelation, UserFriendRelation.BLACKLIST)
-//                .list()
-//                .stream()
-//                .map(MetaverseUserFriendDO::getFriendId)
-//                .collect(Collectors.toSet());
-//        if (blacklistId.contains(currentUserId)) {
-//            return true;
-//        }
-//        Set<Long> statusListId = userFriendService.lambdaQuery()
-//                .eq(MetaverseUserFriendDO::getUserId, receiverId)
-//                .eq(MetaverseUserFriendDO::getStatus, UserFriendStatus.DELETED)
-//                .list()
-//                .stream()
-//                .map(MetaverseUserFriendDO::getFriendId)
-//                .collect(Collectors.toSet());
-//        return statusListId.contains(currentUserId);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public UserFriendQuestionResp addFriend(AddFriendReq req, Long senderId) {
+    public UserFriendQuestionResp addFriendRequest(AddFriendReq req, Long senderId) {
         Long receiverId = req.getReceiverId();
         String message = req.getMessage();
         Set<Long> blacklistId = userFriendService.lambdaQuery()
@@ -163,14 +142,14 @@ public class UserFriendService {
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean agreeFriendRequest(Long currentUserId, Long senderId) {
-        MetaverseFriendRequestDO one = assertNotExistWriteLoadFriendRequest(currentUserId, senderId);
+        MetaverseFriendRequestDO friendRequestDO = assertNotExistWriteLoadFriendRequest(currentUserId, senderId);
         friendRequestService.lambdaUpdate()
                 .eq(MetaverseFriendRequestDO::getSenderId, senderId)
                 .eq(MetaverseFriendRequestDO::getReceiverId, currentUserId)
                 .eq(MetaverseFriendRequestDO::getStatus, UserFriendRequestStatus.PENDING)
                 .set(MetaverseFriendRequestDO::getStatus, UserFriendRequestStatus.AGREE)
                 .set(MetaverseFriendRequestDO::getUpdateBy, currentUserId)
-                .set(MetaverseFriendRequestDO::getVersion, one.getVersion() + 1)
+                .set(MetaverseFriendRequestDO::getVersion, friendRequestDO.getVersion() + 1)
                 .update();
 
         LocalDateTime now = LocalDateTime.now();
@@ -215,8 +194,17 @@ public class UserFriendService {
         return true;
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
     public Boolean rejectFriendRequest(Long currentUserId, Long senderId) {
-        return null;
+        MetaverseFriendRequestDO friendRequestDO = assertNotExistWriteLoadFriendRequest(currentUserId, senderId);
+        return friendRequestService.lambdaUpdate()
+                .eq(MetaverseFriendRequestDO::getSenderId, currentUserId)
+                .eq(MetaverseFriendRequestDO::getReceiverId, senderId)
+                .eq(MetaverseFriendRequestDO::getStatus, UserFriendRequestStatus.PENDING)
+                .set(MetaverseFriendRequestDO::getStatus, UserFriendRequestStatus.REJECT)
+                .set(MetaverseFriendRequestDO::getVersion, friendRequestDO.getVersion() + 1)
+                .update();
     }
 
     @NotNull

@@ -74,15 +74,15 @@ public class MetaverseUserController {
 
     @PostMapping("/modifyUserName")
     @ApiOperation(value = "修改用户名", tags = "1.0.0")
-    public Result<Boolean> modifyUserName(@ApiParam(name = "用户名修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
-        return Result.success(userService.modifyUserName(req, MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
+    public Result<Void> modifyUserName(@ApiParam(name = "用户名修改请求参数", required = true) @RequestBody @Valid ModifyUserNameReq req) {
+        return Result.modify(userService.modifyUserName(req, MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
 
     @PostMapping("/metaverseUserModifyPassword")
     @ApiOperation(value = "用户修改密码", tags = "1.0.0")
-    public Result<Boolean> metaverseUserModifyPassword(@ApiParam(name = "用户修改密码请求参数", required = true) @RequestBody @Valid MetaverseUserModifyPasswordReq req) {
-        return Result.success(userService.metaverseUserModifyPassword(req, MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
+    public Result<Void> metaverseUserModifyPassword(@ApiParam(name = "用户修改密码请求参数", required = true) @RequestBody @Valid MetaverseUserModifyPasswordReq req) {
+        return Result.modify(userService.metaverseUserModifyPassword(req, MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
     @GetMapping("/getCurrentUserInfo")
@@ -95,8 +95,9 @@ public class MetaverseUserController {
 
     @PostMapping("/uploadAvatarImage")
     @ApiOperation(value = "上传头像", tags = "1.0.0")
-    public Result<Boolean> uploadAvatarImage(@RequestParam("avatarFileId") @ApiParam(name = "头像图片文件ID", required = true) Long avatarFileId) {
-        return Result.success(userService.uploadAvatarImage(MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId(), avatarFileId));
+    public Result<Void> uploadAvatarImage(@RequestParam("avatarFileId") @ApiParam(name = "头像图片文件ID", required = true) Long avatarFileId) {
+        userService.uploadAvatarImage(MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId(), avatarFileId);
+        return Result.success();
     }
 
 
