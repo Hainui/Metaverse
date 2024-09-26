@@ -1,16 +1,20 @@
 package com.metaverse.user.service;
 
+import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.user.db.entity.MetaverseChatRecordDO;
 import com.metaverse.user.db.service.IMetaverseChatRecordService;
 import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
+import com.metaverse.user.req.withdrawChatMessageReq;
 import com.metaverse.user.resp.UserFriendChatMesagesResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -78,9 +82,10 @@ public class UserFriendChatService {
                 .map(chatRecord -> {
                     String content = chatRecord.getContent();
                     String processedContent = (content != null) ? processContent(content) : "";
+                    Long fileId = chatRecord.getFileId();
                     boolean isWithdrawn = chatRecord.getWithdrawn();
                     LocalDateTime withdrawnTime = isWithdrawn ? chatRecord.getWithdrawnTime() : null;
-                    return new UserFriendChatMesagesResp(chatRecord.getTimestamp(), processedContent, isWithdrawn, withdrawnTime);
+                    return new UserFriendChatMesagesResp(chatRecord.getTimestamp(), processedContent, fileId, isWithdrawn, withdrawnTime);
                 })
                 .collect(Collectors.toList());
         return responses;
@@ -100,4 +105,21 @@ public class UserFriendChatService {
         return content;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean withdrawChatMessages(@Valid withdrawChatMessageReq req, Long currentUserId) {
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(req.getTimestamp(), now);
+        if (duration.toMinutes() > 2) {
+            throw new IllegalArgumentException("消息发送时间超过两分钟，无法撤回");
+        }
+
+        return metaverseChatRecordService.lambdaUpdate()
+                .eq(MetaverseChatRecordDO::getSenderId, currentUserId)
+                .eq(MetaverseChatRecordDO::getReceiverId, req.getReceiverId())
+                .eq(MetaverseChatRecordDO::getTimestamp, req.getTimestamp())
+                .set(MetaverseChatRecordDO::getWithdrawn, 1)
+                .set(MetaverseChatRecordDO::getWithdrawnTime, LocalDateTime.now())
+                .last(RepositoryConstant.FOR_UPDATE)
+                .update();
+    }
 }

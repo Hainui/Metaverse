@@ -21,6 +21,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Validated
 @RestController
@@ -42,6 +44,15 @@ public class MetaverseFileController {
     @ApiOperation(value = "文件上传", tags = "1.0.0")
     public Result<Long> uploadFile(@RequestParam("file") @ApiParam(name = "文件", required = true) MultipartFile file) throws IOException, ClientException {
         // todo 只允许 图片 视频 音频
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+        }
+        List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif", "bmp", "mp4", "avi", "mov", "wmv", "mp3", "wav", "flac");
+        if (!allowedExtensions.contains(fileExtension)) {
+            throw new IllegalArgumentException("文件格式不允许，只能上传图片、视频和音频文件");
+        }
         String url = aliOSSUtils.upload(file);
         Long fileId = BeanManager.getBean(FileIdGen.class).nextId();
         metaverseMultimediaFilesService.save(new MetaverseMultimediaFilesDO()
