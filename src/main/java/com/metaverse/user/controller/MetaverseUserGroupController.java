@@ -31,7 +31,7 @@ public class MetaverseUserGroupController {
 
     @PostMapping("/createUserGroup")
     @ApiOperation(value = "新建群组", tags = "1.0.0")
-    public Result<Long> createQuestion(@RequestBody @ApiParam(value = "新建群组请求参数", required = true) @Valid CreateUserGroupReq req) {
+    public Result<Long> createUserGroup(@RequestBody @ApiParam(value = "新建群组请求参数", required = true) @Valid CreateUserGroupReq req) {
         return Result.success(userGroupService.createUserGroup(MetaverseContextUtil.getCurrentUserId(), req));
     }
 

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
@@ -18,5 +19,6 @@ public class CreateUserGroupReq {
     private String description;
 
     @ApiModelProperty("群组成员的用户ID")
+    @Size(min = 2, message = "群成员数量至少为三人")
     private List<Long> memberIds;
 }

@@ -47,14 +47,21 @@ public class MetaverseUserGroupRepositoryImpl implements MetaverseUserGroupRepos
 
     @Override
     public boolean save(MetaverseUserGroupDO metaverseUserGroupDO, List<Long> memberIds) {
+        LocalDateTime now = LocalDateTime.now();
         try {
             memberIds.forEach(memberId ->
                     userGroupMemberService.save(new MetaverseUserGroupMemberDO()
                             .setGroupId(metaverseUserGroupDO.getId())
                             .setRole(0)
-                            .setJoinedAt(LocalDateTime.now())
+                            .setJoinedAt(now)
                             .setMemberId(memberId)
                             .setVersion(0L)));
+            userGroupMemberService.save(new MetaverseUserGroupMemberDO()
+                    .setGroupId(metaverseUserGroupDO.getId())
+                    .setRole(2)
+                    .setJoinedAt(now)
+                    .setMemberId(metaverseUserGroupDO.getCreatorId())
+                    .setVersion(0L));
             return userGroupService.save(metaverseUserGroupDO);
         } catch (DuplicateKeyException e) {
             throw new IllegalArgumentException("存在重复的数据！");

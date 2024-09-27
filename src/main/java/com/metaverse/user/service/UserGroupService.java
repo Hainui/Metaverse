@@ -21,7 +21,6 @@ public class UserGroupService {
     private final IMetaverseUserGroupMemberService userGroupMemberService;
 
     private interface UserGroupMemberRoleEnum {
-
         public static final int ORDINARY_MEMBER = 0;
         public static final int MANAGER = 1;
         public static final int GROUP_OWNER = 2;
