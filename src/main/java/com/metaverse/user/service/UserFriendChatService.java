@@ -99,7 +99,6 @@ public class UserFriendChatService {
                 .eq(MetaverseChatRecordDO::getWithdrawn, Boolean.FALSE)
                 .set(MetaverseChatRecordDO::getWithdrawn, Boolean.TRUE)
                 .set(MetaverseChatRecordDO::getWithdrawnTime, LocalDateTime.now())
-//                .last(RepositoryConstant.FOR_UPDATE)
                 .update();
     }
 }
