@@ -6,7 +6,7 @@ import com.metaverse.common.model.Result;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.req.WithdrawChatMessageReq;
-import com.metaverse.user.resp.UserFriendChatMesagesResp;
+import com.metaverse.user.resp.UserFriendChatMessagesResp;
 import com.metaverse.user.service.UserFriendChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -46,11 +46,11 @@ public class MetaverseUserFriendChatRecordController {
         return Result.success(userFriendChatService.sendChatFile(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
-
     @GetMapping("/getUserFriendChatMessages")
     @ApiOperation(value = "获取跟好友的聊天信息", tags = "1.0.0")
-    public Result<List<UserFriendChatMesagesResp>> getUserFriendChatMessages(@RequestParam(value = "friendId", required = false) @ApiParam(name = "好友用户ID", required = true) @NotNull(message = "好友ID不能为空") Long friendId) {
-        return Result.success(userFriendChatService.getUserFriendChatMessages(friendId, MetaverseContextUtil.getCurrentUserId()));
+    public Result<List<UserFriendChatMessagesResp>> getUserFriendChatMessages(@RequestParam(value = "friendId", required = false) @ApiParam(name = "好友用户ID", required = true) @NotNull(message = "好友ID不能为空") Long friendId
+            , @RequestParam(value = "theOtherDay", required = false) @ApiParam(name = "前几天请求参数", required = true) @NotNull(message = "前几天不能为空") Integer theOtherDay) {
+        return Result.success(userFriendChatService.getUserFriendChatMessages(friendId, MetaverseContextUtil.getCurrentUserId(), theOtherDay));
     }
 
     @PostMapping("/withdrawChatMessages")

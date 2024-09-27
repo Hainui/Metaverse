@@ -5,14 +5,15 @@ import com.metaverse.user.db.service.IMetaverseChatRecordService;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.req.WithdrawChatMessageReq;
-import com.metaverse.user.resp.UserFriendChatMesagesResp;
+import com.metaverse.user.resp.UserFriendChatMessagesResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,29 +53,26 @@ public class UserFriendChatService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public List<UserFriendChatMesagesResp> getUserFriendChatMessages(Long friendId, Long currentUserId) {
+    public List<UserFriendChatMessagesResp> getUserFriendChatMessages(Long friendId, Long currentUserId, Integer theOtherDay) {
+        LocalDateTime minTime = LocalDateTime.of(LocalDate.now().minusDays(theOtherDay), LocalTime.MIN);
+        LocalDateTime maxTime = LocalDateTime.of(LocalDate.now().minusDays(theOtherDay), LocalTime.MAX);
         List<MetaverseChatRecordDO> chatRecordDOs = metaverseChatRecordService.lambdaQuery()
                 .in(MetaverseChatRecordDO::getSenderId, friendId, currentUserId)
                 .in(MetaverseChatRecordDO::getReceiverId, friendId, currentUserId)
+                .between(MetaverseChatRecordDO::getTimestamp, minTime, maxTime)
+                .orderByAsc(MetaverseChatRecordDO::getTimestamp)
                 .list();
 
-        if (chatRecordDOs.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<UserFriendChatMesagesResp> responses = chatRecordDOs.stream()
-                .map(chatRecord -> {
-                    Long senderId = chatRecord.getSenderId();
-                    String content = chatRecord.getContent();
-                    String processedContent = (content != null) ? content : "";
-                    Long fileId = chatRecord.getFileId();
-                    boolean isWithdrawn = chatRecord.getWithdrawn();
-                    LocalDateTime withdrawnTime = isWithdrawn ? chatRecord.getWithdrawnTime() : null;
-                    return new UserFriendChatMesagesResp(senderId, chatRecord.getTimestamp(), processedContent, fileId, isWithdrawn, withdrawnTime);
-                })
+        return chatRecordDOs.stream()
+                .map(chatRecord -> new UserFriendChatMessagesResp(chatRecord.getSenderId(),
+                        chatRecord.getReceiverId(),
+                        chatRecord.getTimestamp(),
+                        chatRecord.getContent(),
+                        chatRecord.getFileId(),
+                        chatRecord.getWithdrawn(),
+                        chatRecord.getWithdrawnTime(),
+                        chatRecord.getMessageType()))
                 .collect(Collectors.toList());
-
-        return responses;
     }
 
 //    private String processContent(String content) {
