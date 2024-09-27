@@ -27,9 +27,9 @@ public class CodeGenerator {
                             .commentDate("yyyy-MM-dd HH:mm:ss"); // 设置注释日期格式
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.metaverse.permission") // 设置父包名
+                    builder.parent("com.metaverse.user") // 设置父包名
                             .moduleName("db") // 设置父包模块名
-                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/permission")); // 设置 XML 生成路径
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/user")); // 设置 XML 生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.entityBuilder()
@@ -40,7 +40,7 @@ public class CodeGenerator {
                             .formatFileName("%sDO"); // 设置实体类的文件名格式
                     builder.controllerBuilder()
                             .enableFileOverride() // 开启覆盖策略
-                            .enableRestStyle().enableHyphenStyle(); // RESTful 风格控制器
+                            .enableRestStyle().enableHyphenStyle(); // RESTFUL 风格控制器
                     builder.addInclude(/*"metaverse_user_friend," +
                                     "metaverse_user_friend_operation_log," +
                                     "metaverse_friend_request,metaverse_user_friend_question," +
@@ -51,7 +51,7 @@ public class CodeGenerator {
                                     "metaverse_group_join_request," +
                                     "metaverse_group_invitation," +
                                     "metaverse_chat_record," +
-                                    "metaverse_group_chat_record"*/"metaverse_user_permission_relationship,metaverse_user_permission_relationship_delete") // 设置表前缀
+                                    "metaverse_group_chat_record"*/"metaverse_group_question") // 设置表前缀
                             .mapperBuilder()
                             .enableFileOverride() // 开启覆盖策略
                             .enableBaseResultMap() // 启用基本的结果映射

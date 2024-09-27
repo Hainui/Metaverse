@@ -9,6 +9,8 @@
         <result column="answer" property="answer" />
         <result column="enabled" property="enabled" />
         <result column="saved_at" property="savedAt" />
+        <result column="created_at" property="createdAt" />
+        <result column="create_by" property="createBy" />
         <result column="updated_at" property="updatedAt" />
         <result column="update_by" property="updateBy" />
         <result column="version" property="version" />
@@ -16,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        group_id, question, answer, enabled, saved_at, updated_at, update_by, version
+        group_id, question, answer, enabled, saved_at, created_at, create_by, updated_at, update_by, version
     </sql>
 
 </mapper>

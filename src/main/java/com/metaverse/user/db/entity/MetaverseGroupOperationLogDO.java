@@ -36,8 +36,8 @@ public class MetaverseGroupOperationLogDO implements Serializable {
     @ApiModelProperty("操作目标的用户ID（例如被踢出群的用户ID）")
     private Long targetId;
 
-    @ApiModelProperty("操作类型，1表示踢出，2表示邀请等，3表示主动申请入群，4表示主动退出群聊")
-    private Boolean operationType;
+    @ApiModelProperty("操作类型，1表示踢出（被动退群），2表示邀请用户同意入群等（被动入群），3表示主动申请入群-管理员同意或者回答对问题（主动入群），4表示主动退出群聊（主动退群）")
+    private Integer operationType;
 
     @ApiModelProperty("落库时间")
     private LocalDateTime savedAt;

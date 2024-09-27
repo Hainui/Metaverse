@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -237,7 +234,7 @@ public class UserFriendService {
                 .eq(MetaverseUserFriendQuestionDO::getUserId, receiverId)
                 .one();
         if (userQuestion.getEnabled() && StrUtil.equals(req.getQuestionAnswer(), userQuestion.getCorrectAnswer())) {
-            return agreeFriendRequest(receiverId, currentUserId);
+            return agreeFriendRequest(Objects.isNull(userQuestion.getUpdateBy()) ? userQuestion.getCreateBy() : userQuestion.getUpdateBy(), currentUserId);
         }
         return false;
     }

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-23 12:09:41
+ * @since 2024-09-27 22:06:47
  */
 @Getter
 @Setter
@@ -41,6 +41,12 @@ public class MetaverseGroupQuestionDO implements Serializable {
 
     @ApiModelProperty("落库时间")
     private LocalDateTime savedAt;
+
+    @ApiModelProperty("创建时间")
+    private LocalDateTime createdAt;
+
+    @ApiModelProperty("创建人 ID")
+    private Long createBy;
 
     @ApiModelProperty("更新时间")
     private LocalDateTime updatedAt;
