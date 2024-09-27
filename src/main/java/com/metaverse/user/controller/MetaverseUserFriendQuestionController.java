@@ -48,7 +48,7 @@ public class MetaverseUserFriendQuestionController {
     }
 
     @GetMapping("/enableQuestion")
-    @ApiOperation(value = "禁用问题", tags = "1.0.0")
+    @ApiOperation(value = "启用问题", tags = "1.0.0")
     public Result<Void> enableQuestion() {
         return Result.modify(userFriendQuestionService.enableQuestion(MetaverseContextUtil.getCurrentUserId()));
     }
