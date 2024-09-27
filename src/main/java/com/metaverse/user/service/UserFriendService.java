@@ -102,7 +102,7 @@ public class UserFriendService {
                 .setCreatedAt(LocalDateTime.now())
                 .setStatus(UserFriendRequestStatus.PENDING)
                 .setVersion(0L));
-        return convertToQuestionResp(userFriendQuestionService.lambdaQuery().eq(MetaverseUserFriendQuestionDO::getUserId, receiverId).one());
+        return convertToQuestionResp(userFriendQuestionService.lambdaQuery().eq(MetaverseUserFriendQuestionDO::getUserId, receiverId).eq(MetaverseUserFriendQuestionDO::getEnabled, Boolean.TRUE).one());
     }
 
     private UserFriendQuestionResp convertToQuestionResp(MetaverseUserFriendQuestionDO questionDO) {

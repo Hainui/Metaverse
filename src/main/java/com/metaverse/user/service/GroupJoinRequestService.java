@@ -46,7 +46,7 @@ public class GroupJoinRequestService {
                 .setVersion(0L)
                 .setRequestMessage(message)
                 .setRequestTime(LocalDateTime.now()));
-        return convertToQuestionResp(groupQuestionService.lambdaQuery().eq(MetaverseGroupQuestionDO::getGroupId, receiverGroupId).one());
+        return convertToQuestionResp(groupQuestionService.lambdaQuery().eq(MetaverseGroupQuestionDO::getGroupId, receiverGroupId).eq(MetaverseGroupQuestionDO::getEnabled, Boolean.TRUE).one());
     }
 
     private UserGroupQuestionResp convertToQuestionResp(MetaverseGroupQuestionDO questionDO) {
