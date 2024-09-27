@@ -43,7 +43,7 @@ public class MetaverseGroupJoinRequestDO implements Serializable {
     private LocalDateTime savedAt;
 
     @ApiModelProperty("申请状态，0表示待审核，1表示已批准，2表示拒绝")
-    private Boolean status;
+    private Integer status;
 
     @ApiModelProperty("更新时间")
     private LocalDateTime updatedAt;
