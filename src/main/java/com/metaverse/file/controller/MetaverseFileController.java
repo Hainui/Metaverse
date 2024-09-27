@@ -49,7 +49,7 @@ public class MetaverseFileController {
         if (originalFilename != null && originalFilename.contains(".")) {
             fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
         }
-        List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif", "bmp", "mp4", "avi", "mov", "wmv", "mp3", "wav", "flac");
+        List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif", "bmp", "mp4", "avi", "mov", "wmv", "mp3", "wav", "flac", "aac");
         if (!allowedExtensions.contains(fileExtension)) {
             throw new IllegalArgumentException("文件格式不允许，只能上传图片、视频和音频文件");
         }

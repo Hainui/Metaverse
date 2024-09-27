@@ -233,7 +233,9 @@ public class UserFriendService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean answerUserQuestion(AnswerUserQuestionReq req, Long currentUserId) {
         Long receiverId = req.getReceiverId();
-        MetaverseUserFriendQuestionDO userQuestion = userFriendQuestionService.getById(receiverId);
+        MetaverseUserFriendQuestionDO userQuestion = userFriendQuestionService.lambdaQuery()
+                .eq(MetaverseUserFriendQuestionDO::getUserId, receiverId)
+                .one();
         if (userQuestion.getEnabled() && StrUtil.equals(req.getQuestionAnswer(), userQuestion.getCorrectAnswer())) {
             return agreeFriendRequest(receiverId, currentUserId);
         }

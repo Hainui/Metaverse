@@ -46,12 +46,6 @@ public class MetaverseUserFriendChatRecordController {
         return Result.success(userFriendChatService.sendChatAudio(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
-    @PostMapping("/sendChatFile")
-    @ApiOperation(value = "发送聊天文件", tags = "1.0.0")
-    public Result<Boolean> sendChatFile(@RequestParam("receiverId") @ApiParam(name = "接收信息的用户ID", required = true) @NotNull(message = "接收信息的用户ID不能为空") Long receiverId,
-                                        @RequestParam("file") @ApiParam(name = "信息文件Id", required = true) @NotNull(message = "信息文件Id不能为空") Long fileId) {
-        return Result.success(userFriendChatService.sendChatFile(receiverId, fileId, MetaverseContextUtil.getCurrentUserId()));
-    }
 
     @GetMapping("/getUserFriendChatMessages")
     @ApiOperation(value = "获取好友全部聊天信息", tags = "1.0.0")

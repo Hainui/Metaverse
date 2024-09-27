@@ -1,6 +1,5 @@
 package com.metaverse.user.service;
 
-import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.user.db.entity.MetaverseChatRecordDO;
 import com.metaverse.user.db.service.IMetaverseChatRecordService;
 import com.metaverse.user.domain.MetaverseUser;
@@ -39,18 +38,6 @@ public class UserFriendChatService {
                 .setContent(req.getContent()));
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean sendChatFile(Long receiverId, Long fileId, Long currentUserId) {
-        if (!userFriendService.targetUserIsFriend(receiverId, currentUserId)) {
-            return false;
-        }
-        return metaverseChatRecordService.save(new MetaverseChatRecordDO()
-                .setSenderId(currentUserId)
-                .setReceiverId(receiverId)
-                .setMessageType(true)
-                .setTimestamp(LocalDateTime.now())
-                .setFileId(fileId));
-    }
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean sendChatAudio(SendChatAudioReq req, Long currentUserId) {
@@ -110,9 +97,9 @@ public class UserFriendChatService {
                 .eq(MetaverseChatRecordDO::getReceiverId, req.getReceiverId())
                 .eq(MetaverseChatRecordDO::getTimestamp, req.getTimestamp())
                 .eq(MetaverseChatRecordDO::getWithdrawn, Boolean.FALSE)
-                .last(RepositoryConstant.FOR_UPDATE)
                 .set(MetaverseChatRecordDO::getWithdrawn, Boolean.TRUE)
                 .set(MetaverseChatRecordDO::getWithdrawnTime, LocalDateTime.now())
+//                .last(RepositoryConstant.FOR_UPDATE)
                 .update();
     }
 }
