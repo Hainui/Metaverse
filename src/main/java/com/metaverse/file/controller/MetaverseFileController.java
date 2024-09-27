@@ -43,7 +43,6 @@ public class MetaverseFileController {
     @PostMapping("/upload")
     @ApiOperation(value = "文件上传", tags = "1.0.0")
     public Result<Long> uploadFile(@RequestParam("file") @ApiParam(name = "文件", required = true) MultipartFile file) throws IOException, ClientException {
-        // todo 只允许 图片 视频 音频
         String originalFilename = file.getOriginalFilename();
         String fileExtension = "";
         if (originalFilename != null && originalFilename.contains(".")) {

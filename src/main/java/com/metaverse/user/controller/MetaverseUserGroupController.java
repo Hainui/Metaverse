@@ -4,6 +4,7 @@ import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.CreateUserGroupReq;
 import com.metaverse.user.req.ModifyUserGroupReq;
+import com.metaverse.user.resp.UserGroupResp;
 import com.metaverse.user.service.UserGroupService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,5 +52,11 @@ public class MetaverseUserGroupController {
     @ApiOperation(value = "判断当前用户是否是目标群的群主", tags = "1.0.0")
     public Result<Boolean> currentUserIsTargetGroupOwner(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId) {
         return Result.success(userGroupService.currentUserIsTargetGroupOwner(MetaverseContextUtil.getCurrentUserId(), groupId));
+    }
+
+    @GetMapping("/getTargetGroupAllUsers")
+    @ApiOperation(value = "获取当前群聊的全部用户", tags = "1.0.0")
+    public Result<UserGroupResp> getTargetGroupAllUsers(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId) {
+        return Result.success(userGroupService.getTargetGroupAllUsers(groupId));
     }
 }

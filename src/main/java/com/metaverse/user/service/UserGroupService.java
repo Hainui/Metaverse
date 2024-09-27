@@ -5,13 +5,13 @@ import com.metaverse.user.db.service.IMetaverseUserGroupMemberService;
 import com.metaverse.user.domain.MetaverseUserGroup;
 import com.metaverse.user.req.CreateUserGroupReq;
 import com.metaverse.user.req.ModifyUserGroupReq;
+import com.metaverse.user.resp.UserGroupMemberResp;
+import com.metaverse.user.resp.UserGroupResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -19,6 +19,7 @@ import java.util.Optional;
 public class UserGroupService {
 
     private final IMetaverseUserGroupMemberService userGroupMemberService;
+
 
     private interface UserGroupMemberRoleEnum {
         public static final int ORDINARY_MEMBER = 0;
@@ -51,4 +52,25 @@ public class UserGroupService {
                 .eq(MetaverseUserGroupMemberDO::getRole, UserGroupMemberRoleEnum.GROUP_OWNER)
                 .exists();
     }
+
+
+    public UserGroupResp getTargetGroupAllUsers(Long groupId) {
+        List<MetaverseUserGroupMemberDO> userGroupMembers = userGroupMemberService.lambdaQuery()
+                .eq(MetaverseUserGroupMemberDO::getGroupId, groupId)
+                .list();
+        return new UserGroupResp().setMembers(convertMembersToResp(userGroupMembers));
+    }
+
+    private List<UserGroupMemberResp> convertMembersToResp(List<MetaverseUserGroupMemberDO> userGroupMembers) {
+        List<UserGroupMemberResp> members = new ArrayList<>();
+        for (MetaverseUserGroupMemberDO member : userGroupMembers) {
+            UserGroupMemberResp memberResp = new UserGroupMemberResp()
+                    .setMemberId(member.getMemberId())
+                    .setRole(member.getRole())
+                    .setJoinedAt(member.getJoinedAt());
+            members.add(memberResp);
+        }
+        return members;
+    }
+
 }
