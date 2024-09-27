@@ -15,7 +15,7 @@ public class SendChatRecordReq {
     private Long receiverId;
 
     @ApiModelProperty("消息内容")
-    @Size(max = 65535, message = "消息内容不能超过65535个字符")
+    @Size(max = 2000, message = "消息内容不能超过2000个字符")
     @NotBlank
     private String content;
 }

@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @Data
 @Accessors(chain = true)
 public class UserFriendChatMesagesResp {
-
+    @ApiModelProperty(value = "发送信息的用户ID")
+    private Long senderId;
 
     @ApiModelProperty(value = "发送时间")
     private LocalDateTime timestamp;
@@ -26,7 +27,8 @@ public class UserFriendChatMesagesResp {
     @ApiModelProperty(value = "如果被撤回，撤回时间")
     private LocalDateTime withdrawnTime;
 
-    public UserFriendChatMesagesResp(LocalDateTime timestamp, String content, Long fileId, boolean isWithdrawn, LocalDateTime withdrawnTime) {
+    public UserFriendChatMesagesResp(Long senderId, LocalDateTime timestamp, String content, Long fileId, boolean isWithdrawn, LocalDateTime withdrawnTime) {
+        this.senderId = senderId;
         this.timestamp = timestamp;
         this.content = content;
         this.fileId = fileId;

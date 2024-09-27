@@ -10,8 +10,8 @@ public class SendChatAudioReq {
     @ApiModelProperty("接收消息的用户ID")
     @NotNull(message = "接收消息的用户ID不能为空")
     private Long receiverId;
-    
-    @ApiModelProperty("音频文件ID")
-    @NotNull(message = "音频文件ID不能为空")
+
+    @ApiModelProperty("文件ID")
+    @NotNull(message = "文件ID不能为空")
     private Long fileId;
 }

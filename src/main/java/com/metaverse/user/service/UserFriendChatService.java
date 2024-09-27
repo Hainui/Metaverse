@@ -2,7 +2,6 @@ package com.metaverse.user.service;
 
 import com.metaverse.user.db.entity.MetaverseChatRecordDO;
 import com.metaverse.user.db.service.IMetaverseChatRecordService;
-import com.metaverse.user.domain.MetaverseUser;
 import com.metaverse.user.req.SendChatAudioReq;
 import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.req.WithdrawChatMessageReq;
@@ -40,7 +39,7 @@ public class UserFriendChatService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean sendChatAudio(SendChatAudioReq req, Long currentUserId) {
+    public Boolean sendChatFile(SendChatAudioReq req, Long currentUserId) {
         if (!userFriendService.targetUserIsFriend(req.getReceiverId(), currentUserId)) {
             return false;
         }
@@ -54,41 +53,43 @@ public class UserFriendChatService {
 
     @Transactional(rollbackFor = Exception.class)
     public List<UserFriendChatMesagesResp> getUserFriendChatMessages(Long friendId, Long currentUserId) {
-        MetaverseUser metaverseUser = MetaverseUser.readLoadAndAssertNotExist(friendId);
-
         List<MetaverseChatRecordDO> chatRecordDOs = metaverseChatRecordService.lambdaQuery()
-                .eq(MetaverseChatRecordDO::getSenderId, metaverseUser.getId())
-                .eq(MetaverseChatRecordDO::getReceiverId, currentUserId)
+                .in(MetaverseChatRecordDO::getSenderId, friendId, currentUserId)
+                .in(MetaverseChatRecordDO::getReceiverId, friendId, currentUserId)
                 .list();
+
         if (chatRecordDOs.isEmpty()) {
             return Collections.emptyList();
         }
+
         List<UserFriendChatMesagesResp> responses = chatRecordDOs.stream()
                 .map(chatRecord -> {
+                    Long senderId = chatRecord.getSenderId();
                     String content = chatRecord.getContent();
-                    String processedContent = (content != null) ? processContent(content) : "";
+                    String processedContent = (content != null) ? content : "";
                     Long fileId = chatRecord.getFileId();
                     boolean isWithdrawn = chatRecord.getWithdrawn();
                     LocalDateTime withdrawnTime = isWithdrawn ? chatRecord.getWithdrawnTime() : null;
-                    return new UserFriendChatMesagesResp(chatRecord.getTimestamp(), processedContent, fileId, isWithdrawn, withdrawnTime);
+                    return new UserFriendChatMesagesResp(senderId, chatRecord.getTimestamp(), processedContent, fileId, isWithdrawn, withdrawnTime);
                 })
                 .collect(Collectors.toList());
+
         return responses;
     }
 
-    private String processContent(String content) {
-        if (content.isEmpty()) {
-            return "";
-        }
-        int maxLength = 2000;
-        content = content.replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll("\n", "<br/>");
-        if (content.length() > maxLength) {
-            content = content.substring(0, maxLength - 3) + "...";
-        }
-        return content;
-    }
+//    private String processContent(String content) {
+//        if (content.isEmpty()) {
+//            return "";
+//        }
+//        int maxLength = 2000;
+//        content = content.replaceAll("<", "&lt;")
+//                .replaceAll(">", "&gt;")
+//                .replaceAll("\n", "<br/>");
+//        if (content.length() > maxLength) {
+//            content = content.substring(0, maxLength - 3) + "...";
+//        }
+//        return content;
+//    }
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean withdrawChatMessages(WithdrawChatMessageReq req, Long currentUserId) {
