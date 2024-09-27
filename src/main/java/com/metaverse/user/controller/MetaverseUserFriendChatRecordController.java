@@ -3,7 +3,7 @@ package com.metaverse.user.controller;
 
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
-import com.metaverse.user.req.SendChatAudioReq;
+import com.metaverse.user.req.SendChatFileReq;
 import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.req.WithdrawChatMessageReq;
 import com.metaverse.user.resp.UserFriendChatMessagesResp;
@@ -42,7 +42,7 @@ public class MetaverseUserFriendChatRecordController {
 
     @PostMapping("/sendChatFile")
     @ApiOperation(value = "发送聊天文件", tags = "1.0.0")
-    public Result<Boolean> sendChatFile(@RequestBody @Valid @ApiParam(name = "发送文件请求参数", required = true) SendChatAudioReq req) {
+    public Result<Boolean> sendChatFile(@RequestBody @Valid @ApiParam(name = "发送文件请求参数", required = true) SendChatFileReq req) {
         return Result.success(userFriendChatService.sendChatFile(req, MetaverseContextUtil.getCurrentUserId()));
     }
 

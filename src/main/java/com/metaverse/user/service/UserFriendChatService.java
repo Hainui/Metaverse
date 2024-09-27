@@ -2,7 +2,7 @@ package com.metaverse.user.service;
 
 import com.metaverse.user.db.entity.MetaverseChatRecordDO;
 import com.metaverse.user.db.service.IMetaverseChatRecordService;
-import com.metaverse.user.req.SendChatAudioReq;
+import com.metaverse.user.req.SendChatFileReq;
 import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.req.WithdrawChatMessageReq;
 import com.metaverse.user.resp.UserFriendChatMessagesResp;
@@ -40,14 +40,14 @@ public class UserFriendChatService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean sendChatFile(SendChatAudioReq req, Long currentUserId) {
+    public Boolean sendChatFile(SendChatFileReq req, Long currentUserId) {
         if (!userFriendService.targetUserIsFriend(req.getReceiverId(), currentUserId)) {
             return false;
         }
         return metaverseChatRecordService.save(new MetaverseChatRecordDO()
                 .setSenderId(currentUserId)
                 .setReceiverId(req.getReceiverId())
-                .setMessageType(true)
+                .setMessageType(Boolean.TRUE)
                 .setTimestamp(LocalDateTime.now())
                 .setFileId(req.getFileId()));
     }
