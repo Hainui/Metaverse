@@ -4,7 +4,6 @@ import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.AddGroupReq;
 import com.metaverse.user.req.AgreeGroupReq;
-import com.metaverse.user.req.AnswerGroupQuestionReq;
 import com.metaverse.user.resp.UserGroupQuestionResp;
 import com.metaverse.user.service.GroupJoinRequestService;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +30,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Validated
 public class MetaverseGroupJoinRequestController {
-
     private final GroupJoinRequestService groupJoinRequestService;
 
     @PostMapping("/joinGroupRequest")
@@ -45,13 +43,6 @@ public class MetaverseGroupJoinRequestController {
     public Result<Boolean> agreeGroupRequest(@RequestBody @ApiParam(value = "同意群组请求参数", required = true) @Valid AgreeGroupReq req) {
         return Result.success(groupJoinRequestService.agreeGroupRequest(MetaverseContextUtil.getCurrentUserId(), req));
     }
-
-    @PostMapping("/answerGroupQuestion")
-    @ApiOperation(value = "回答问题", tags = "1.0.0")
-    public Result<Boolean> answerGroupQuestion(@RequestBody @ApiParam(name = "回答群组问题请求参数", required = true) @Valid AnswerGroupQuestionReq req) {
-        return Result.success(groupJoinRequestService.answerGroupQuestion(req, MetaverseContextUtil.getCurrentUserId()));
-    }
-
 }
 
 

@@ -30,7 +30,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserFriendService {
-
+    private final IMetaverseFriendRequestService friendRequestService;
+    private final IMetaverseUserFriendService userFriendService;
+    private final UserService userService;
+    private final IMetaverseUserFriendQuestionService userFriendQuestionService;
+    private final IMetaverseUserFriendOperationLogService userFriendOperationLogService;
 
     private static class UserFriendRelation {
         public static final int FRIEND = 1;
@@ -54,12 +58,6 @@ public class UserFriendService {
         public static final int AGREE = 1;
         public static final int REJECT = 2;
     }
-
-    private final IMetaverseFriendRequestService friendRequestService;
-    private final IMetaverseUserFriendService userFriendService;
-    private final UserService userService;
-    private final IMetaverseUserFriendQuestionService userFriendQuestionService;
-    private final IMetaverseUserFriendOperationLogService userFriendOperationLogService;
 
     public boolean targetUserIsBlacklist(Long currentUserId, Long targetId) {
         return userFriendService.lambdaQuery()
