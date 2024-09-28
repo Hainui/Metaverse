@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024-09-20 10:34:07
  */
 @RestController
-@RequestMapping("/db/metaverse-group-chat-record-do")
+@RequestMapping("/metaverseGroupChatRecord")
 public class MetaverseGroupChatRecordController {
 
 }

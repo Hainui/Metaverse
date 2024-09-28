@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024-09-20 10:34:07
  */
 @RestController
-@RequestMapping("/db/metaverse-group-operation-log-do")
+@RequestMapping("/metaverseGroupOperationLog")
 public class MetaverseGroupOperationLogController {
 
 }
