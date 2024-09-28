@@ -52,7 +52,6 @@ public class MetaverseGroupJoinRequestController {
         return Result.success(groupJoinRequestService.answerGroupQuestion(req, MetaverseContextUtil.getCurrentUserId()));
     }
 
-
 }
 
 

@@ -3,13 +3,9 @@ package com.metaverse.user.service;
 import cn.hutool.core.util.StrUtil;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.user.db.entity.MetaverseGroupJoinRequestDO;
-import com.metaverse.user.db.entity.MetaverseGroupOperationLogDO;
 import com.metaverse.user.db.entity.MetaverseGroupQuestionDO;
-import com.metaverse.user.db.entity.MetaverseUserGroupMemberDO;
 import com.metaverse.user.db.service.IMetaverseGroupJoinRequestService;
-import com.metaverse.user.db.service.IMetaverseGroupOperationLogService;
 import com.metaverse.user.db.service.IMetaverseGroupQuestionService;
-import com.metaverse.user.db.service.IMetaverseUserGroupMemberService;
 import com.metaverse.user.req.AddGroupReq;
 import com.metaverse.user.req.AgreeGroupReq;
 import com.metaverse.user.req.AnswerGroupQuestionReq;
@@ -30,29 +26,12 @@ public class GroupJoinRequestService {
 
     private final IMetaverseGroupJoinRequestService groupJoinRequestService;
     private final IMetaverseGroupQuestionService groupQuestionService;
-    private final IMetaverseUserGroupMemberService userGroupMemberService;
-    private final IMetaverseGroupOperationLogService groupOperationLogService;
+    private final UserGroupMemberService groupMemberService;
 
     private static class UserGroupRequestStatus {
-
         public static final int PENDING = 0;
         public static final int AGREE = 1;
         public static final int REJECT = 2;
-    }
-
-    private static class UserGroupMemberRole {
-
-        public static final int GROUP_OWNER = 2;
-        public static final int GROUP_MANAGER = 1;
-        public static final int ORDINARY_MEMBER = 0;
-    }
-
-    private static class UserGroupOperationLog {
-
-        public static final int PASSIVE_EXIT = 1;
-        public static final int PASSIVE_ENTRY = 2;
-        public static final int ACTIVE_ENTRY = 3;
-        public static final int ACTIVE_EXIT = 4;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -100,14 +79,7 @@ public class GroupJoinRequestService {
                 .set(MetaverseGroupJoinRequestDO::getUpdateBy, currentUserId)
                 .set(MetaverseGroupJoinRequestDO::getVersion, requestDO.getVersion() + 1)
                 .update();
-        LocalDateTime now = LocalDateTime.now();
-        userGroupMemberService.save(new MetaverseUserGroupMemberDO()
-                .setJoinedAt(now)
-                .setRole(UserGroupMemberRole.ORDINARY_MEMBER)
-                .setMemberId(senderId)
-                .setGroupId(groupId)
-                .setVersion(0L));
-        saveGroupOperationLog(currentUserId, groupId, senderId, now, UserGroupOperationLog.ACTIVE_ENTRY);
+        groupMemberService.agreeUserJoinGroup(currentUserId, senderId, groupId);
         return true;
     }
 
@@ -123,15 +95,6 @@ public class GroupJoinRequestService {
             throw new IllegalArgumentException("未找到该用户入群请求");
         }
         return requestDO;
-    }
-
-    private void saveGroupOperationLog(Long currentUserId, Long groupId, Long senderId, LocalDateTime now, Integer operationType) {
-        groupOperationLogService.save(new MetaverseGroupOperationLogDO()
-                .setGroupId(groupId)
-                .setTargetId(senderId)
-                .setOperatorId(currentUserId)
-                .setOperationTime(now)
-                .setOperationType(operationType));
     }
 
 
