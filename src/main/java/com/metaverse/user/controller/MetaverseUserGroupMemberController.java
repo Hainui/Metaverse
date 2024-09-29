@@ -60,4 +60,10 @@ public class MetaverseUserGroupMemberController {
         return Result.success(userGroupMemberService.currentUserIsTargetGroupOwner(MetaverseContextUtil.getCurrentUserId(), groupId));
     }
 
+    @GetMapping("/activeExitGroup")
+    @ApiOperation(value = "主动退出群聊", tags = "1.0.0")
+    public Result<Boolean> activeExitGroup(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId) {
+        return Result.success(userGroupMemberService.activeExitGroup(MetaverseContextUtil.getCurrentUserId(), groupId));
+    }
+
 }

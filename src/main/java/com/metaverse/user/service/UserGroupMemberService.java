@@ -1,5 +1,6 @@
 package com.metaverse.user.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.user.db.entity.MetaverseGroupOperationLogDO;
 import com.metaverse.user.db.entity.MetaverseUserGroupMemberDO;
@@ -91,7 +92,17 @@ public class UserGroupMemberService {
         saveGroupOperationLog(currentUserId, groupId, senderId, now, UserGroupOperationLog.ACTIVE_ENTRY);
     }
 
-    void saveGroupOperationLog(Long currentUserId, Long groupId, Long senderId, LocalDateTime now, Integer operationType) {
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean activeExitGroup(Long currentUserId, Long groupId) {
+        userGroupMemberService
+                .remove(new LambdaQueryWrapper<MetaverseUserGroupMemberDO>()
+                        .eq(MetaverseUserGroupMemberDO::getGroupId, groupId)
+                        .eq(MetaverseUserGroupMemberDO::getMemberId, currentUserId));
+        saveGroupOperationLog(currentUserId, groupId, currentUserId, LocalDateTime.now(), UserGroupOperationLog.ACTIVE_EXIT);
+        return true;
+    }
+
+    private void saveGroupOperationLog(Long currentUserId, Long groupId, Long senderId, LocalDateTime now, Integer operationType) {
         groupOperationLogService.save(new MetaverseGroupOperationLogDO()
                 .setGroupId(groupId)
                 .setTargetId(senderId)
