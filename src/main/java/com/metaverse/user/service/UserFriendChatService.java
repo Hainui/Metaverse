@@ -64,7 +64,8 @@ public class UserFriendChatService {
                 .list();
 
         return chatRecordDOs.stream()
-                .map(chatRecord -> new UserFriendChatMessagesResp(chatRecord.getSenderId(),
+                .map(chatRecord -> new UserFriendChatMessagesResp(
+                        chatRecord.getSenderId(),
                         chatRecord.getReceiverId(),
                         chatRecord.getTimestamp(),
                         chatRecord.getContent(),
