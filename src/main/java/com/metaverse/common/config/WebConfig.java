@@ -2,7 +2,6 @@ package com.metaverse.common.config;
 
 
 import com.metaverse.common.interceptor.LoginCheckInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -10,8 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration//配置类
 public class WebConfig implements WebMvcConfigurer {
-    @Autowired//注入拦截器
-    private LoginCheckInterceptor loginCheckInterceptor;
+    //注入拦截器
+    private final LoginCheckInterceptor loginCheckInterceptor;
+
+    public WebConfig(LoginCheckInterceptor loginCheckInterceptor) {
+        this.loginCheckInterceptor = loginCheckInterceptor;
+    }
 
 
     @Override//注册拦截器
