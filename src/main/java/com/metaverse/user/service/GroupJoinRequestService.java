@@ -3,8 +3,10 @@ package com.metaverse.user.service;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.user.db.entity.MetaverseGroupJoinRequestDO;
 import com.metaverse.user.db.service.IMetaverseGroupJoinRequestService;
+import com.metaverse.user.dto.MetaverseUserAbstractInfo;
 import com.metaverse.user.req.AddGroupReq;
-import com.metaverse.user.req.AgreeGroupReq;
+import com.metaverse.user.req.GroupReq;
+import com.metaverse.user.resp.MetaverseGroupRequestResp;
 import com.metaverse.user.resp.UserGroupQuestionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,6 +26,7 @@ public class GroupJoinRequestService {
     private final IMetaverseGroupJoinRequestService groupJoinRequestService;
     private final UserGroupMemberService groupMemberService;
     private final GroupQuestionService groupQuestionService;
+    private final UserService userService;
 
     private static class UserGroupRequestStatus {
         public static final int PENDING = 0;
@@ -52,7 +58,7 @@ public class GroupJoinRequestService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean agreeGroupRequest(Long currentUserId, AgreeGroupReq req) {
+    public Boolean agreeGroupRequest(Long currentUserId, GroupReq req) {
         Long senderId = req.getSenderId();
         Long groupId = req.getGroupId();
         MetaverseGroupJoinRequestDO requestDO = assertNotExistWriteLoadGroupJoinRequest(groupId, senderId);
@@ -68,6 +74,23 @@ public class GroupJoinRequestService {
         return true;
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean rejectGroupRequest(Long currentUserId, GroupReq req) {
+        Long senderId = req.getSenderId();
+        Long groupId = req.getGroupId();
+        MetaverseGroupJoinRequestDO requestDO = assertNotExistWriteLoadGroupJoinRequest(groupId, senderId);
+        groupJoinRequestService.lambdaUpdate()
+                .eq(MetaverseGroupJoinRequestDO::getGroupId, groupId)
+                .eq(MetaverseGroupJoinRequestDO::getRequesterId, senderId)
+                .eq(MetaverseGroupJoinRequestDO::getStatus, UserGroupRequestStatus.PENDING)
+                .set(MetaverseGroupJoinRequestDO::getStatus, UserGroupRequestStatus.REJECT)
+                .set(MetaverseGroupJoinRequestDO::getUpdateBy, currentUserId)
+                .set(MetaverseGroupJoinRequestDO::getVersion, requestDO.getVersion() + 1)
+                .update();
+        return true;
+    }
+
     @NotNull
     private MetaverseGroupJoinRequestDO assertNotExistWriteLoadGroupJoinRequest(Long groupId, Long senderId) {
         MetaverseGroupJoinRequestDO requestDO = groupJoinRequestService.lambdaQuery()
@@ -80,5 +103,44 @@ public class GroupJoinRequestService {
             throw new IllegalArgumentException("未找到该用户入群请求");
         }
         return requestDO;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public List<MetaverseGroupRequestResp> getUnagreedGroupRequestsOnTargetGroup(Long groupId) {
+        return groupJoinRequestService.lambdaQuery()
+                .eq(MetaverseGroupJoinRequestDO::getGroupId, groupId)
+                .eq(MetaverseGroupJoinRequestDO::getStatus, UserGroupRequestStatus.PENDING)
+                .list()
+                .stream()
+                .map(this::convertGroupRequestResp)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public List<MetaverseGroupRequestResp> getGroupRequestsOnTargetGroup(Long groupId) {
+        return groupJoinRequestService.lambdaQuery()
+                .eq(MetaverseGroupJoinRequestDO::getGroupId, groupId)
+                .list()
+                .stream()
+                .map(this::convertGroupRequestResp)
+                .collect(Collectors.toList());
+    }
+
+    private MetaverseGroupRequestResp convertGroupRequestResp(MetaverseGroupJoinRequestDO groupJoinRequestDO) {
+        if (groupJoinRequestDO == null) {
+            return null;
+        }
+        Long requesterId = groupJoinRequestDO.getRequesterId();
+        MetaverseUserAbstractInfo userAbstractInfo = userService.findUserInfoByUserIds(Collections.singletonList(requesterId)).get(0);
+
+        return new MetaverseGroupRequestResp()
+                .setUserId(requesterId)
+                .setName(userAbstractInfo.getName())
+                .setBirthTime(userAbstractInfo.getBirthTime())
+                .setAvatarFileId(userAbstractInfo.getAvatarImageId())
+                .setGender(userAbstractInfo.getGender())
+                .setRequestMessage(groupJoinRequestDO.getRequestMessage())
+                .setStatus(groupJoinRequestDO.getStatus())
+                .setRequestTime(groupJoinRequestDO.getRequestTime());
     }
 }

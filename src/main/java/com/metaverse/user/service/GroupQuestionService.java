@@ -3,8 +3,8 @@ package com.metaverse.user.service;
 import cn.hutool.core.util.StrUtil;
 import com.metaverse.user.db.entity.MetaverseGroupQuestionDO;
 import com.metaverse.user.db.service.IMetaverseGroupQuestionService;
-import com.metaverse.user.req.AgreeGroupReq;
 import com.metaverse.user.req.AnswerGroupQuestionReq;
+import com.metaverse.user.req.GroupReq;
 import com.metaverse.user.resp.UserGroupQuestionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class GroupQuestionService {
                 .eq(MetaverseGroupQuestionDO::getGroupId, groupId)
                 .one();
         if (groupQuestionDO.getEnabled() && StrUtil.equals(req.getQuestionAnswer(), groupQuestionDO.getAnswer())) {
-            return groupJoinRequestService.agreeGroupRequest(Objects.isNull(groupQuestionDO.getUpdateBy()) ? groupQuestionDO.getCreateBy() : groupQuestionDO.getUpdateBy(), new AgreeGroupReq(groupId, currentUserId));
+            return groupJoinRequestService.agreeGroupRequest(Objects.isNull(groupQuestionDO.getUpdateBy()) ? groupQuestionDO.getCreateBy() : groupQuestionDO.getUpdateBy(), new GroupReq(groupId, currentUserId));
         }
         return false;
     }

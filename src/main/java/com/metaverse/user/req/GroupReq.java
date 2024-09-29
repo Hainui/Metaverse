@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
-public class AgreeGroupReq {
+public class GroupReq {
     @NotNull(message = "群组ID不能为空")
     @ApiModelProperty(value = "群组ID", required = true)
     private Long groupId;
