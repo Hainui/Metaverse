@@ -3,23 +3,26 @@ package com.metaverse.user.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.user.db.entity.MetaverseGroupOperationLogDO;
+import com.metaverse.user.db.entity.MetaverseUserDO;
 import com.metaverse.user.db.entity.MetaverseUserGroupMemberDO;
 import com.metaverse.user.db.service.IMetaverseGroupOperationLogService;
 import com.metaverse.user.db.service.IMetaverseUserGroupMemberService;
+import com.metaverse.user.db.service.IMetaverseUserService;
+import com.metaverse.user.domain.MetaverseUser;
+import com.metaverse.user.dto.UserGroupMemberInfo;
 import com.metaverse.user.req.GrantAdministratorReq;
 import com.metaverse.user.req.InviteUserJoinGroupReq;
-import com.metaverse.user.resp.UserGroupMemberResp;
-import com.metaverse.user.resp.UserGroupResp;
+import com.metaverse.user.req.KickOutGroupReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,6 +31,7 @@ public class UserGroupMemberService {
 
     private final IMetaverseUserGroupMemberService userGroupMemberService;
     private final IMetaverseGroupOperationLogService groupOperationLogService;
+    private final IMetaverseUserService userService;
 
 
     private static class UserGroupMemberRole {
@@ -102,34 +106,51 @@ public class UserGroupMemberService {
         return true;
     }
 
-    private void saveGroupOperationLog(Long currentUserId, Long groupId, Long senderId, LocalDateTime now, Integer operationType) {
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean kickOutGroup(Long currentUserId, KickOutGroupReq req) {
+        Long groupId = req.getGroupId();
+        Long memberId = req.getMemberId();
+        userGroupMemberService
+                .remove(new LambdaQueryWrapper<MetaverseUserGroupMemberDO>()
+                        .eq(MetaverseUserGroupMemberDO::getGroupId, groupId)
+                        .eq(MetaverseUserGroupMemberDO::getMemberId, memberId));
+        saveGroupOperationLog(currentUserId, groupId, memberId, LocalDateTime.now(), UserGroupOperationLog.PASSIVE_EXIT);
+        return true;
+    }
+
+    private void saveGroupOperationLog(Long currentUserId, Long groupId, Long targetId, LocalDateTime now, Integer operationType) {
         groupOperationLogService.save(new MetaverseGroupOperationLogDO()
                 .setGroupId(groupId)
-                .setTargetId(senderId)
+                .setTargetId(targetId)
                 .setOperatorId(currentUserId)
                 .setOperationTime(now)
                 .setOperationType(operationType));
     }
 
-    public UserGroupResp getTargetGroupAllUsers(Long groupId) {
-        List<MetaverseUserGroupMemberDO> userGroupMembers = userGroupMemberService.lambdaQuery()
+    public List<UserGroupMemberInfo> getTargetGroupAllUsers(Long groupId) {
+        return userGroupMemberService.lambdaQuery()
                 .eq(MetaverseUserGroupMemberDO::getGroupId, groupId)
-                .list();
-        return new UserGroupResp().setMembers(convertMembersToResp(userGroupMembers));
+                .list()
+                .stream()
+                .map(this::convertToMemberInfo)
+                .collect(Collectors.toList());
     }
 
-    private List<UserGroupMemberResp> convertMembersToResp(List<MetaverseUserGroupMemberDO> userGroupMembers) {
-        List<UserGroupMemberResp> members = new ArrayList<>();
-        for (MetaverseUserGroupMemberDO member : userGroupMembers) {
-            UserGroupMemberResp memberResp = new UserGroupMemberResp()
-                    .setMemberId(member.getMemberId())
-                    .setRole(member.getRole())
-                    .setJoinedAt(member.getJoinedAt());
-            members.add(memberResp);
+    private UserGroupMemberInfo convertToMemberInfo(MetaverseUserGroupMemberDO memberDO) {
+        if (memberDO == null) {
+            return null;
         }
-        return members;
+        Long userId = memberDO.getMemberId();
+        MetaverseUserDO userDO = userService.getById(userId);
+        return new UserGroupMemberInfo()
+                .setUserId(userId)
+                .setBirthTime(userDO.getBirthTime())
+                .setGender(MetaverseUser.Gender.convertGender(userDO.getGender()))
+                .setName(userDO.getUsername())
+                .setAvatarImageId(userDO.getAvatarFileId())
+                .setRole(memberDO.getRole())
+                .setJoinedAt(memberDO.getJoinedAt());
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     public boolean grantAdministrator(Long currentUserId, GrantAdministratorReq req) {
