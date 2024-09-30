@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class UserFriendQuestionService {
     private final IMetaverseUserFriendQuestionService friendQuestionService;
-    
+
+    @Transactional(rollbackFor = Exception.class)
     public Boolean createQuestion(Long currentUserId, UserFriendQuestionReq req) {
         return friendQuestionService.save(new MetaverseUserFriendQuestionDO()
                 .setCreateBy(currentUserId)
@@ -28,6 +30,7 @@ public class UserFriendQuestionService {
                 .setVersion(0L));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean modifyQuestion(Long currentUserId, UserFriendQuestionReq req) {
         MetaverseUserFriendQuestionDO questionDO = assertNotExistAndWriteLoad(currentUserId);
         boolean noChange = req.getQuestion().equals(questionDO.getQuestion()) && req.getCorrectAnswer().equals(questionDO.getCorrectAnswer());
@@ -55,6 +58,7 @@ public class UserFriendQuestionService {
         return questionDO;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public boolean disableQuestion(Long currentUserId) {
         MetaverseUserFriendQuestionDO questionDO = assertNotExistAndWriteLoad(currentUserId);
         boolean noChange = Boolean.FALSE.equals(questionDO.getEnabled());
@@ -69,6 +73,7 @@ public class UserFriendQuestionService {
                 .update();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public boolean enableQuestion(Long currentUserId) {
         MetaverseUserFriendQuestionDO questionDO = assertNotExistAndWriteLoad(currentUserId);
         boolean noChange = Boolean.TRUE.equals(questionDO.getEnabled());
