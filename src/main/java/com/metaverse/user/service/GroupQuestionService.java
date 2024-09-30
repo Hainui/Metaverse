@@ -7,6 +7,7 @@ import com.metaverse.user.req.AnswerGroupQuestionReq;
 import com.metaverse.user.req.GroupReq;
 import com.metaverse.user.resp.UserGroupQuestionResp;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,8 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class GroupQuestionService {
-    private final GroupJoinRequestService groupJoinRequestService;
+    @Setter
+    private GroupJoinRequestService groupJoinRequestService;
     private final IMetaverseGroupQuestionService groupQuestionService;
 
     @Transactional(rollbackFor = Exception.class)
