@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -56,22 +55,24 @@ public class GroupQuestionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean createGroupQuestion(Long currentUserId, @Valid GroupQuestionReq req) {
+    public Boolean createGroupQuestion(Long currentUserId, GroupQuestionReq req) {
         return groupQuestionService.save(new MetaverseGroupQuestionDO()
                 .setGroupId(req.getGroupId())
                 .setQuestion(req.getQuestion())
                 .setAnswer(req.getQuestionAnswer())
-                .setSavedAt(LocalDateTime.now())
-                .setUpdateBy(currentUserId)
+                .setCreatedAt(LocalDateTime.now())
+                .setEnabled(Boolean.TRUE)
+                .setCreateBy(currentUserId)
                 .setVersion(0L));
 
     }
 
 
     @Transactional(rollbackFor = Exception.class)
-    public boolean modifyGroupQuestion(Long currentUserId, @Valid GroupQuestionReq req) {
-        MetaverseGroupQuestionDO groupQuestionDO = getGroupQuestionForUpdate(req.getGroupId());
-        if (!hasQuestionChanged(groupQuestionDO, req)) {
+    public boolean modifyGroupQuestion(Long currentUserId, GroupQuestionReq req) {
+        MetaverseGroupQuestionDO groupQuestionDO = assertNotExistAndWriteLoad(req.getGroupId());
+        boolean noChange = req.getQuestion().equals(groupQuestionDO.getQuestion()) && req.getQuestionAnswer().equals(groupQuestionDO.getAnswer());
+        if (noChange) {
             return false;
         }
         groupQuestionDO.setQuestion(req.getQuestion())
@@ -86,7 +87,7 @@ public class GroupQuestionService {
     }
 
     @NotNull
-    private MetaverseGroupQuestionDO getGroupQuestionForUpdate(Long groupId) {
+    private MetaverseGroupQuestionDO assertNotExistAndWriteLoad(Long groupId) {
         MetaverseGroupQuestionDO groupQuestionDO = groupQuestionService.lambdaQuery()
                 .eq(MetaverseGroupQuestionDO::getGroupId, groupId)
                 .last(RepositoryConstant.FOR_UPDATE)
@@ -99,7 +100,7 @@ public class GroupQuestionService {
 
     @Transactional(rollbackFor = Exception.class)
     public boolean disableGroupQuestion(Long currentUserId, Long groupId) {
-        MetaverseGroupQuestionDO groupQuestionDO = getGroupQuestionForUpdate(groupId);
+        MetaverseGroupQuestionDO groupQuestionDO = assertNotExistAndWriteLoad(groupId);
         boolean noChange = Boolean.FALSE.equals(groupQuestionDO.getEnabled());
         if (noChange) {
             return false;
@@ -115,7 +116,7 @@ public class GroupQuestionService {
 
     @Transactional(rollbackFor = Exception.class)
     public boolean enableGroupQuestion(Long currentUserId, Long groupId) {
-        MetaverseGroupQuestionDO groupQuestionDO = getGroupQuestionForUpdate(groupId);
+        MetaverseGroupQuestionDO groupQuestionDO = assertNotExistAndWriteLoad(groupId);
         boolean noChange = Boolean.TRUE.equals(groupQuestionDO.getEnabled());
         if (noChange) {
             return false;

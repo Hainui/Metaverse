@@ -13,10 +13,10 @@ public class GroupQuestionReq {
     private Long groupId;
 
     @ApiModelProperty("群组问题")
-    @NotNull(message = "群组问题不能为空")
+    @NotBlank(message = "群组问题不能为空")
     private String question;
 
-    @ApiModelProperty("问题回答文本")
-    @NotBlank(message = "问题回答文本不能为空")
+    @ApiModelProperty("问题答案")
+    @NotBlank(message = "问题答案不能为空")
     private String questionAnswer;
 }
