@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -131,7 +130,7 @@ public class GroupJoinRequestService {
             return null;
         }
         Long requesterId = groupJoinRequestDO.getRequesterId();
-        MetaverseUserAbstractInfo userAbstractInfo = userService.findUserInfoByUserIds(Collections.singletonList(requesterId)).get(0);
+        MetaverseUserAbstractInfo userAbstractInfo = userService.findUserInfoByUserId(requesterId);
 
         return new MetaverseGroupRequestResp()
                 .setUserId(requesterId)

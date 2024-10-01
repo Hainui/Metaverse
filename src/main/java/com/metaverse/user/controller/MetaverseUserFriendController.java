@@ -6,6 +6,7 @@ import com.metaverse.user.dto.MetaverseUserAbstractInfo;
 import com.metaverse.user.req.AddFriendReq;
 import com.metaverse.user.req.AnswerUserQuestionReq;
 import com.metaverse.user.resp.MetaverseFriendRequestResp;
+import com.metaverse.user.resp.RecommendFriendResp;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import com.metaverse.user.service.UserFriendService;
 import io.swagger.annotations.ApiOperation;
@@ -44,6 +45,12 @@ public class MetaverseUserFriendController {
     @ApiOperation(value = "删除好友", tags = "1.0.0")
     public Result<Boolean> delFriend(@RequestParam("targetId") @ApiParam(name = "被删除好友ID", required = true) @NotNull(message = "被删除好友ID不能为空") Long targetId) {
         return Result.success(userFriendService.delFriend(targetId, MetaverseContextUtil.getCurrentUserId()));
+    }
+
+    @GetMapping("/recommendFriendsForCurrentUser")
+    @ApiOperation(value = "为当前登录用户推荐好友", tags = "1.0.0")
+    public Result<List<RecommendFriendResp>> recommendFriendsForCurrentUser() {
+        return Result.success(userFriendService.recommendFriendsForCurrentUser(MetaverseContextUtil.getCurrentUserId(), MetaverseContextUtil.getCurrentUserRegion().getId()));
     }
 
     @GetMapping("/blockFriend")

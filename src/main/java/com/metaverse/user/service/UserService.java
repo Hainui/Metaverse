@@ -58,6 +58,16 @@ public class UserService {
         return MetaverseUser.registration(metaverseUserRegistrationReq.getName(), metaverseUserRegistrationReq.getEmail(), metaverseUserRegistrationReq.getPassword(), metaverseUserRegistrationReq.getRegionId(), MetaverseUser.Gender.fromValue(metaverseUserRegistrationReq.getGender()));
     }
 
+    public List<Long> getAllUserIds(Long regionId) {
+        return userService.lambdaQuery()
+                .select(MetaverseUserDO::getId)
+                .eq(MetaverseUserDO::getRegionId, regionId)
+                .list()
+                .stream()
+                .map(MetaverseUserDO::getId)
+                .collect(Collectors.toList());
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public Boolean modifyUserName(ModifyUserNameReq req, Long currentUserId, Long currentRegionId) {
         MetaverseUser metaverseUser = MetaverseUser.writeLoadAndAssertNotExist(req.getUserId(), currentRegionId);
@@ -112,6 +122,13 @@ public class UserService {
         }
 
         return userService.lambdaQuery().in(MetaverseUserDO::getId, userIds).list().stream().map(this::convertToUserAbstractInfo).collect(Collectors.toList());
+    }
+
+    public MetaverseUserAbstractInfo findUserInfoByUserId(Long userId) {
+        if (Objects.isNull(userId)) {
+            return null;
+        }
+        return convertToUserAbstractInfo(userService.lambdaQuery().eq(MetaverseUserDO::getId, userId).one());
     }
 
     private MetaverseUserAbstractInfo convertToUserAbstractInfo(MetaverseUserDO metaverseUserDO) {

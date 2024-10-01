@@ -1,11 +1,13 @@
 package com.metaverse.user.service;
 
 import cn.hutool.core.util.StrUtil;
+import com.metaverse.common.Utils.UnionFindSet;
 import com.metaverse.common.constant.RepositoryConstant;
 import com.metaverse.user.db.entity.MetaverseFriendRequestDO;
 import com.metaverse.user.db.entity.MetaverseUserFriendDO;
 import com.metaverse.user.db.entity.MetaverseUserFriendOperationLogDO;
 import com.metaverse.user.db.entity.MetaverseUserFriendQuestionDO;
+import com.metaverse.user.db.mapper.MetaverseUserFriendExtMapper;
 import com.metaverse.user.db.service.IMetaverseFriendRequestService;
 import com.metaverse.user.db.service.IMetaverseUserFriendOperationLogService;
 import com.metaverse.user.db.service.IMetaverseUserFriendQuestionService;
@@ -14,6 +16,7 @@ import com.metaverse.user.dto.MetaverseUserAbstractInfo;
 import com.metaverse.user.req.AddFriendReq;
 import com.metaverse.user.req.AnswerUserQuestionReq;
 import com.metaverse.user.resp.MetaverseFriendRequestResp;
+import com.metaverse.user.resp.RecommendFriendResp;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,82 @@ public class UserFriendService {
     private final UserService userService;
     private final IMetaverseUserFriendQuestionService userFriendQuestionService;
     private final IMetaverseUserFriendOperationLogService userFriendOperationLogService;
+    private final MetaverseUserFriendExtMapper userFriendExtMapper;
+
+    public List<RecommendFriendResp> recommendFriendsForCurrentUser(Long currentUserId, Long currentRegionId) {
+        List<MetaverseUserFriendDO> userFriendDOs = userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getRelation, 1)
+                .eq(MetaverseUserFriendDO::getStatus, 1)
+                .list();
+        Map<Long, Integer> userIdToIndex = new HashMap<>();
+        int index = 0;
+        List<Long> allUserIds = userService.getAllUserIds(currentRegionId);
+        UnionFindSet unionFindSet = new UnionFindSet(allUserIds.size()); // 初始化集合最大数量
+
+        for (MetaverseUserFriendDO friendship : userFriendDOs) {
+            long userId = friendship.getUserId();
+            long friendId = friendship.getFriendId();
+
+            if (!userIdToIndex.containsKey(userId)) {
+                userIdToIndex.put(userId, index++);
+            }
+            if (!userIdToIndex.containsKey(friendId)) {
+                userIdToIndex.put(friendId, index++);
+            }
+
+            unionFindSet.union(userIdToIndex.get(userId), userIdToIndex.get(friendId));
+        }
+
+        // 计算共同好友数量
+        Map<Long, Integer> commonFriendsCount = new HashMap<>();
+
+        // 获取当前用户的所有直接好友和黑名单用户
+        List<Long> directFriends = userFriendDOs
+                .stream()
+                .filter(friendShip -> friendShip.getUserId().equals(currentUserId))
+                .map(MetaverseUserFriendDO::getFriendId)
+                .collect(Collectors.toList());
+
+        List<Long> blacklistedUsers = userFriendService.lambdaQuery()
+                .eq(MetaverseUserFriendDO::getUserId, currentUserId)
+                .eq(MetaverseUserFriendDO::getRelation, 2)
+                .list()
+                .stream()
+                .map(MetaverseUserFriendDO::getFriendId)
+                .collect(Collectors.toList());
+
+        for (Long networkUserId : allUserIds) {
+            if (networkUserId.equals(currentUserId)) continue; // 跳过自身
+            if (!areInSameNetwork(currentUserId, networkUserId, unionFindSet, userIdToIndex)) continue; // 不在同一关系网内
+            if (directFriends.contains(networkUserId)) continue; // 已经是直接好友
+            if (blacklistedUsers.contains(networkUserId)) continue; // 在黑名单内
+
+            if (!commonFriendsCount.containsKey(networkUserId)) {
+                commonFriendsCount.put(networkUserId, 0);
+            }
+
+            // 计算当前用户和networkUser之间的共同好友数量
+            Integer count = userFriendExtMapper.countCommonFriends(currentUserId, networkUserId);
+            commonFriendsCount.put(networkUserId, commonFriendsCount.get(networkUserId) + count);
+        }
+
+        // 根据共同好友数量排序
+        return commonFriendsCount.entrySet().stream()
+                .sorted(Map.Entry.<Long, Integer>comparingByValue().reversed())
+                .map(entry -> new RecommendFriendResp()
+                        .setMutualFriendCount(entry.getValue())
+                        .setUserAbstractInfo(userService.findUserInfoByUserId(entry.getKey()))
+                )
+                .collect(Collectors.toList());
+    }
+
+
+    public boolean areInSameNetwork(long userId1, long userId2, UnionFindSet unionFindSet, Map<Long, Integer> userIdToIndex) {
+        if (!userIdToIndex.containsKey(userId1) || !userIdToIndex.containsKey(userId2)) {
+            return false;
+        }
+        return unionFindSet.find(userIdToIndex.get(userId1)) == unionFindSet.find(userIdToIndex.get(userId2));
+    }
 
     private static class UserFriendRelation {
         public static final int FRIEND = 1;
@@ -122,7 +201,7 @@ public class UserFriendService {
             return null;
         }
         Long senderId = metaverseFriendRequestDO.getSenderId();
-        MetaverseUserAbstractInfo userAbstractInfo = userService.findUserInfoByUserIds(Collections.singletonList(senderId)).get(0);
+        MetaverseUserAbstractInfo userAbstractInfo = userService.findUserInfoByUserId(senderId);
 
         return new MetaverseFriendRequestResp()
                 .setUserId(senderId)

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.metaverse.user.db.mapper.MetaverseUserFriendExtMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseUserFriendDO">
+        <result column="user_id" property="userId"/>
+        <result column="friend_id" property="friendId"/>
+        <result column="relation" property="relation"/>
+        <result column="status" property="status"/>
+        <result column="intimacy_level" property="intimacyLevel"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="saved_at" property="savedAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id
+        , friend_id, relation, status, intimacy_level, created_at, saved_at, updated_at, update_by, version
+    </sql>
+
+    <!-- 查询两个用户之间的共同好友数量 -->
+    <select id="countCommonFriends" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS count
+        FROM metaverse_user_friend fu
+        WHERE fu.user_id = #{userId}
+          AND fu.friend_id IN (
+            SELECT friend_id
+            FROM metaverse_user_friend
+            WHERE user_id = #{friendUserId}
+          AND relation = 1
+          AND status = 1
+            )
+    </select>
+
+</mapper>
