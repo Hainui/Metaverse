@@ -34,8 +34,8 @@ public class MetaverseChatRecordDO implements Serializable {
     @ApiModelProperty("接收消息的用户ID")
     private Long receiverId;
 
-    @ApiModelProperty("消息类型，0表示文本或者图片，1表示语音等")
-    private Boolean messageType;
+    @ApiModelProperty("消息类型，0表示文本或者图片，1表示语音等，2表示聊天文件")
+    private Integer messageType;
 
     @ApiModelProperty("消息内容")
     private String content;

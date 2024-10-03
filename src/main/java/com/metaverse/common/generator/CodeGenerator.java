@@ -27,9 +27,9 @@ public class CodeGenerator {
                             .commentDate("yyyy-MM-dd HH:mm:ss"); // 设置注释日期格式
                 })
                 .packageConfig(builder -> {
-                    builder.parent("com.metaverse.user") // 设置父包名
+                    builder.parent("com.metaverse.file") // 设置父包名
                             .moduleName("db") // 设置父包模块名
-                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/user")); // 设置 XML 生成路径
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, "src/main/resources/mapper/file")); // 设置 XML 生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.entityBuilder()
@@ -51,7 +51,7 @@ public class CodeGenerator {
                                     "metaverse_group_join_request," +
                                     "metaverse_group_invitation," +
                                     "metaverse_chat_record," +
-                                    "metaverse_group_chat_record"*/"metaverse_group_question") // 设置表前缀
+                                    "metaverse_group_chat_record"*/"metaverse_multimedia_files") // 设置表前缀
                             .mapperBuilder()
                             .enableFileOverride() // 开启覆盖策略
                             .enableBaseResultMap() // 启用基本的结果映射

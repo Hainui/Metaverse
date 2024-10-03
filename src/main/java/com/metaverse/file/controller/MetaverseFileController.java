@@ -8,6 +8,7 @@ import com.metaverse.common.model.Result;
 import com.metaverse.file.FileIdGen;
 import com.metaverse.file.db.entity.MetaverseMultimediaFilesDO;
 import com.metaverse.file.db.service.IMetaverseMultimediaFilesService;
+import com.metaverse.file.dto.FileDto;
 import com.metaverse.file.req.SignedEncryptedUrlReq;
 import com.metaverse.user.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +43,7 @@ public class MetaverseFileController {
 
     @PostMapping("/upload")
     @ApiOperation(value = "文件上传", tags = "1.0.0")
-    public Result<Long> uploadFile(@RequestParam("file") @ApiParam(name = "文件", required = true) MultipartFile file) throws IOException, ClientException {
+    public Result<FileDto> uploadFile(@RequestParam("file") @ApiParam(name = "文件", required = true) MultipartFile file) throws IOException, ClientException {
         String originalFilename = file.getOriginalFilename();
         String fileExtension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
@@ -56,10 +57,11 @@ public class MetaverseFileController {
         Long fileId = BeanManager.getBean(FileIdGen.class).nextId();
         metaverseMultimediaFilesService.save(new MetaverseMultimediaFilesDO()
                 .setUploaderId(MetaverseContextUtil.getCurrentUserId())
+                .setName(originalFilename)
                 .setUploadTime(LocalDateTime.now())
                 .setId(fileId)
                 .setUrl(UrlEncryptorDecryptor.encryptUrl(url, MetaverseContextUtil.getCurrentUserRegion().getId())));
-        return Result.success(fileId);
+        return Result.success(new FileDto().setFileName(originalFilename).setFileId(fileId));
     }
 
     @GetMapping("/accessResource")

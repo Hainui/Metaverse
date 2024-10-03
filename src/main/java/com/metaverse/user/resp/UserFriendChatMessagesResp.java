@@ -31,9 +31,9 @@ public class UserFriendChatMessagesResp {
     private LocalDateTime withdrawnTime;
 
     @ApiModelProperty("消息类型，0表示文本或者图片，1表示语音等")
-    private Boolean messageType;
+    private Integer messageType;
 
-    public UserFriendChatMessagesResp(Long senderId, Long receiverId, LocalDateTime timestamp, String content, Long fileId, boolean isWithdrawn, LocalDateTime withdrawnTime, Boolean messageType) {
+    public UserFriendChatMessagesResp(Long senderId, Long receiverId, LocalDateTime timestamp, String content, Long fileId, boolean isWithdrawn, LocalDateTime withdrawnTime, Integer messageType) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.timestamp = timestamp;

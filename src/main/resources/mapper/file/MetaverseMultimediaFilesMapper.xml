@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.metaverse.file.db.entity.MetaverseMultimediaFilesDO">
         <id column="id" property="id" />
+        <result column="name" property="name" />
         <result column="url" property="url" />
         <result column="uploader_id" property="uploaderId" />
         <result column="upload_time" property="uploadTime" />
@@ -12,7 +13,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, url, uploader_id, upload_time
+        id, name, url, uploader_id, upload_time
     </sql>
 
 </mapper>

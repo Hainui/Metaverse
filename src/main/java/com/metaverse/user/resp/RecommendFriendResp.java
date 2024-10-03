@@ -10,8 +10,8 @@ import lombok.experimental.Accessors;
 public class RecommendFriendResp {
 
     @ApiModelProperty(value = "用户简洁信息")
-    MetaverseUserAbstractInfo userAbstractInfo;
+    private MetaverseUserAbstractInfo userAbstractInfo;
 
     @ApiModelProperty(value = "共同好友个数")
-    Integer mutualFriendCount;
+    private Integer mutualFriendCount;
 }

@@ -3,6 +3,7 @@ package com.metaverse.user.controller;
 
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
+import com.metaverse.file.dto.FileDto;
 import com.metaverse.user.req.SendChatFileReq;
 import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.req.WithdrawChatMessageReq;
@@ -44,6 +45,18 @@ public class MetaverseUserFriendChatRecordController {
     @ApiOperation(value = "发送聊天文件", tags = "1.0.0")
     public Result<Boolean> sendChatFile(@RequestBody @Valid @ApiParam(name = "发送文件请求参数", required = true) SendChatFileReq req) {
         return Result.success(userFriendChatService.sendChatFile(req, MetaverseContextUtil.getCurrentUserId()));
+    }
+
+    @PostMapping("/sendChatAudio")
+    @ApiOperation(value = "发送聊天音频", tags = "1.0.0")
+    public Result<Boolean> sendChatAudio(@RequestBody @Valid @ApiParam(name = "发送音频请求参数", required = true) SendChatFileReq req) {
+        return Result.success(userFriendChatService.sendChatAudio(req, MetaverseContextUtil.getCurrentUserId()));
+    }
+
+    @GetMapping("/getChatFile")
+    @ApiOperation(value = "获取聊天文件信息", tags = "1.0.0")
+    public Result<List<FileDto>> getChatFile(@RequestParam("receiverId") @Valid @ApiParam(name = "接收消息的用户ID", required = true) Long receiverId) {
+        return Result.success(userFriendChatService.getChatFile(MetaverseContextUtil.getCurrentUserId(), receiverId));
     }
 
     @GetMapping("/getUserFriendChatMessages")

@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-22 19:56:53
+ * @since 2024-10-03 22:48:07
  */
 @Mapper
 public interface MetaverseMultimediaFilesMapper extends BaseMapper<MetaverseMultimediaFilesDO> {

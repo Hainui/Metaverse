@@ -1,5 +1,6 @@
 package com.metaverse.user.service;
 
+import com.metaverse.file.dto.FileDto;
 import com.metaverse.user.db.entity.MetaverseChatRecordDO;
 import com.metaverse.user.db.service.IMetaverseChatRecordService;
 import com.metaverse.user.req.SendChatFileReq;
@@ -33,7 +34,7 @@ public class UserFriendChatService {
         return metaverseChatRecordService.save(new MetaverseChatRecordDO()
                 .setSenderId(currentUserId)
                 .setReceiverId(req.getReceiverId())
-                .setMessageType(Boolean.FALSE)
+                .setMessageType(0)
                 .setTimestamp(LocalDateTime.now())
                 .setContent(req.getContent()));
     }
@@ -47,9 +48,41 @@ public class UserFriendChatService {
         return metaverseChatRecordService.save(new MetaverseChatRecordDO()
                 .setSenderId(currentUserId)
                 .setReceiverId(req.getReceiverId())
-                .setMessageType(Boolean.TRUE)
+                .setContent(req.getFileName())  // 文件名称存储到消息内容中
+                .setMessageType(2)
                 .setTimestamp(LocalDateTime.now())
                 .setFileId(req.getFileId()));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean sendChatAudio(SendChatFileReq req, Long currentUserId) {
+        if (!userFriendService.targetUserIsFriend(req.getReceiverId(), currentUserId)) {
+            return false;
+        }
+        return metaverseChatRecordService.save(new MetaverseChatRecordDO()
+                .setSenderId(currentUserId)
+                .setReceiverId(req.getReceiverId())
+                .setMessageType(1)
+                .setTimestamp(LocalDateTime.now())
+                .setFileId(req.getFileId()));
+    }
+
+
+    public List<FileDto> getChatFile(Long currentUserId, Long receiverId) {
+        return metaverseChatRecordService.lambdaQuery()
+                .in(MetaverseChatRecordDO::getReceiverId, receiverId, currentUserId)
+                .in(MetaverseChatRecordDO::getSenderId, receiverId, currentUserId)
+                .eq(MetaverseChatRecordDO::getMessageType, 2)
+                .list().stream().map(this::convertToFileDto).collect(Collectors.toList());
+    }
+
+    private FileDto convertToFileDto(MetaverseChatRecordDO metaverseChatRecordDO) {
+        if (metaverseChatRecordDO == null) {
+            return null;
+        }
+        return new FileDto()
+                .setFileName(metaverseChatRecordDO.getContent())
+                .setFileId(metaverseChatRecordDO.getFileId());
     }
 
     @Transactional(rollbackFor = Exception.class)

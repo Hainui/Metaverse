@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-23 09:00:23
+ * @since 2024-10-03 22:48:07
  */
 @Getter
 @Setter
@@ -29,6 +29,9 @@ public class MetaverseMultimediaFilesDO implements Serializable {
 
     @ApiModelProperty("主键ID")
     private Long id;
+
+    @ApiModelProperty("文件名称")
+    private String name;
 
     private String url;
 
