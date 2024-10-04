@@ -1,18 +1,22 @@
 package com.metaverse.user.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.metaverse.file.dto.FileDto;
 import com.metaverse.user.db.entity.MetaverseGroupChatRecordDO;
 import com.metaverse.user.db.service.impl.MetaverseGroupChatRecordServiceImpl;
 import com.metaverse.user.req.GroupChatFileReq;
 import com.metaverse.user.req.GroupSendChatRecordReq;
 import com.metaverse.user.req.withdrawGroupChatMessagesReq;
+import com.metaverse.user.resp.GroupChatMessagesResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -23,9 +27,8 @@ public class UserGroupChatService {
     private final MetaverseGroupChatRecordServiceImpl metaverseGroupChatRecordService;
 
     public Boolean sendChatMessages(GroupSendChatRecordReq req, Long currentUserId) {
-        boolean isMember = userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId());
-        if (!isMember) {
-            return false;
+        if (!userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId())) {
+            throw new IllegalArgumentException("该用户不是本群成员,无法发送信息");
         }
         try {
             return metaverseGroupChatRecordService.save(new MetaverseGroupChatRecordDO()
@@ -41,9 +44,8 @@ public class UserGroupChatService {
     }
 
     public Boolean sendGroupChatFile(GroupChatFileReq req, Long currentUserId) {
-        boolean isMember = userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId());
-        if (!isMember) {
-            return false;
+        if (!userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId())) {
+            throw new IllegalArgumentException("该用户不是本群成员,无法发送信息");
         }
         try {
             return metaverseGroupChatRecordService.save(new MetaverseGroupChatRecordDO()
@@ -60,10 +62,10 @@ public class UserGroupChatService {
     }
 
     public Boolean sendGroupChatAudio(GroupChatFileReq req, Long currentUserId) {
-        boolean isMember = userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId());
-        if (!isMember) {
-            return false;
+        if (!userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId())) {
+            throw new IllegalArgumentException("该用户不是本群成员,无法发送信息");
         }
+
         try {
             return metaverseGroupChatRecordService.save(new MetaverseGroupChatRecordDO()
                     .setGroupId(req.getGroupId())
@@ -80,10 +82,8 @@ public class UserGroupChatService {
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean withdrawGroupChatMessages(withdrawGroupChatMessagesReq req, Long currentUserId) {
-        // 发送信息之后被踢掉就不能撤回
-        boolean isMember = userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId());
-        if (!isMember) {
-            return false;
+        if (!userGroupMemberService.isUserMemberOfGroup(currentUserId, req.getGroupId())) {
+            throw new IllegalArgumentException("该用户不是本群成员,无法撤回");
         }
 
         Optional<MetaverseGroupChatRecordDO> optionalMessage = findMessageByGroupIdAndTimestamp(req.getGroupId(), req.getTimestamp());
@@ -100,11 +100,55 @@ public class UserGroupChatService {
 
     }
 
-    public Optional<MetaverseGroupChatRecordDO> findMessageByGroupIdAndTimestamp(Long groupId, Long timestamp) {
+    public Optional<MetaverseGroupChatRecordDO> findMessageByGroupIdAndTimestamp(Long groupId, LocalDateTime timestamp) {
         QueryWrapper<MetaverseGroupChatRecordDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("group_id", groupId)
                 .eq("timestamp", timestamp);
         return Optional.ofNullable(metaverseGroupChatRecordService.getOne(queryWrapper));
     }
 
+    public List<FileDto> getGroupChatFile(Long groupId, Long currentUserId) {
+        if (!userGroupMemberService.isUserMemberOfGroup(currentUserId, groupId)) {
+            throw new IllegalArgumentException("该用户不是本群成员,无法获取文件");
+        }
+        return metaverseGroupChatRecordService.lambdaQuery()
+                .eq(MetaverseGroupChatRecordDO::getGroupId, groupId)
+                .eq(MetaverseGroupChatRecordDO::getMessageType, 2)
+                .list().stream().map(this::convertToFileDto).collect(Collectors.toList());
+    }
+
+    private FileDto convertToFileDto(MetaverseGroupChatRecordDO metaverseChatRecordDO) {
+        if (metaverseChatRecordDO == null) {
+            return null;
+        }
+        return new FileDto()
+                .setFileName(metaverseChatRecordDO.getContent())
+                .setFileId(metaverseChatRecordDO.getFileId());
+    }
+
+    public List<GroupChatMessagesResp> getGroupChatMessages(Long groupId, Long currentUserId) {
+        if (!userGroupMemberService.isUserMemberOfGroup(currentUserId, groupId)) {
+            throw new IllegalArgumentException("该用户不是本群成员,无法获取聊天信息");
+        }
+        LocalDateTime minTime = LocalDateTime.now().minusDays(1);
+        LocalDateTime maxTime = LocalDateTime.now();
+        log.info("开始查询群组聊天消息,group ID: {}, user ID: {}, from {} to {}", groupId, currentUserId, minTime, maxTime);
+        List<MetaverseGroupChatRecordDO> chatRecordDOs = metaverseGroupChatRecordService.lambdaQuery()
+                .eq(MetaverseGroupChatRecordDO::getGroupId, groupId)
+                .between(MetaverseGroupChatRecordDO::getTimestamp, minTime, maxTime)
+                .orderByAsc(MetaverseGroupChatRecordDO::getTimestamp)
+                .list();
+        log.info("查询群组聊天信息结束 group ID: {}, user ID: {}", groupId, currentUserId);
+        return chatRecordDOs.stream()
+                .map(chatRecord -> new GroupChatMessagesResp(
+                        chatRecord.getSenderId(),
+                        chatRecord.getTimestamp(),
+                        chatRecord.getMessageType(),
+                        chatRecord.getContent(),
+                        chatRecord.getFileId(),
+                        chatRecord.getWithdrawn(),
+                        chatRecord.getWithdrawnTime()))
+                .collect(Collectors.toList());
+
+    }
 }
