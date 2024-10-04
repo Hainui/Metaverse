@@ -135,7 +135,7 @@ public class GroupJoinRequestService {
         MetaverseUserAbstractInfo userAbstractInfo = userService.findUserInfoByUserId(requesterId);
 
         return new MetaverseGroupRequestResp()
-                .setUserId(requesterId)
+                .setUserId(userAbstractInfo.getUserId())
                 .setName(userAbstractInfo.getName())
                 .setBirthTime(userAbstractInfo.getBirthTime())
                 .setAvatarFileId(userAbstractInfo.getAvatarImageId())
