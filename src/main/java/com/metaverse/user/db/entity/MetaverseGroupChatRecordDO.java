@@ -35,7 +35,7 @@ public class MetaverseGroupChatRecordDO implements Serializable {
     private Long senderId;
 
     @ApiModelProperty("消息类型，1表示文本，2表示图片，3表示语音等")
-    private Boolean messageType;
+    private Integer messageType;
 
     @ApiModelProperty("落库时间")
     private LocalDateTime savedAt;

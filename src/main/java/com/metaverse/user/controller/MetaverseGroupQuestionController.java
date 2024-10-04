@@ -36,7 +36,7 @@ public class MetaverseGroupQuestionController {
     }
 
     @PostMapping("/createGroupQuestion")
-    @ApiOperation(value = "新建问题", tags = "1.0.0")
+    @ApiOperation(value = "新建群组问题", tags = "1.0.0")
     public Result<Boolean> createGroupQuestion(@RequestBody @ApiParam(value = "创建问题请求参数", required = true) @Valid GroupQuestionReq req) {
         return Result.success(groupQuestionService.createGroupQuestion(MetaverseContextUtil.getCurrentUserId(), req));
     }

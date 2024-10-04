@@ -50,13 +50,13 @@ public class MetaverseGroupJoinRequestController {
     }
 
     @GetMapping("/getUnagreedGroupRequestsOnTargetGroup")
-    @ApiOperation(value = "获取所有对目标群的好友请求(未同意)-仅群管理层调用-用于及时提醒", tags = "1.0.0")
+    @ApiOperation(value = "获取所有对目标群的入群请求(未同意)-仅群管理层调用-用于及时提醒", tags = "1.0.0")
     public Result<List<MetaverseGroupRequestResp>> getUnagreedGroupRequestsOnTargetGroup(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId) {
         return Result.success(groupJoinRequestService.getUnagreedGroupRequestsOnTargetGroup(groupId));
     }
 
     @GetMapping("/getGroupRequestsOnTargetGroup")
-    @ApiOperation(value = "获取所有对目标群的好友请求(所有)-仅群管理层调用-用于查看历史请求详情", tags = "1.0.0")
+    @ApiOperation(value = "获取所有对目标群的入群请求(所有)-仅群管理层调用-用于查看历史请求详情", tags = "1.0.0")
     public Result<List<MetaverseGroupRequestResp>> getGroupRequestsOnTargetGroup(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId) {
         return Result.success(groupJoinRequestService.getGroupRequestsOnTargetGroup(groupId));
     }

@@ -32,6 +32,7 @@ public class GroupQuestionService {
         MetaverseGroupQuestionDO groupQuestionDO = groupQuestionService.lambdaQuery()
                 .eq(MetaverseGroupQuestionDO::getGroupId, groupId)
                 .one();
+        //todo 问题回答正确但是没加入群聊
         if (groupQuestionDO.getEnabled() && StrUtil.equals(req.getQuestionAnswer(), groupQuestionDO.getAnswer())) {
             return groupJoinRequestService.agreeGroupRequest(Objects.isNull(groupQuestionDO.getUpdateBy()) ? groupQuestionDO.getCreateBy() : groupQuestionDO.getUpdateBy(), new GroupReq(groupId, currentUserId));
         }

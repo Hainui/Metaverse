@@ -47,6 +47,13 @@ public class UserGroupMemberService {
         public static final int ACTIVE_EXIT = 4;
     }
 
+    public Boolean isUserMemberOfGroup(Long userId, Long groupId) {
+        return userGroupMemberService.lambdaQuery()
+                .eq(MetaverseUserGroupMemberDO::getGroupId, groupId)
+                .eq(MetaverseUserGroupMemberDO::getMemberId, userId)
+                .exists();
+    }
+
     public Boolean memberUserIsManagement(Long currentUserId, Long groupId) {
         return userGroupMemberService.lambdaQuery()
                 .eq(MetaverseUserGroupMemberDO::getGroupId, groupId)

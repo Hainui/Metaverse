@@ -35,6 +35,7 @@ public class GroupJoinRequestService {
 
     @Transactional(rollbackFor = Exception.class)
     public UserGroupQuestionResp joinGroupRequest(Long currentUserId, AddGroupReq req) {
+        //todo 退出群聊再次申请的时候没有返回问题
         String message = req.getMessage();
         Long receiverGroupId = req.getReceiverGroupId();
         boolean existsed = groupJoinRequestService.lambdaQuery()
@@ -106,6 +107,7 @@ public class GroupJoinRequestService {
 
     @Transactional(rollbackFor = Exception.class)
     public List<MetaverseGroupRequestResp> getUnagreedGroupRequestsOnTargetGroup(Long groupId) {
+        //todo 返回的userId不正确
         return groupJoinRequestService.lambdaQuery()
                 .eq(MetaverseGroupJoinRequestDO::getGroupId, groupId)
                 .eq(MetaverseGroupJoinRequestDO::getStatus, UserGroupRequestStatus.PENDING)
