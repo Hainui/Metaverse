@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -60,8 +61,9 @@ public class MetaverseGroupChatRecordController {
 
     @GetMapping("/getGroupChatMessages")
     @ApiOperation(value = "获取群组聊天信息", tags = "1.0.0")
-    public Result<List<GroupChatMessagesResp>> getGroupChatMessages(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId) {
-        return Result.success(userGroupChatService.getGroupChatMessages(groupId, MetaverseContextUtil.getCurrentUserId()));
+    public Result<List<GroupChatMessagesResp>> getGroupChatMessages(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId
+            , @RequestParam(value = "theOtherDay", required = false) @ApiParam(name = "前几天请求参数", required = true) @NotNull(message = "前几天不能为空") Integer theOtherDay) {
+        return Result.success(userGroupChatService.getGroupChatMessages(groupId, MetaverseContextUtil.getCurrentUserId(), theOtherDay));
     }
 
     @PostMapping("/withdrawGroupChatMessages")

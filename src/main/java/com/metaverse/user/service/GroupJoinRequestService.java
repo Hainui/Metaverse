@@ -107,7 +107,6 @@ public class GroupJoinRequestService {
 
     @Transactional(rollbackFor = Exception.class)
     public List<MetaverseGroupRequestResp> getUnagreedGroupRequestsOnTargetGroup(Long groupId) {
-        //todo 返回的userId不正确
         return groupJoinRequestService.lambdaQuery()
                 .eq(MetaverseGroupJoinRequestDO::getGroupId, groupId)
                 .eq(MetaverseGroupJoinRequestDO::getStatus, UserGroupRequestStatus.PENDING)
