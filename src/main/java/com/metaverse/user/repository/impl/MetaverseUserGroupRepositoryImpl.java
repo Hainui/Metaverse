@@ -52,6 +52,7 @@ public class MetaverseUserGroupRepositoryImpl implements MetaverseUserGroupRepos
                     userGroupMemberService.save(new MetaverseUserGroupMemberDO()
                             .setGroupId(metaverseUserGroupDO.getId())
                             .setRole(0)
+                            .setMemberName(userService.getById(memberId).getUsername())
                             .setJoinedAt(now)
                             .setMemberId(memberId)
                             .setVersion(0L)));
