@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.metaverse.user.db.entity.MetaverseUserGroupMemberDO">
         <result column="group_id" property="groupId" />
         <result column="member_id" property="memberId" />
+        <result column="member_name" property="memberName" />
         <result column="role" property="role" />
         <result column="joined_at" property="joinedAt" />
         <result column="saved_at" property="savedAt" />
@@ -16,7 +17,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        group_id, member_id, role, joined_at, saved_at, updated_at, update_by, version
+        group_id, member_id, member_name, role, joined_at, saved_at, updated_at, update_by, version
     </sql>
 
 </mapper>

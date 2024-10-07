@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-23 12:09:41
+ * @since 2024-10-07 10:18:31
  */
 @Mapper
 public interface MetaverseUserGroupMemberMapper extends BaseMapper<MetaverseUserGroupMemberDO> {

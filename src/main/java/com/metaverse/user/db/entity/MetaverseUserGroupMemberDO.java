@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-09-23 12:09:41
+ * @since 2024-10-07 10:18:31
  */
 @Getter
 @Setter
@@ -33,8 +33,11 @@ public class MetaverseUserGroupMemberDO implements Serializable {
     @ApiModelProperty("群组成员的用户ID")
     private Long memberId;
 
+    @ApiModelProperty("成员名称")
+    private String memberName;
+
     @ApiModelProperty("成员角色，0表示普通成员，1表示管理员，2表示群主")
-    private Integer role;
+    private Boolean role;
 
     @ApiModelProperty("加入群组的时间")
     private LocalDateTime joinedAt;
