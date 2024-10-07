@@ -37,7 +37,7 @@ public class MetaverseUserGroupMemberDO implements Serializable {
     private String memberName;
 
     @ApiModelProperty("成员角色，0表示普通成员，1表示管理员，2表示群主")
-    private Boolean role;
+    private Integer role;
 
     @ApiModelProperty("加入群组的时间")
     private LocalDateTime joinedAt;
