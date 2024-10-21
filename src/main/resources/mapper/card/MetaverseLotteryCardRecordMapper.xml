@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.metaverse.card.db.mapper.MetaverseLotteryCardRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.metaverse.card.db.entity.MetaverseLotteryCardRecordDO">
+        <id column="user_id" property="userId" />
+        <result column="daily_draw_count" property="dailyDrawCount" />
+        <result column="cumulative_draw_count" property="cumulativeDrawCount" />
+        <result column="last_draw_time" property="lastDrawTime" />
+        <result column="drawn_card_ids" property="drawnCardIds" />
+        <result column="saved_at" property="savedAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, daily_draw_count, cumulative_draw_count, last_draw_time, drawn_card_ids, saved_at, updated_at, version
+    </sql>
+
+</mapper>
