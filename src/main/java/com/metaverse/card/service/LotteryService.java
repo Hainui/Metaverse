@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metaverse.card.db.entity.MetaverseCardProbabilityDO;
 import com.metaverse.card.db.entity.MetaverseLotteryCardRecordDO;
-import com.metaverse.card.db.service.impl.MetaverseCardProbabilityServiceImpl;
+import com.metaverse.card.db.service.IMetaverseCardProbabilityService;
 import com.metaverse.card.db.service.impl.MetaverseLotteryCardRecordServiceImpl;
-import com.metaverse.card.resp.lotteryCardRecordResp;
+import com.metaverse.card.resp.CardResp;
 import com.metaverse.card.utils.ProbabilityBasedSelection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LotteryService {
 
-    private final MetaverseCardProbabilityServiceImpl cardProbabilityService;
+    private final IMetaverseCardProbabilityService cardProbabilityService;
     private final MetaverseLotteryCardRecordServiceImpl lotteryCardRecordService;
     private final ObjectMapper objectMapper;
 
     @Transactional(rollbackFor = Exception.class)
-    private List<lotteryCardRecordResp> drawCards(int count, Long userId) throws JsonProcessingException {
+    public List<CardResp> drawCards(int count, Long userId) throws JsonProcessingException {
         List<MetaverseCardProbabilityDO> allCards = cardProbabilityService.list();
 
         Map<MetaverseCardProbabilityDO, BigDecimal> probabilityMap = allCards.stream()
@@ -79,21 +79,21 @@ public class LotteryService {
     }
 
 
-    public List<lotteryCardRecordResp> convertToResponseList(List<MetaverseCardProbabilityDO> drawnCards) {
+    public List<CardResp> convertToResponseList(List<MetaverseCardProbabilityDO> drawnCards) {
         return drawnCards.stream()
-                .map(card -> new lotteryCardRecordResp(card.getId(), card.getName(), card.getLevel()))
+                .map(card -> new CardResp(card.getId(), card.getName(), card.getLevel()))
                 .collect(Collectors.toList());
     }
 
-    public List<lotteryCardRecordResp> singleDraw(Long userId) throws JsonProcessingException {
-        return drawCards(1, userId);
+    public CardResp singleDraw(Long userId) throws JsonProcessingException {
+        return drawCards(1, userId).get(0);
     }
 
-    public List<lotteryCardRecordResp> fiveDraws(Long userId) throws JsonProcessingException {
+    public List<CardResp> fiveDraws(Long userId) throws JsonProcessingException {
         return drawCards(5, userId);
     }
 
-    public List<lotteryCardRecordResp> tenDraws(Long userId) throws JsonProcessingException {
+    public List<CardResp> tenDraws(Long userId) throws JsonProcessingException {
         return drawCards(10, userId);
     }
 }

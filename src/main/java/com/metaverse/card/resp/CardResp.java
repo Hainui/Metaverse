@@ -1,12 +1,16 @@
 package com.metaverse.card.resp;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
-public class lotteryCardRecordResp {
+public class CardResp {
 
     @ApiModelProperty("卡片ID")
     private Long id;
@@ -16,10 +20,4 @@ public class lotteryCardRecordResp {
 
     @ApiModelProperty("卡片级别（C, S, R, SR, SSR, L）")
     private String level;
-
-    public lotteryCardRecordResp(Long id, String name, String level) {
-        this.id = id;
-        this.name = name;
-        this.level = level;
-    }
 }

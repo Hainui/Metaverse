@@ -1,5 +1,7 @@
 package com.metaverse.card.controller;
 
+import com.metaverse.card.service.MetaverseCardProbabilityService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/metaverseCardProbability")
+@RequiredArgsConstructor
 public class MetaverseCardProbabilityController {
+
+    private final MetaverseCardProbabilityService cardProbabilityService;
 
 }

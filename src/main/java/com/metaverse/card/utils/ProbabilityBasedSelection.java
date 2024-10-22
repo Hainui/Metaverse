@@ -33,7 +33,6 @@ public class ProbabilityBasedSelection {
             }
         }
 
-
         return cumulativeProbabilities.keySet().iterator().next();
     }
 

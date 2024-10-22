@@ -1,9 +1,10 @@
 package com.metaverse.card.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.metaverse.card.resp.lotteryCardRecordResp;
+import com.metaverse.card.resp.CardResp;
 import com.metaverse.card.service.LotteryService;
 import com.metaverse.common.Utils.MetaverseContextUtil;
+import com.metaverse.common.model.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,17 +30,17 @@ public class MetaverseLotteryCardRecordController {
     private final LotteryService lotteryService;
 
     @GetMapping("/singleDraw")
-    public List<lotteryCardRecordResp> singleDraw() throws JsonProcessingException {
-        return lotteryService.singleDraw(MetaverseContextUtil.getCurrentUserId());
+    public Result<CardResp> singleDraw() throws JsonProcessingException {
+        return Result.success(lotteryService.singleDraw(MetaverseContextUtil.getCurrentUserId()));
     }
 
     @GetMapping("/fiveDraws")
-    public List<lotteryCardRecordResp> fiveDraws() throws JsonProcessingException {
+    public List<CardResp> fiveDraws() throws JsonProcessingException {
         return lotteryService.fiveDraws(MetaverseContextUtil.getCurrentUserId());
     }
 
     @GetMapping("/tenDraws")
-    public List<lotteryCardRecordResp> tenDraws() throws JsonProcessingException {
+    public List<CardResp> tenDraws() throws JsonProcessingException {
         return lotteryService.tenDraws(MetaverseContextUtil.getCurrentUserId());
     }
 }
