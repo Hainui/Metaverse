@@ -27,11 +27,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class LotteryService {
-
+    private static final int MAX_DAILY_DRAWS = 100;
     private final IMetaverseCardProbabilityService cardProbabilityService;
     private final IMetaverseLotteryCardRecordService lotteryCardRecordService;
 
     public List<CardResp> drawCards(int count, Long userId) {
+        int dailyDrawCount = getDailyDrawCount(userId);
+        if (dailyDrawCount + count > MAX_DAILY_DRAWS) {
+            throw new IllegalArgumentException("今日你的抽卡额度已耗尽,期待明天你再次激活这份幸运");
+        }
+
         List<MetaverseCardProbabilityDO> allCards = cardProbabilityService.list();
         Map<String, BigDecimal> probabilityMap = allCards.stream()
                 .collect(Collectors.toMap(
@@ -56,6 +61,18 @@ public class LotteryService {
         return convertToResponseList(cardProbabilityDOList);
     }
 
+    private int getDailyDrawCount(Long userId) {
+        MetaverseLotteryCardRecordDO record = lotteryCardRecordService.lambdaQuery()
+                .eq(MetaverseLotteryCardRecordDO::getUserId, userId)
+                .one();
+
+        if (record == null || record.getLastDrawTime() == null || !isToday(record.getLastDrawTime())) {
+            return 0;
+        }
+
+        return record.getDailyDrawCount();
+    }
+
     private void updateDrawRecord(Long userId, List<MetaverseCardProbabilityDO> drawnCards, int drawCount) {
         MetaverseLotteryCardRecordDO record = Optional.ofNullable(lotteryCardRecordService.lambdaQuery()
                         .eq(MetaverseLotteryCardRecordDO::getUserId, userId)
@@ -70,10 +87,12 @@ public class LotteryService {
                         .setUpdatedAt(LocalDateTime.now())
                         .setVersion(1L));
 
-        LocalDate today = LocalDate.now();
-        LocalDate lastDrawDate = record.getLastDrawTime() != null ? record.getLastDrawTime().toLocalDate() : null;
+        boolean isTodayDraw = isToday(record.getLastDrawTime());
+        int dailyDrawCount = isTodayDraw ? record.getDailyDrawCount() + drawCount : drawCount;
 
-        int dailyDrawCount = lastDrawDate != null && !lastDrawDate.equals(today) ? drawCount : record.getDailyDrawCount() + drawCount;
+        if (dailyDrawCount > MAX_DAILY_DRAWS) {
+            throw new IllegalArgumentException("Daily draw limit exceeded while updating record.");
+        }
 
         record.setDailyDrawCount(dailyDrawCount)
                 .setCumulativeDrawCount(record.getCumulativeDrawCount() + drawnCards.size())
@@ -99,13 +118,8 @@ public class LotteryService {
         if (dateTime == null) {
             return false;
         }
-        // 获取今天的日期
         LocalDate today = LocalDate.now();
-
-        // 获取给定时间的日期部分
         LocalDate dateTimeDate = dateTime.toLocalDate();
-
-        // 比较日期是否相同
         return dateTimeDate.equals(today);
     }
 
