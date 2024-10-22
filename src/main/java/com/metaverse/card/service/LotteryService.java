@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -99,8 +96,7 @@ public class LotteryService {
                 .setLastDrawTime(LocalDateTime.now());
 
         List<Long> drawnCardIds = Optional.ofNullable(JSONArray.parseArray(record.getDrawnCardIds(), Long.class))
-                .map(ArrayList::new)
-                .orElseGet(ArrayList::new);
+                .orElseGet(Collections::emptyList);
         drawnCardIds.addAll(drawnCards.stream().map(MetaverseCardProbabilityDO::getId).collect(Collectors.toSet()));
         record.setDrawnCardIds(JSON.toJSONString(drawnCardIds));
 
