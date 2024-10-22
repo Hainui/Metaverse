@@ -32,7 +32,7 @@ public class MetaverseLotteryCardRecordController {
 
     @GetMapping("/singleDraw")
     @ApiOperation(value = "单抽一次", tags = "1.0.0")
-    public Result<CardResp> singleDraw() throws JsonProcessingException {
+    public Result<CardResp> singleDraw() {
         return Result.success(lotteryService.singleDraw(MetaverseContextUtil.getCurrentUserId()));
     }
 
