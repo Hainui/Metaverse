@@ -1,7 +1,7 @@
 package com.metaverse.card.service;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metaverse.card.db.entity.MetaverseCardProbabilityDO;
 import com.metaverse.card.db.entity.MetaverseLotteryCardRecordDO;
 import com.metaverse.card.db.service.IMetaverseCardProbabilityService;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,28 +29,34 @@ public class LotteryService {
 
     private final IMetaverseCardProbabilityService cardProbabilityService;
     private final MetaverseLotteryCardRecordServiceImpl lotteryCardRecordService;
-    private final ObjectMapper objectMapper;
 
     @Transactional(rollbackFor = Exception.class)
     public List<CardResp> drawCards(int count, Long userId) throws JsonProcessingException {
         List<MetaverseCardProbabilityDO> allCards = cardProbabilityService.list();
-
-        Map<MetaverseCardProbabilityDO, BigDecimal> probabilityMap = allCards.stream()
+        Map<String, BigDecimal> probabilityMap = allCards.stream()
                 .collect(Collectors.toMap(
-                        card -> card,
+                        MetaverseCardProbabilityDO::getLevel,
                         MetaverseCardProbabilityDO::getDropRate,
                         (existing, replacement) -> existing
                 ));
 
-        List<MetaverseCardProbabilityDO> drawnCards = new ArrayList<>();
+        List<String> drawnLevels = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            drawnCards.add(ProbabilityBasedSelection.selectElementBasedOnProbability(probabilityMap));
+            drawnLevels.add(ProbabilityBasedSelection.selectElementBasedOnProbability(probabilityMap));
+        }
+        // 根据抽到的级别获取具体的卡片
+        List<MetaverseCardProbabilityDO> drawnCards = allCards.stream()
+                .filter(card -> drawnLevels.contains(card.getLevel()))
+                .collect(Collectors.toList());
+        if (!drawnCards.isEmpty()) {
+            int randomIndex = ThreadLocalRandom.current().nextInt(drawnCards.size());
+            MetaverseCardProbabilityDO randomCard = drawnCards.get(randomIndex);
         }
         updateDrawRecord(userId, drawnCards);
         return convertToResponseList(drawnCards);
     }
 
-    private void updateDrawRecord(Long userId, List<MetaverseCardProbabilityDO> drawnCards) throws JsonProcessingException {
+    private void updateDrawRecord(Long userId, List<MetaverseCardProbabilityDO> drawnCards) {
         MetaverseLotteryCardRecordDO record = lotteryCardRecordService.lambdaQuery().eq(MetaverseLotteryCardRecordDO::getUserId, userId).one();
         if (record == null) {
             record = new MetaverseLotteryCardRecordDO()
@@ -66,15 +73,9 @@ public class LotteryService {
                 .setCumulativeDrawCount(record.getCumulativeDrawCount() + 1)
                 .setLastDrawTime(LocalDateTime.now())
                 .setUpdatedAt(LocalDateTime.now());
-        HashSet<Object> drawnCardIdSet = new HashSet<>();
-        try {
-            drawnCardIdSet = objectMapper.readValue(record.getDrawnCardIds(), HashSet.class);
-        } catch (Exception e) {
-            log.error("解析已抽到的卡ID集合失败", e);
-        }
+        HashSet<Long> drawnCardIdSet = JSON.parseObject(record.getDrawnCardIds(), HashSet.class);
         drawnCardIdSet.addAll(drawnCards.stream().map(MetaverseCardProbabilityDO::getId).collect(Collectors.toSet()));
-        record.setDrawnCardIds(objectMapper.writeValueAsString(drawnCardIdSet));
-
+        record.setDrawnCardIds(JSON.toJSONString(drawnCardIdSet));
         lotteryCardRecordService.saveOrUpdate(record);
     }
 
