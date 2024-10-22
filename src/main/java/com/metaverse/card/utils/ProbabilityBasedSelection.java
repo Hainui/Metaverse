@@ -14,7 +14,7 @@ public class ProbabilityBasedSelection {
         }
 
         BigDecimal totalProbability = probabilityMap.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (!totalProbability.equals(BigDecimal.ONE)) {
+        if (totalProbability.compareTo(BigDecimal.ONE) != 0) {
             throw new IllegalArgumentException("Sum of probabilities must be 1.");
         }
 
