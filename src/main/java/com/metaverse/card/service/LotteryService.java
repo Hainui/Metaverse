@@ -17,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,19 +44,20 @@ public class LotteryService {
         for (int i = 0; i < count; i++) {
             drawnLevels.add(ProbabilityBasedSelection.selectElementBasedOnProbability(probabilityMap));
         }
-        // 根据抽到的级别获取具体的卡片
+
         List<MetaverseCardProbabilityDO> cardProbabilityDOList = new ArrayList<>();
         for (String drawnLevel : drawnLevels) {
             cardProbabilityDOList.add(ProbabilityBasedSelection.selectRandomElement(allCards.stream()
                     .filter(card -> card.getLevel().equals(drawnLevel))
                     .collect(Collectors.toList())));
         }
-        updateDrawRecord(userId, cardProbabilityDOList);
+
+        updateDrawRecord(userId, cardProbabilityDOList, count); // 传递抽奖次数
         return convertToResponseList(cardProbabilityDOList);
     }
 
-    private void updateDrawRecord(Long userId, List<MetaverseCardProbabilityDO> drawnCards) {
-        MetaverseLotteryCardRecordDO record = Optional.of(lotteryCardRecordService.lambdaQuery()
+    private void updateDrawRecord(Long userId, List<MetaverseCardProbabilityDO> drawnCards, int drawCount) {
+        MetaverseLotteryCardRecordDO record = Optional.ofNullable(lotteryCardRecordService.lambdaQuery()
                         .eq(MetaverseLotteryCardRecordDO::getUserId, userId)
                         .last(RepositoryConstant.FOR_UPDATE)
                         .one())
@@ -66,14 +70,21 @@ public class LotteryService {
                         .setUpdatedAt(LocalDateTime.now())
                         .setVersion(1L));
 
-        record.setDailyDrawCount(isToday(record.getLastDrawTime()) ? record.getDailyDrawCount() + 1 : 1)
-                .setCumulativeDrawCount(record.getCumulativeDrawCount() + 1)
+        LocalDate today = LocalDate.now();
+        LocalDate lastDrawDate = record.getLastDrawTime() != null ? record.getLastDrawTime().toLocalDate() : null;
+
+        int dailyDrawCount = lastDrawDate != null && !lastDrawDate.equals(today) ? drawCount : record.getDailyDrawCount() + drawCount;
+
+        record.setDailyDrawCount(dailyDrawCount)
+                .setCumulativeDrawCount(record.getCumulativeDrawCount() + drawnCards.size())
                 .setLastDrawTime(LocalDateTime.now());
 
-        List<Long> drawnCardIds = Optional.of(JSONArray.parseArray(record.getDrawnCardIds(), Long.class)).orElse(Collections.emptyList());
-
+        List<Long> drawnCardIds = Optional.ofNullable(JSONArray.parseArray(record.getDrawnCardIds(), Long.class))
+                .map(ArrayList::new)
+                .orElseGet(ArrayList::new);
         drawnCardIds.addAll(drawnCards.stream().map(MetaverseCardProbabilityDO::getId).collect(Collectors.toSet()));
         record.setDrawnCardIds(JSON.toJSONString(drawnCardIds));
+
         lotteryCardRecordService.saveOrUpdate(record);
     }
 

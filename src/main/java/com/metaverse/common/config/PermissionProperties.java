@@ -62,7 +62,7 @@ public class PermissionProperties {
 
 
     public List<String> getSystemPermissions() {
-        return ImmutableList.copyOf(Optional.of(systemPermissions).orElse(ImmutableList.of()));
+        return ImmutableList.copyOf(Optional.ofNullable(systemPermissions).orElse(ImmutableList.of()));
     }
 
 }

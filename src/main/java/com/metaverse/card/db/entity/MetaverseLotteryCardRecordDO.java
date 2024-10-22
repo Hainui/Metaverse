@@ -1,5 +1,7 @@
 package com.metaverse.card.db.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,7 +28,7 @@ import java.time.LocalDateTime;
 public class MetaverseLotteryCardRecordDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @TableId(value = "user_id", type = IdType.INPUT)
     @ApiModelProperty("用户ID")
     private Long userId;
 

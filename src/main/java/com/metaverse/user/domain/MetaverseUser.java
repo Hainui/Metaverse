@@ -181,7 +181,7 @@ public class MetaverseUser implements IAggregateRoot<MetaverseUser> {
                 .setEmail(user.getEmail())
                 .setName(user.getName())
                 .setRegion(convertToRegionInfo(user.getRegion()))
-                .setPermissions(Optional.of(user.getPermissions()).orElse(Collections.emptyList()).stream().map(MetaverseUser::convertToUserPermissionInfo).collect(Collectors.toList()))
+                .setPermissions(Optional.ofNullable(user.getPermissions()).orElse(Collections.emptyList()).stream().map(MetaverseUser::convertToUserPermissionInfo).collect(Collectors.toList()))
                 .setGender(user.getGender().getBooleanValue());
     }
 

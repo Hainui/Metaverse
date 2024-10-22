@@ -39,7 +39,7 @@ public class PermissionAspect {
         String[] resourceTypeElements = annotation.resourceTypeElements();
         String action = annotation.action();
         String locator = annotation.locator();
-        List<String> permissions = Optional.of(MetaverseContextUtil.getCurrentUserPermission())
+        List<String> permissions = Optional.ofNullable(MetaverseContextUtil.getCurrentUserPermission())
                 .orElse(Collections.emptyList())
                 .stream()
                 .flatMap(permission -> permission.getPermissions().stream())

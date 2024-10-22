@@ -21,7 +21,7 @@ public class UserGroupService {
 
     @Transactional(rollbackFor = Exception.class)
     public Long createUserGroup(Long currentUserId, CreateUserGroupReq req) {
-        return MetaverseUserGroup.create(req.getGroupName(), req.getDescription(), currentUserId, Optional.of(req.getMemberIds()).orElse(Collections.emptyList()));
+        return MetaverseUserGroup.create(req.getGroupName(), req.getDescription(), currentUserId, Optional.ofNullable(req.getMemberIds()).orElse(Collections.emptyList()));
     }
 
     @Transactional(rollbackFor = Exception.class)
