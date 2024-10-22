@@ -11,6 +11,8 @@ import com.metaverse.user.resp.UserGroupQuestionResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +26,15 @@ import java.util.stream.Collectors;
 public class GroupJoinRequestService {
     private final IMetaverseGroupJoinRequestService groupJoinRequestService;
     private final UserGroupMemberService groupMemberService;
-    private final GroupQuestionService groupQuestionService;
+
+    private GroupQuestionService groupQuestionService;
     private final UserService userService;
+
+    @Lazy
+    @Autowired
+    public void setGroupQuestionService(GroupQuestionService groupQuestionService) {
+        this.groupQuestionService = groupQuestionService;
+    }
 
     private static class UserGroupRequestStatus {
         public static final int PENDING = 0;
@@ -35,7 +44,6 @@ public class GroupJoinRequestService {
 
     @Transactional(rollbackFor = Exception.class)
     public UserGroupQuestionResp joinGroupRequest(Long currentUserId, AddGroupReq req) {
-        //todo 退出群聊再次申请的时候没有返回问题
         String message = req.getMessage();
         Long receiverGroupId = req.getReceiverGroupId();
         boolean existsed = groupJoinRequestService.lambdaQuery()

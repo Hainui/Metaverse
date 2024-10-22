@@ -7,6 +7,7 @@ import com.metaverse.user.req.ModifyUserGroupReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -18,10 +19,12 @@ public class UserGroupService {
 
     private final IMetaverseUserGroupMemberService userGroupMemberService;
 
+    @Transactional(rollbackFor = Exception.class)
     public Long createUserGroup(Long currentUserId, CreateUserGroupReq req) {
         return MetaverseUserGroup.create(req.getGroupName(), req.getDescription(), currentUserId, Optional.of(req.getMemberIds()).orElse(Collections.emptyList()));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public boolean modifyUserGroup(Long currentUserId, ModifyUserGroupReq req) {
         MetaverseUserGroup metaverseUserGroup = MetaverseUserGroup.writeLoadAndAssertNotExist(req.getUserGroupId());
         return metaverseUserGroup.modifyGroupInfo(req.getGroupName(), req.getDescription(), currentUserId);

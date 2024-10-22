@@ -9,9 +9,9 @@ import com.metaverse.user.req.GroupQuestionReq;
 import com.metaverse.user.req.GroupReq;
 import com.metaverse.user.resp.UserGroupQuestionResp;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +22,13 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class GroupQuestionService {
-    @Setter
     private GroupJoinRequestService groupJoinRequestService;
     private final IMetaverseGroupQuestionService groupQuestionService;
+
+    @Autowired
+    public void setGroupJoinRequestService(GroupJoinRequestService groupJoinRequestService) {
+        this.groupJoinRequestService = groupJoinRequestService;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean answerGroupQuestion(AnswerGroupQuestionReq req, Long currentUserId) {
@@ -32,7 +36,7 @@ public class GroupQuestionService {
         MetaverseGroupQuestionDO groupQuestionDO = groupQuestionService.lambdaQuery()
                 .eq(MetaverseGroupQuestionDO::getGroupId, groupId)
                 .one();
-        //todo 问题回答正确但是没加入群聊
+
         if (groupQuestionDO.getEnabled() && StrUtil.equals(req.getQuestionAnswer(), groupQuestionDO.getAnswer())) {
             return groupJoinRequestService.agreeGroupRequest(Objects.isNull(groupQuestionDO.getUpdateBy()) ? groupQuestionDO.getCreateBy() : groupQuestionDO.getUpdateBy(), new GroupReq(groupId, currentUserId));
         }

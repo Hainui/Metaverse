@@ -3,6 +3,8 @@ server:
 
 
 spring:
+  main:
+    allow-circular-references=true:
   #默认使用Hikari数据库连接池
   datasource:
     #1.驱动类名称

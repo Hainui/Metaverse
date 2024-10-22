@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class GroupChatMessagesResp {
     @ApiModelProperty(value = "发送信息的用户ID")
     private Long senderId;
+    //todo 多一个发送人名称
 
     @ApiModelProperty(value = "发送时间")
     private LocalDateTime timestamp;

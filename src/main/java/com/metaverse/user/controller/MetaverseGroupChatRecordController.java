@@ -42,7 +42,7 @@ public class MetaverseGroupChatRecordController {
     }
 
     @PostMapping("/sendGroupChatFile")
-    @ApiOperation(value = "发送群聊文件", tags = "1.0.0")
+    @ApiOperation(value = "发送群组文件", tags = "1.0.0")
     public Result<Boolean> sendGroupChatFile(@RequestBody @Valid @ApiParam(name = "发送聊天文件参数", required = true) GroupChatFileReq req) {
         return Result.success(userGroupChatService.sendGroupChatFile(req, MetaverseContextUtil.getCurrentUserId()));
     }
@@ -54,7 +54,7 @@ public class MetaverseGroupChatRecordController {
     }
 
     @GetMapping("/getGroupChatFile")
-    @ApiOperation(value = "获取群聊文件", tags = "1.0.0")
+    @ApiOperation(value = "获取群组文件", tags = "1.0.0")
     public Result<List<FileDto>> getGroupChatFile(@RequestParam("groupId") @ApiParam(value = "群组ID", required = true) Long groupId) {
         return Result.success(userGroupChatService.getGroupChatFile(groupId, MetaverseContextUtil.getCurrentUserId()));
     }

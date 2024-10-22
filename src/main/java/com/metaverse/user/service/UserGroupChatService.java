@@ -83,19 +83,6 @@ public class UserGroupChatService {
                 .set(MetaverseGroupChatRecordDO::getWithdrawnTime, LocalDateTime.now())
                 .update();
 
-
-//        Optional<MetaverseGroupChatRecordDO> optionalMessage = findMessageByGroupIdAndTimestamp(req.getGroupId(), req.getTimestamp());
-//        if (!optionalMessage.isPresent() || optionalMessage.get().getWithdrawn() != null) {
-//            return false;
-//        }
-//        return metaverseGroupChatRecordService.lambdaUpdate()
-//                .eq(MetaverseGroupChatRecordDO::getSenderId, currentUserId)
-//                .eq(MetaverseGroupChatRecordDO::getTimestamp, req.getTimestamp())
-//                .eq(MetaverseGroupChatRecordDO::getGroupId, req.getGroupId())
-//                .set(MetaverseGroupChatRecordDO::getWithdrawn, Boolean.TRUE)
-//                .set(MetaverseGroupChatRecordDO::getWithdrawnTime, LocalDateTime.now())
-//                .update();
-
     }
 
     public Optional<MetaverseGroupChatRecordDO> findMessageByGroupIdAndTimestamp(Long groupId, LocalDateTime timestamp) {
@@ -128,8 +115,6 @@ public class UserGroupChatService {
         if (!userGroupMemberService.isUserMemberOfGroup(currentUserId, groupId)) {
             throw new IllegalArgumentException("该用户不是本群成员,无法获取聊天信息");
         }
-//        LocalDateTime minTime = LocalDateTime.now().minusDays(1);
-//        LocalDateTime maxTime = LocalDateTime.now();
         LocalDateTime minTime = LocalDateTime.of(LocalDate.now().minusDays(theOtherDay), LocalTime.MIN);
         LocalDateTime maxTime = LocalDateTime.of(LocalDate.now().minusDays(theOtherDay), LocalTime.MAX);
         log.info("开始查询群组聊天消息,group ID: {}, user ID: {}, from {} to {}", groupId, currentUserId, minTime, maxTime);
