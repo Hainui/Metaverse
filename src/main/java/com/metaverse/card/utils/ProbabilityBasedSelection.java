@@ -2,8 +2,9 @@ package com.metaverse.card.utils;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ProbabilityBasedSelection {
 
@@ -24,7 +25,7 @@ public class ProbabilityBasedSelection {
             cumulativeProbabilities.put(entry.getKey(), cumulativeProbability);
         }
 
-        Random random = new Random();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         BigDecimal randomProbability = BigDecimal.valueOf(random.nextDouble());
 
         for (Map.Entry<T, BigDecimal> entry : cumulativeProbabilities.entrySet()) {
@@ -36,16 +37,23 @@ public class ProbabilityBasedSelection {
         return cumulativeProbabilities.keySet().iterator().next();
     }
 
-//    public static void main(String[] args) {
-//        Map<String, Double> probabilityMap = new HashMap<>();
-//        probabilityMap.put("apple", 0.3);
-//        probabilityMap.put("banana", 0.5);
-//        probabilityMap.put("cherry", 0.2);
-//
-//        // 测试算法
-//        for (int i = 0; i < 100; i++) {
-//            Long selectedKey = selectElementBasedOnProbability(probabilityMap);
-//            System.out.println(selectedKey);
-//        }
-//    }
+
+    /**
+     * 从列表中随机返回一个元素。
+     *
+     * @param list 需要从中随机选择元素的列表
+     * @param <T>  列表中元素的类型
+     * @return 随机选择的元素
+     */
+    public static <T> T selectRandomElement(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            throw new IllegalArgumentException("List cannot be null or empty.");
+        }
+
+        // 生成随机索引
+        int index = ThreadLocalRandom.current().nextInt(list.size());
+
+        // 返回对应的元素
+        return list.get(index);
+    }
 }
