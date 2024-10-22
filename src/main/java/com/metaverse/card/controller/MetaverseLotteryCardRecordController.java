@@ -1,6 +1,5 @@
 package com.metaverse.card.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.metaverse.card.resp.CardResp;
 import com.metaverse.card.service.LotteryService;
 import com.metaverse.common.Utils.MetaverseContextUtil;
@@ -38,13 +37,13 @@ public class MetaverseLotteryCardRecordController {
 
     @GetMapping("/fiveDraws")
     @ApiOperation(value = "连抽五次", tags = "1.0.0")
-    public List<CardResp> fiveDraws() throws JsonProcessingException {
-        return lotteryService.fiveDraws(MetaverseContextUtil.getCurrentUserId());
+    public Result<List<CardResp>> fiveDraws() {
+        return Result.success(lotteryService.fiveDraws(MetaverseContextUtil.getCurrentUserId()));
     }
 
     @GetMapping("/tenDraws")
     @ApiOperation(value = "连抽十次", tags = "1.0.0")
-    public List<CardResp> tenDraws() throws JsonProcessingException {
-        return lotteryService.tenDraws(MetaverseContextUtil.getCurrentUserId());
+    public Result<List<CardResp>> tenDraws() {
+        return Result.success(lotteryService.tenDraws(MetaverseContextUtil.getCurrentUserId()));
     }
 }
