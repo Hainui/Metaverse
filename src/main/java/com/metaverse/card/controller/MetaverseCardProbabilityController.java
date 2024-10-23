@@ -1,9 +1,17 @@
 package com.metaverse.card.controller;
 
+import com.metaverse.card.req.CardTypeReq;
+import com.metaverse.card.resp.CardLevelInfoResP;
 import com.metaverse.card.service.MetaverseCardProbabilityService;
+import com.metaverse.common.Utils.MetaverseContextUtil;
+import com.metaverse.common.model.Result;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -20,4 +28,15 @@ public class MetaverseCardProbabilityController {
 
     private final MetaverseCardProbabilityService cardProbabilityService;
 
+    @GetMapping("/getCardInfo")
+    @ApiOperation(value = "抽卡信息", tags = "1.0.0")
+    public Result<List<CardLevelInfoResP>> getCardInfo() {
+        return Result.success(cardProbabilityService.getCardInfo());
+    }
+
+    @PostMapping("/addCardType")
+    @ApiOperation(value = "新增卡的种类", tags = "1.0.0")
+    public Result<Boolean> addCardType(@RequestBody @Valid @ApiParam(name = "新增卡片参数", required = true) CardTypeReq card) throws Exception {
+        return Result.success(cardProbabilityService.addCardType(card, MetaverseContextUtil.getCurrentUserId()));
+    }
 }

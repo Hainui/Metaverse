@@ -2,11 +2,13 @@ package com.metaverse.card.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.metaverse.card.db.entity.MetaverseCardProbabilityDO;
 import com.metaverse.card.db.entity.MetaverseLotteryCardRecordDO;
 import com.metaverse.card.db.service.IMetaverseCardProbabilityService;
 import com.metaverse.card.db.service.IMetaverseLotteryCardRecordService;
 import com.metaverse.card.resp.CardResp;
+import com.metaverse.card.resp.LottreyRecordResp;
 import com.metaverse.card.utils.ProbabilityBasedSelection;
 import com.metaverse.common.constant.RepositoryConstant;
 import lombok.RequiredArgsConstructor;
@@ -88,7 +90,7 @@ public class LotteryService {
         int dailyDrawCount = isTodayDraw ? record.getDailyDrawCount() + drawCount : drawCount;
 
         if (dailyDrawCount > MAX_DAILY_DRAWS) {
-            throw new IllegalArgumentException("Daily draw limit exceeded while updating record.");
+            throw new IllegalArgumentException("在更新记录时，每日提取限额已超出。.");
         }
 
         record.setDailyDrawCount(dailyDrawCount)
@@ -138,5 +140,44 @@ public class LotteryService {
     @Transactional
     public List<CardResp> tenDraws(Long userId) {
         return drawCards(10, userId);
+    }
+
+    public LottreyRecordResp userLotteryRecord(Long currentUserId) {
+        MetaverseLotteryCardRecordDO userLotteryRecord = lotteryCardRecordService
+                .lambdaQuery()
+                .eq(MetaverseLotteryCardRecordDO::getUserId, currentUserId)
+                .one();
+        LottreyRecordResp response = new LottreyRecordResp();
+        if (userLotteryRecord != null) {
+            response.setUserId(currentUserId)
+                    .setDailyDrawCount(userLotteryRecord.getDailyDrawCount())
+                    .setCumulativeDrawCount(userLotteryRecord.getCumulativeDrawCount())
+                    .setLastDrawTime(userLotteryRecord.getLastDrawTime());
+            String drawnCardIdsJson = userLotteryRecord.getDrawnCardIds();
+            if (drawnCardIdsJson != null && !drawnCardIdsJson.isEmpty()) {
+                List<Long> cardIds = JSON.parseArray(drawnCardIdsJson, Long.class);
+                List<CardResp> cardResps = fetchCardDetails(cardIds);
+                response.setDrawnCardIds(cardResps);
+            }
+        }
+        return response;
+    }
+
+    public List<CardResp> fetchCardDetails(List<Long> cardIds) {
+        // 使用MyBatis Plus的QueryWrapper来构建查询条件
+        QueryWrapper<MetaverseCardProbabilityDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id", cardIds);
+
+        // 查询数据库获取卡片概率信息
+        List<MetaverseCardProbabilityDO> cardProbabilities = cardProbabilityService.list(queryWrapper);
+
+        // 将卡片概率信息转换为CardResp对象列表
+        return cardProbabilities.stream()
+                .map(cardProbability -> new CardResp(
+                        cardProbability.getId(),
+                        cardProbability.getName(),
+                        cardProbability.getLevel()
+                ))
+                .collect(Collectors.toList());
     }
 }

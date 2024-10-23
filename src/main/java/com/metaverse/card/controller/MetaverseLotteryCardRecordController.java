@@ -1,6 +1,7 @@
 package com.metaverse.card.controller;
 
 import com.metaverse.card.resp.CardResp;
+import com.metaverse.card.resp.LottreyRecordResp;
 import com.metaverse.card.service.LotteryService;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
@@ -46,4 +47,13 @@ public class MetaverseLotteryCardRecordController {
     public Result<List<CardResp>> tenDraws() {
         return Result.success(lotteryService.tenDraws(MetaverseContextUtil.getCurrentUserId()));
     }
+
+    @GetMapping("/userLotteryRecord")
+    @ApiOperation(value = "返回用户抽卡信息", tags = "1.0.0")
+    public Result<LottreyRecordResp> userLotteryRecord() {
+        return Result.success(lotteryService.userLotteryRecord(MetaverseContextUtil.getCurrentUserId()));
+    }
 }
+
+
+
