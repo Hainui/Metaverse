@@ -8,9 +8,13 @@ import com.metaverse.card.db.entity.MetaverseLotteryCardRecordDO;
 import com.metaverse.card.db.service.IMetaverseCardProbabilityService;
 import com.metaverse.card.db.service.IMetaverseLotteryCardRecordService;
 import com.metaverse.card.resp.CardResp;
-import com.metaverse.card.resp.LottreyRecordResp;
+import com.metaverse.card.resp.LotteryRecordResp;
 import com.metaverse.card.utils.ProbabilityBasedSelection;
+import com.metaverse.common.constant.PresentConstant;
 import com.metaverse.common.constant.RepositoryConstant;
+import com.metaverse.common.constant.UserConstant;
+import com.metaverse.logistics.req.FillAddressReq;
+import com.metaverse.logistics.service.PhysicalDistributionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,7 @@ public class LotteryService {
     private static final int MAX_DAILY_DRAWS = 100;
     private final IMetaverseCardProbabilityService cardProbabilityService;
     private final IMetaverseLotteryCardRecordService lotteryCardRecordService;
+    private final PhysicalDistributionService physicalDistributionService;
 
     public List<CardResp> drawCards(int count, Long userId) {
         int dailyDrawCount = getDailyDrawCount(userId);
@@ -85,6 +90,10 @@ public class LotteryService {
                         .setSavedAt(LocalDateTime.now())
                         .setUpdatedAt(LocalDateTime.now())
                         .setVersion(1L));
+        // 累计抽奖次数每达到一千次 送吧唧
+        if (record.getCumulativeDrawCount() % 1000 + drawCount >= 1000) {
+            physicalDistributionService.fillAddress(UserConstant.SYSTEM_ID, new FillAddressReq().setItemName(PresentConstant.BA_JI));
+        }
 
         boolean isTodayDraw = isToday(record.getLastDrawTime());
         int dailyDrawCount = isTodayDraw ? record.getDailyDrawCount() + drawCount : drawCount;
@@ -127,27 +136,27 @@ public class LotteryService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public CardResp singleDraw(Long userId) {
         return drawCards(1, userId).get(0);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<CardResp> fiveDraws(Long userId) {
         return drawCards(5, userId);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<CardResp> tenDraws(Long userId) {
         return drawCards(10, userId);
     }
 
-    public LottreyRecordResp userLotteryRecord(Long currentUserId) {
+    public LotteryRecordResp userLotteryRecord(Long currentUserId) {
         MetaverseLotteryCardRecordDO userLotteryRecord = lotteryCardRecordService
                 .lambdaQuery()
                 .eq(MetaverseLotteryCardRecordDO::getUserId, currentUserId)
                 .one();
-        LottreyRecordResp response = new LottreyRecordResp();
+        LotteryRecordResp response = new LotteryRecordResp();
         if (userLotteryRecord != null) {
             response.setUserId(currentUserId)
                     .setDailyDrawCount(userLotteryRecord.getDailyDrawCount())

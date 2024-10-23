@@ -38,7 +38,7 @@ public class MetaverseRegionService {
                 .setName(regionDO.getName());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Long create(RegionCreateReq req, Long currentUserId) {
         List<String> serverLocation = req.getServerLocation();
         ServerLocationValidator.validateServerLocations(serverLocation);

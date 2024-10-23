@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.metaverse.logistics.db.mapper.MetaversePhysicalDistributionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.metaverse.logistics.db.entity.MetaversePhysicalDistributionDO">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="phone" property="phone" />
+        <result column="delivery_address" property="deliveryAddress" />
+        <result column="tracking_number" property="trackingNumber" />
+        <result column="item_name" property="itemName" />
+        <result column="confirmed_receipt" property="confirmedReceipt" />
+        <result column="item_quantity" property="itemQuantity" />
+        <result column="saved_at" property="savedAt" />
+        <result column="update_by" property="updateBy" />
+        <result column="create_by" property="createBy" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, phone, delivery_address, tracking_number, item_name, confirmed_receipt, item_quantity, saved_at, update_by, create_by, updated_at, version
+    </sql>
+
+</mapper>

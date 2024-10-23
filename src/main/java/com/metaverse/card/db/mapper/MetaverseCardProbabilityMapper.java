@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author Hainui
- * @since 2024-10-21 21:58:12
+ * @since 2024-10-23 21:49:52
  */
 @Mapper
 public interface MetaverseCardProbabilityMapper extends BaseMapper<MetaverseCardProbabilityDO> {

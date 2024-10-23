@@ -12,12 +12,13 @@
         <result column="saved_at" property="savedAt" />
         <result column="updated_at" property="updatedAt" />
         <result column="update_by" property="updateBy" />
+        <result column="create_by" property="createBy" />
         <result column="version" property="version" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, level, drop_rate, created_at, saved_at, updated_at, update_by, version
+        id, name, level, drop_rate, created_at, saved_at, updated_at, update_by, create_by, version
     </sql>
 
 </mapper>

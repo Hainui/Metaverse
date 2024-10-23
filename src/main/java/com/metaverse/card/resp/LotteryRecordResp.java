@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class LottreyRecordResp {
+public class LotteryRecordResp {
 
     @ApiModelProperty("用户ID")
     private Long userId;

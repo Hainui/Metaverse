@@ -10,6 +10,7 @@ public class PermissionConstant {
         String PERMISSION = "PERMISSION";
         String PERMISSION_RELATIONSHIP = "PERMISSION_RELATIONSHIP";
         String REGION = "REGION";
+        String LOGISTICS_TRACKING_NUMBER = "LOGISTICS_TRACKING_NUMBER";
         String USER = "USER";
     }
 

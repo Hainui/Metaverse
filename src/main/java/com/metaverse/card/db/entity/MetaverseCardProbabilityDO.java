@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Hainui
- * @since 2024-10-21 21:58:12
+ * @since 2024-10-23 21:49:52
  */
 @Getter
 @Setter
@@ -51,6 +51,9 @@ public class MetaverseCardProbabilityDO implements Serializable {
 
     @ApiModelProperty("修改人 ID")
     private Long updateBy;
+
+    @ApiModelProperty("创建人 ID")
+    private Long createBy;
 
     @ApiModelProperty("版本号")
     private Long version;

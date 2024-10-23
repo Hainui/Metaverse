@@ -1,13 +1,14 @@
 package com.metaverse.card.controller;
 
 import com.metaverse.card.req.CardTypeReq;
-import com.metaverse.card.resp.CardLevelInfoResP;
+import com.metaverse.card.resp.CardLevelInfoResp;
 import com.metaverse.card.service.MetaverseCardProbabilityService;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,14 +25,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/metaverseCardProbability")
 @RequiredArgsConstructor
+@Validated
 public class MetaverseCardProbabilityController {
 
     private final MetaverseCardProbabilityService cardProbabilityService;
 
-    @GetMapping("/getCardInfo")
-    @ApiOperation(value = "抽卡信息", tags = "1.0.0")
-    public Result<List<CardLevelInfoResP>> getCardInfo() {
-        return Result.success(cardProbabilityService.getCardInfo());
+    @GetMapping("/cardView")
+    @ApiOperation(value = "卡片视图", tags = "1.0.0")
+    public Result<List<CardLevelInfoResp>> cardView() {
+        return Result.success(cardProbabilityService.cardView());
     }
 
     @PostMapping("/addCardType")
