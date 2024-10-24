@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class FillAddressReq {
-    
+
     @ApiModelProperty("物流ID")
     private Long id;
 
