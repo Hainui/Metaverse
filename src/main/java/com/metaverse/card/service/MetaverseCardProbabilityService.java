@@ -55,17 +55,5 @@ public class MetaverseCardProbabilityService {
         List<CardLevelInfoResp> cardLevelInfoResps = new ArrayList<>();
         map.forEach((key, value) -> cardLevelInfoResps.add(new CardLevelInfoResp(key, value.stream().map(v -> new CardInfoResp(v.getId(), v.getName())).collect(Collectors.toList()), value.get(0).getDropRate())));
         return cardLevelInfoResps;
-
-//        List<String> cardLevelOrder = Arrays.asList("C", "S", "R", "SR", "SSR", "L");
-//        Map<String, List<CardInfoResp>> cardInfoMapByLevel = new LinkedHashMap<>();
-//        cardLevelOrder.forEach(level -> cardInfoMapByLevel.put(level, new ArrayList<>()));
-//        cardProbabilities.forEach(cardProbability -> {
-//            String cardLevel = cardProbability.getLevel();
-//            CardInfoResp cardInfoResP = new CardInfoResp(cardProbability.getId(), cardProbability.getName());
-//            cardInfoMapByLevel.get(cardLevel).add(cardInfoResP);
-//        });
-//        return cardLevelOrder.stream()
-//                .map(level -> new CardLevelInfoResp(level, cardInfoMapByLevel.get(level)))
-//                .collect(Collectors.toList());
     }
 }
