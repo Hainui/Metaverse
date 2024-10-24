@@ -38,7 +38,7 @@ public class MetaverseCardProbabilityController {
 
     @PostMapping("/addCardType")
     @ApiOperation(value = "新增卡的种类", tags = "1.0.0")
-    public Result<Boolean> addCardType(@RequestBody @Valid @ApiParam(name = "新增卡片参数", required = true) CardTypeReq card) throws Exception {
+    public Result<Boolean> addCardType(@RequestBody @Valid @ApiParam(name = "新增卡片参数", required = true) CardTypeReq card) {
         return Result.success(cardProbabilityService.addCardType(card, MetaverseContextUtil.getCurrentUserId()));
     }
 }
