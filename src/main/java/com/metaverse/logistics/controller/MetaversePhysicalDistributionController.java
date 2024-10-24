@@ -36,7 +36,7 @@ public class MetaversePhysicalDistributionController {
 
     @PostMapping("/fillAddress")
     @ApiOperation(value = "补充收货信息", tags = "1.0.0")
-    public Result<Boolean> fillAddress(@RequestBody @ApiParam(value = "收货信息", required = true) @Valid FillAddressReq req) {
+    public Result<Boolean> fillAddress(@RequestBody @ApiParam(value = "收货信息", required = true) FillAddressReq req) {
         return Result.success(physicalDistributionService.fillAddress(MetaverseContextUtil.getCurrentUserId(), req));
     }
 
