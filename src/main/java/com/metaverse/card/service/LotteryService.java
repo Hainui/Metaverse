@@ -92,7 +92,7 @@ public class LotteryService {
                         .setVersion(1L));
         // 累计抽奖次数每达到一千次 送吧唧
         if (record.getCumulativeDrawCount() % 1000 + drawCount >= 1000) {
-            physicalDistributionService.fillAddress(UserConstant.SYSTEM_ID, new FillAddressReq().setItemName(PresentConstant.BA_JI));
+            physicalDistributionService.fillAddress(UserConstant.SYSTEM_ID, new FillAddressReq().setUserId(userId).setItemName(PresentConstant.BA_JI));
         }
 
         boolean isTodayDraw = isToday(record.getLastDrawTime());
