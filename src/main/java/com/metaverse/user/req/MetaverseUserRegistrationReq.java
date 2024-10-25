@@ -27,4 +27,6 @@ public class MetaverseUserRegistrationReq {
     @NotBlank(message = "验证码不能为空")
     private String verifyCode;
 
+    @ApiModelProperty(value = "微信登录授权码（可选）")
+    private String wechatCode;
 }

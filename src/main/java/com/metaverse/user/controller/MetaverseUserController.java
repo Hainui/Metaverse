@@ -40,7 +40,11 @@ public class MetaverseUserController {
     @PostMapping("/login")
     @ApiOperation(value = "用户登录", tags = "1.0.0")
     public Result<String> login(@ApiParam(name = "用户登录请求参数", required = true) @RequestBody @Valid MetaverseUserLoginReq req, HttpServletRequest request) {
-        return Result.success(userService.login(req, HttpUtils.getIpAddress(request)));
+        if (req.getWechatCode() != null) {
+            return Result.success(userService.wechatLogin(req.getWechatCode(), HttpUtils.getIpAddress(request)));
+        } else {
+            return Result.success(userService.login(req, HttpUtils.getIpAddress(request)));
+        }
     }
 
     @GetMapping("/signOut")

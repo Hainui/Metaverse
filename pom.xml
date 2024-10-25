@@ -166,6 +166,12 @@
         </dependency>
         <!-- 根据需要添加其他模块 -->
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.32</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.commons</groupId>
