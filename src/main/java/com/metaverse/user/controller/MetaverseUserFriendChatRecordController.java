@@ -9,6 +9,7 @@ import com.metaverse.user.req.SendChatRecordReq;
 import com.metaverse.user.req.WithdrawChatMessageReq;
 import com.metaverse.user.resp.UserFriendChatMessagesResp;
 import com.metaverse.user.service.UserFriendChatService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.List;
 @RequestMapping("/metaverseUserFriendChatRecord")
 @RequiredArgsConstructor
 @Validated
+@Api("用户好友聊天记录")
 public class MetaverseUserFriendChatRecordController {
 
     private final UserFriendChatService userFriendChatService;

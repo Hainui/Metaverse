@@ -7,6 +7,7 @@ import com.metaverse.user.req.GroupReq;
 import com.metaverse.user.resp.MetaverseGroupRequestResp;
 import com.metaverse.user.resp.UserGroupQuestionResp;
 import com.metaverse.user.service.GroupJoinRequestService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequestMapping("/metaverseGroupJoinRequest")
 @RequiredArgsConstructor
 @Validated
+@Api("入群申请")
 public class MetaverseGroupJoinRequestController {
     private final GroupJoinRequestService groupJoinRequestService;
 

@@ -5,6 +5,7 @@ import com.metaverse.card.resp.LotteryRecordResp;
 import com.metaverse.card.service.LotteryService;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/metaverseLotteryCardRecord")
 @RequiredArgsConstructor
+@Api("抽卡")
 @Validated
 public class MetaverseLotteryCardRecordController {
 

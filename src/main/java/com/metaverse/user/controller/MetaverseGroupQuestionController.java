@@ -5,6 +5,7 @@ import com.metaverse.common.model.Result;
 import com.metaverse.user.req.AnswerGroupQuestionReq;
 import com.metaverse.user.req.GroupQuestionReq;
 import com.metaverse.user.service.GroupQuestionService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import javax.validation.constraints.NotNull;
 @RequestMapping("/metaverseGroupQuestion")
 @RequiredArgsConstructor
 @Validated
+@Api("群问题")
 public class MetaverseGroupQuestionController {
     private final GroupQuestionService groupQuestionService;
 

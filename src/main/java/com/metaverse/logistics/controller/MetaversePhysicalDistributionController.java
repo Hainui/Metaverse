@@ -8,6 +8,7 @@ import com.metaverse.logistics.req.FillAddressReq;
 import com.metaverse.logistics.req.SetTrackingNumberReq;
 import com.metaverse.logistics.resp.userPhysicalDistributionViewResp;
 import com.metaverse.logistics.service.PhysicalDistributionService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.util.List;
 @RequestMapping("/metaversePhysicalDistribution")
 @RequiredArgsConstructor
 @Validated
+@Api("物流")
 public class MetaversePhysicalDistributionController {
 
     private final PhysicalDistributionService physicalDistributionService;

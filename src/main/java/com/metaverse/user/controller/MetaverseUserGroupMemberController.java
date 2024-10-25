@@ -7,6 +7,7 @@ import com.metaverse.user.req.GrantAdministratorReq;
 import com.metaverse.user.req.InviteUserJoinGroupReq;
 import com.metaverse.user.req.KickOutGroupReq;
 import com.metaverse.user.service.UserGroupMemberService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequestMapping("/metaverseUserGroupMember")
 @RequiredArgsConstructor
 @Validated
+@Api("用户群组成员")
 public class MetaverseUserGroupMemberController {
 
     private final UserGroupMemberService userGroupMemberService;

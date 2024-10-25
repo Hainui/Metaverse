@@ -9,6 +9,7 @@ import com.metaverse.region.req.ModifyRegionServerLocationReq;
 import com.metaverse.region.req.RegionCreateReq;
 import com.metaverse.region.resp.MetaverseRegionResp;
 import com.metaverse.region.service.MetaverseRegionService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/region")
 @RequiredArgsConstructor
+@Api("分区")
 public class MetaverseRegionController {
     private final MetaverseRegionService regionService;
 

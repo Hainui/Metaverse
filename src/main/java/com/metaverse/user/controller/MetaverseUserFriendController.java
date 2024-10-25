@@ -9,6 +9,7 @@ import com.metaverse.user.resp.MetaverseFriendRequestResp;
 import com.metaverse.user.resp.RecommendFriendResp;
 import com.metaverse.user.resp.UserFriendQuestionResp;
 import com.metaverse.user.service.UserFriendService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.List;
 @RequestMapping("/metaverseFriendRequest")
 @RequiredArgsConstructor
 @Validated
+@Api("好友请求")
 public class MetaverseUserFriendController {
 
     private final UserFriendService userFriendService;

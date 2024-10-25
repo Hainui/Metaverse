@@ -7,6 +7,7 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.metaverse.pay.service.MetaverseWxPayService;
 import com.metaverse.pay.util.QRCodeGenerator;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/metaverseWxPay")
+@Api("微信支付")
 public class WxPayController {
 
     private final MetaverseWxPayService metaverseWxPayService;

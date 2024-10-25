@@ -9,6 +9,7 @@ import com.metaverse.permission.req.AuthoritiesForUsersReq;
 import com.metaverse.permission.req.UserAuthoritiesPageReq;
 import com.metaverse.permission.resp.UserAuthoritiesPageResp;
 import com.metaverse.permission.service.MetaverseUserPermissionRelationshipService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/metaversePermissionRelationship")
 @RequiredArgsConstructor
+@Api("角色权限赋予")
 public class MetaverseUserPermissionRelationshipController {
 
     private final MetaverseUserPermissionRelationshipService permissionRelationshipService;

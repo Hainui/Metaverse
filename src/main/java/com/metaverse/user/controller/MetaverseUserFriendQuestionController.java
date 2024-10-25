@@ -4,6 +4,7 @@ import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
 import com.metaverse.user.req.UserFriendQuestionReq;
 import com.metaverse.user.service.UserFriendQuestionService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/metaverseUserFriendQuestion")
+@Api("好友问题")
 public class MetaverseUserFriendQuestionController {
 
 

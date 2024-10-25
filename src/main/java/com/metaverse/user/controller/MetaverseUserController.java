@@ -11,6 +11,7 @@ import com.metaverse.user.req.ModifyUserNameReq;
 import com.metaverse.user.resp.CurrentUserInfo;
 import com.metaverse.user.resp.SearchUserByNameResp;
 import com.metaverse.user.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ import javax.validation.constraints.NotBlank;
 @RequestMapping("/metaverseUser")
 @RequiredArgsConstructor
 @Validated
+@Api("用户")
 public class MetaverseUserController {
 
     private final UserService userService;

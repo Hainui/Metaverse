@@ -8,6 +8,7 @@ import com.metaverse.user.req.GroupSendChatRecordReq;
 import com.metaverse.user.req.withdrawGroupChatMessagesReq;
 import com.metaverse.user.resp.GroupChatMessagesResp;
 import com.metaverse.user.service.UserGroupChatService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/metaverseGroupChatRecord")
+@Api("群聊记录")
 public class MetaverseGroupChatRecordController {
 
     private final UserGroupChatService userGroupChatService;

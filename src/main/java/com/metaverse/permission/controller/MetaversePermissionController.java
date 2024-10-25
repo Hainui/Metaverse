@@ -9,6 +9,7 @@ import com.metaverse.permission.req.ModifyPermissionReq;
 import com.metaverse.permission.req.PermissionCreateReq;
 import com.metaverse.permission.resp.MetaversePermissionResp;
 import com.metaverse.permission.service.MetaversePermissionService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/metaversePermission")
 @RequiredArgsConstructor
+@Api("角色权限")
 public class MetaversePermissionController {
 
     private final MetaversePermissionService permissionService;

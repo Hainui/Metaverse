@@ -11,6 +11,7 @@ import com.metaverse.file.db.service.IMetaverseMultimediaFilesService;
 import com.metaverse.file.dto.FileDto;
 import com.metaverse.file.req.SignedEncryptedUrlReq;
 import com.metaverse.user.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/file")
 @RequiredArgsConstructor
+@Api("文件上传")
 public class MetaverseFileController {
     private final IMetaverseMultimediaFilesService metaverseMultimediaFilesService;
     private final UserService userService;

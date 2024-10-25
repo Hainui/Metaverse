@@ -5,6 +5,7 @@ import com.metaverse.card.resp.CardLevelInfoResp;
 import com.metaverse.card.service.MetaverseCardProbabilityService;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.model.Result;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
  * @since 2024-10-21 21:54:05
  */
 @RestController
+@Api("卡片")
 @RequestMapping("/metaverseCardProbability")
 @RequiredArgsConstructor
 @Validated

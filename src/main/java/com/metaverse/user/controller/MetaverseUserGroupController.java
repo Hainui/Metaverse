@@ -5,6 +5,7 @@ import com.metaverse.common.model.Result;
 import com.metaverse.user.req.CreateUserGroupReq;
 import com.metaverse.user.req.ModifyUserGroupReq;
 import com.metaverse.user.service.UserGroupService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import javax.validation.Valid;
 @RequestMapping("/metaverseUserGroup")
 @RequiredArgsConstructor
 @Validated
+@Api("用户群组")
 public class MetaverseUserGroupController {
 
     private final UserGroupService userGroupService;
