@@ -62,7 +62,7 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
                 .eq(MetaversePermissionDO::getId, id)
                 .last(RepositoryConstant.FOR_UPDATE)
                 .one();
-        return covertFromDo(permission);
+        return convertToDomain(permission);
     }
 
     // 共享锁
@@ -72,7 +72,7 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
                 .eq(MetaversePermissionDO::getId, id)
                 .last(RepositoryConstant.FOR_SHARE)
                 .one();
-        return covertFromDo(entity);
+        return convertToDomain(entity);
     }
 
     // 共享锁
@@ -82,11 +82,11 @@ public class MetaversePermissionRepositoryImpl implements MetaversePermissionRep
                 .in(MetaversePermissionDO::getId, ids)
                 .last(RepositoryConstant.FOR_SHARE)
                 .list();
-        return dos.stream().map(this::covertFromDo).collect(Collectors.toList());
+        return dos.stream().map(this::convertToDomain).collect(Collectors.toList());
     }
 
 
-    private MetaversePermission covertFromDo(MetaversePermissionDO metaversePermissionDO) {
+    private MetaversePermission convertToDomain(MetaversePermissionDO metaversePermissionDO) {
         if (Objects.isNull(metaversePermissionDO)) {
             return null;
         }

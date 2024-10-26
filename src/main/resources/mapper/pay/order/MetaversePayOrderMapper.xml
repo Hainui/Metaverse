@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.metaverse.pay.order.db.mapper.MetaversePayOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.metaverse.pay.order.db.entity.MetaversePayOrderDO">
+        <id column="id" property="id" />
+        <result column="body" property="body" />
+        <result column="quantity" property="quantity" />
+        <result column="money" property="money" />
+        <result column="status" property="status" />
+        <result column="we_chat_pay_no" property="weChatPayNo" />
+        <result column="alipay_pay_no" property="alipayPayNo" />
+        <result column="create_at" property="createAt" />
+        <result column="pay_at" property="payAt" />
+        <result column="create_by" property="createBy" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, body, quantity, money, status, we_chat_pay_no, alipay_pay_no, create_at, pay_at, create_by, version
+    </sql>
+
+</mapper>

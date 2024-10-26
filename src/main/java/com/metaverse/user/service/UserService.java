@@ -1,10 +1,7 @@
 package com.metaverse.user.service;
 
 
-import cn.hutool.http.HttpResponse;
-import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.metaverse.common.Utils.MetaverseContextUtil;
 import com.metaverse.common.config.RedisServer;
 import com.metaverse.common.constant.UserConstant;
@@ -45,48 +42,48 @@ public class UserService {
         return token;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public String wechatLogin(String wechatCode, String ipAddress) {
-        String url = "https://api.weixin.qq.com/sns/jscode2session";
-        String appId = "your_app_id";
-        String secret = "your_app_secret";
-        String grantType = "authorization_code";
-
-        // 构建查询字符串
-        String queryString = String.format("appid=%s&secret=%s&js_code=%s&grant_type=%s",
-                appId, secret, wechatCode, grantType);
-
-        // 发送GET请求并获取响应
-        HttpResponse response = HttpUtil.createGet(url + "?" + queryString).execute();
-        String responseBody = response.body();
-
-        // 解析响应并获取OpenID
-        JSONObject json = JSONUtil.parseObj(responseBody);
-        String openId = json.getStr("openid");
-        if (openId == null) {
-            throw new RuntimeException("获取OpenID失败：" + responseBody);
-        }
-
-        // 查找或创建用户
-        MetaverseUserInfo userInfo = userMapper.selectByWechatOpenId(openId);
-        if (userInfo == null) {
-            userInfo = new MetaverseUserInfo();
-            userInfo.setWechatOpenId(openId);
-            // 设置其他默认信息...
-            userMapper.insert(userInfo);
-        }
-
-        // 生成JWT
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(UserConstant.METAVERSE_USER, userInfo);
-        claims.put(UserConstant.IP_ADDRESS, ipAddress);
-        String token = MetaverseContextUtil.generateJwt(claims);
-
-        // 存储Token到Redis
-        redisServer.storeToken(userInfo.getId(), token);
-
-        return token;
-    }
+//    @Transactional(rollbackFor = Exception.class)
+//    public String wechatLogin(String wechatCode, String ipAddress) {
+//        String url = "https://api.weixin.qq.com/sns/jscode2session";
+//        String appId = "your_app_id";
+//        String secret = "your_app_secret";
+//        String grantType = "authorization_code";
+//
+//        // 构建查询字符串
+//        String queryString = String.format("appid=%s&secret=%s&js_code=%s&grant_type=%s",
+//                appId, secret, wechatCode, grantType);
+//
+//        // 发送GET请求并获取响应
+//        HttpResponse response = HttpUtil.createGet(url + "?" + queryString).execute();
+//        String responseBody = response.body();
+//
+//        // 解析响应并获取OpenID
+//        JSONObject json = JSONUtil.parseObj(responseBody);
+//        String openId = json.getStr("openid");
+//        if (openId == null) {
+//            throw new RuntimeException("获取OpenID失败：" + responseBody);
+//        }
+//
+//        // 查找或创建用户
+//        MetaverseUserInfo userInfo = userMapper.selectByWechatOpenId(openId);
+//        if (userInfo == null) {
+//            userInfo = new MetaverseUserInfo();
+//            userInfo.setWechatOpenId(openId);
+//            // 设置其他默认信息...
+//            userMapper.insert(userInfo);
+//        }
+//
+//        // 生成JWT
+//        Map<String, Object> claims = new HashMap<>();
+//        claims.put(UserConstant.METAVERSE_USER, userInfo);
+//        claims.put(UserConstant.IP_ADDRESS, ipAddress);
+//        String token = MetaverseContextUtil.generateJwt(claims);
+//
+//        // 存储Token到Redis
+//        redisServer.storeToken(userInfo.getId(), token);
+//
+//        return token;
+//    }
 
     public Boolean signOut(Long userId) {
         redisServer.removeToken(userId);
